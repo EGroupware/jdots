@@ -1,0 +1,318 @@
+<?php
+/**
+ * Stylite: jdots template
+ *
+ * @link http://www.stylite.de
+ * @package stylite
+ * @author Andreas Stöckel <as@stylite.de>
+ * @author Ralf Becker <rb@stylite.de>
+ * @author Nathan Gray <ng@stylite.de>
+ * @version $Id$
+ */
+
+/**
+* Stylite jdots template
+*/
+class jdots_framework extends egw_framework
+{
+	/**
+	* Contains array with linked icons in the topmenu
+	*
+	* @var mixed
+	* @access public
+	*/
+	var $topmenu_icon_arr = array();
+
+	/**
+	* Contains array of information for additional topmenu items added
+	* by hooks
+	*/
+	private static $hook_items = array();
+
+	/**
+	* Constructor
+	*
+	* @param string $template='idots' name of the template
+	* @return idots_framework
+	*/
+	function __construct($template='jdots')
+	{
+		parent::__construct($template);		// call the constructor of the extended class
+		
+		$this->template_dir = '/jdots';		// we are packaged as an application
+	}
+
+	/**
+	 * Link url generator
+	 *
+	 * @param string	$string	The url the link is for
+	 * @param string/array	$extravars	Extra params to be passed to the url
+	 * @return string	The full url after processing
+	 */
+	static function link($url = '', $extravars = '')
+	{
+		return parent::link($url,$extravars);
+	}
+
+	/**
+	 * Redirects direct to a generated link
+	 *
+	 * @param string	$string	The url the link is for
+	 * @param string/array	$extravars	Extra params to be passed to the url
+	 */
+	static function redirect_link($url = '',$extravars='')
+	{
+		egw::redirect(parent::link($url, $extravars));
+	}
+
+	/**
+	 * Returns the html-header incl. the opening body tag
+	 *
+	 * @return string with html
+	 */
+	function header()
+	{
+		// make sure header is output only once
+		if (self::$header_done) return '';
+		self::$header_done = true;
+
+		// add a content-type header to overwrite an existing default charset in apache (AddDefaultCharset directiv)
+		header('Content-type: text/html; charset='.translation::charset());
+
+		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
+		$content = ob_get_contents();
+		ob_end_clean();
+
+		// the instanciation of the template has to be here and not in the constructor,
+		// as the old Template class has problems if restored from the session (php-restore)
+		// todo: check if this is still true
+		$this->tpl = new Template(common::get_tpl_dir('jdots'));
+		$this->tpl->set_file(array('_head' => 'head.tpl'));
+		$this->tpl->set_block('_head','head');
+		$this->tpl->set_block('_head','framework');
+		
+		// include needed javascript files
+		$js = $GLOBALS['egw']->js;
+		$js->validate_file('.','egw_fw','jdots');
+		$js->validate_file('.','egw_fw_ui','jdots');
+		$js->validate_file('.','egw_fw_classes','jdots');
+		$js->validate_file('jquery','jquery');
+		$js->validate_file('jquery','jquery-ui');
+		$js->validate_file('.','egw_json');
+	
+		$this->tpl->set_var($vars = $this->_get_header());
+
+		$content .= $this->tpl->fp('out','head').$content;
+		
+		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
+		{
+			return $content;
+		}
+		// add framework div's
+		$content .= $this->tpl->fp('out','framework');
+		$content .= self::footer();
+		
+		echo $content;
+		common::egw_exit();
+	}
+
+	/**
+	* Returns the html from the body-tag til the main application area (incl. opening div tag)
+	*
+	* @return string with html
+	*/
+	function navbar()
+	{
+		if (self::$navbar_done) return '';
+		self::$navbar_done = true;
+
+		return ""; //"<h1>Navbar</h1>";
+	}
+
+	/**
+	* displays a login screen
+	*
+	* @param string $extra_vars for login url
+	*/
+	function login_screen($extra_vars)
+	{
+		_debug_array($extra_vars);
+	}
+
+	/**
+	* displays a login denied message
+	*/
+	function denylogin_screen()
+	{
+		return "Login not possible";
+	}
+
+	/**
+	 * Array containing sidebox menus by applications and menu-name
+	 * 
+	 * @var array
+	 */
+	private $sideboxes;
+
+	/**
+	 * Callback for sideboxes hooks, collects the data in a private var
+	 *
+	 * @param string $appname
+	 * @param string $menu_title
+	 * @param array $file
+	 */
+	public function sidebox($appname,$menu_title,$file)
+	{
+		$this->sideboxes[$appname][$menu_title] = $file;
+	}
+
+	public function get_sidebox($appname)
+	{
+		if (!isset($this->sideboxes[$appname]))
+		{
+			// allow other apps to hook into sidebox menu of an app, hook-name: sidebox_$appname
+			$GLOBALS['egw']->hooks->process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
+			// calling the old hook
+			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
+		}
+
+		//If there still is no sidebox content, return null here
+		if (!isset($this->sideboxes[$appname]))
+		{
+			return null;
+		}
+
+		$data = array();
+		foreach($this->sideboxes[$appname] as $menu_name => &$file)
+		{
+			$current_menu = array(
+				'menu_name' => $menu_name,
+				'entries' => array(),
+			);
+
+			foreach($file as $item_text => $item_link)
+			{
+				if($item_text === '_NewLine_' || $item_link === '_NewLine_')
+				{
+					continue;
+				}
+				if (strtolower($item_text) == 'grant access' && $GLOBALS['egw_info']['server']['deny_user_grants_access'])
+				{
+					continue;
+				}
+		
+				$var = array();
+				$var['icon_or_star'] = $GLOBALS['egw_info']['server']['webserver_url'] . '/phpgwapi/templates/'.$this->template.'/images'.'/orange-ball.png';
+				$var['target'] = '';
+				if(is_array($item_link))
+				{
+					if(isset($item_link['icon']))
+					{
+						$app = isset($item_link['app']) ? $item_link['app'] : $appname;
+						$var['icon_or_star'] = $item_link['icon'] ? common::image($app,$item_link['icon']) : False;
+					}
+					$var['lang_item'] = isset($item_link['no_lang']) && $item_link['no_lang'] ? $item_link['text'] : lang($item_link['text']);
+					$var['item_link'] = $item_link['link'];
+					if ($item_link['target'])
+					{
+						if (strpos($item_link['target'], 'target=') !== false)
+						{
+							$var['target'] = $item_link['target'];
+						}
+						else
+						{
+							$var['target'] = ' target="' . $item_link['target'] . '"';
+						}
+					}
+				}
+				else
+				{
+					$var['lang_item'] = lang($item_text);
+					$var['item_link'] = $item_link;
+				}
+				$current_menu['entries'][] = $var;
+			}
+
+			$data[] = $current_menu;
+		}
+
+		return $data;
+	}
+	
+	/**
+	 * Return sidebox data for an application
+	 * 
+	 * @param $appname
+	 * @return array menu-name => array(	menu-name is already translated
+	 *		array(
+	 *			'lang_item' => translated menu item or html, i item_link === false
+	 * 			'icon_or_star' => url of bullet images, or false for none
+	 *  		'item_link' => url or false (lang_item contains complete html)
+	 *  		'target' => target attribute fragment, ' target="..."' 
+	 *		),
+	 * 	)
+	 */
+	public function ajax_sidebox($appname)
+	{
+		$response = egw_json_response::get();
+		$response->data($this->get_sidebox($appname));
+	}
+
+	/**
+	 * Prepare an array with apps used to render the navbar
+	 * 
+	 * @return array of array(
+	 *  'name'  => app / directory name
+	 * 	'title' => translated application title
+	 *  'url'   => url to call for index
+	 *  'icon'  => icon name
+	 *  'icon_app' => application of icon
+	 *  'icon_hover' => hover-icon, if used by template
+	 *  'target'=> ' target="..."' attribute fragment to open url in target, popup or ''
+	 * )
+	 */
+	public function ajax_navbar_apps()
+	{
+		$apps = parent::_get_navbar_apps();
+		unset($apps['logout']);
+		unset($apps['about']);
+		unset($apps['preferences']);
+		
+		if (!($default_app = $GLOBALS['egw_info']['user']['preferences']['common']['default_app']))
+		{
+			$default_app = 'home';
+		}
+		if (isset($apps[$default_app]))
+		{
+			$apps[$default_app]['isDefault'] = true;
+		}
+		$response = egw_json_response::get();
+		$response->data(array_values($apps));
+	}
+	
+	/**
+	 * Returns the html from the closing div of the main application area to the closing html-tag
+	 *
+	 * @return string
+	 */
+	function footer()
+	{
+		$script = '';
+		//Set the sidebox content
+		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
+		{
+			$app = $GLOBALS['egw_info']['flags']['currentapp'];
+			$content = json_encode($this->get_sidebox($app));
+			$md5 = md5($content);
+			$script .= 
+				"<script type=\"text/javascript\">\n".
+				"	if (typeof window.parent.framework != \"undefined\")\n".
+				"	{\n".
+				"		var app = window.parent.framework.getApplicationByName('$app');\n".
+				"		window.parent.framework.setSidebox(app, $content, '$md5');\n".
+				"	}\n".
+				"</script>\n";
+		}
+		return $script."</body>\n</html>\n";
+	}
+}
