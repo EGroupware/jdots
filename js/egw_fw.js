@@ -245,6 +245,10 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				if (catContent != '')
 				{
 					var categoryUi = new egw_fw_ui_category(contDiv, _data[i].menu_name, catContent);
+					if (_data[i].opened)
+					{
+						categoryUi.open();
+					}
 				}
 			}
 			_app.sidemenuEntry.setContent(contDiv);
