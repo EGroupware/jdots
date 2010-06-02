@@ -40,7 +40,10 @@
 			</div> 
 			<div id="egw_fw_main"> 
 				<div id="egw_fw_tabs" /> 
-			</div> 
+			</div>
+			<div id="egw_footer">
+				{}
+			</div>
 		</div> 
  
 		<script type="text/javascript"> 
