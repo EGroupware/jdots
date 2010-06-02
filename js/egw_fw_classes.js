@@ -26,6 +26,7 @@ function egw_fw_class_application(_parentFw, _appName, _displayName, _icon, _exe
 	this.hasSideboxMenuContent = false;
 	this.sidemenuEntry = null;
 	this.tab = null;
+	this.iframe = null;
 }
 
 /*----------------------------

@@ -61,6 +61,7 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 	{
 		tabsUi.removeTab(this);
 		app.tab = null;
+		app.iframe = null;
 
 		//Activate the new application in the sidebar menu
 		app.parentFw.sidemenuUi.open(tabsUi.activeTab.tag.sidemenuEntry);
@@ -89,28 +90,42 @@ egw_fw.prototype.tabClickCallback = function(_sender)
  */
 egw_fw.prototype.applicationClickCallback = function(_sender)
 {
-	if (this.tag.hasSideboxMenuContent)
+	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.execName, true);
+}
+
+egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
+{
+	//Create the tab if it isn't already there
+	if ((_app.iframe == null) || (_app.tab == null))
 	{
-		this.parent.open(this);
+		_app.iframe = document.createElement('iframe');
+		_app.iframe.style.width = "100%";
+		_app.iframe.style.height = "600px";
+		_app.iframe.style.borderWidth = 0;
+
+		_app.tab = this.tabsUi.addTab(_app.icon, this.tabClickCallback, this.tabCloseClickCallback,
+			_app);
+		_app.tab.setTitle(_app.displayName);
+		_app.tab.setContent(_app.iframe);
+		
+		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
 	}
 
-	//If the application this sidemenu entry belongs to doesn't have a tab now,
-	//create one
-	if (this.tag.tab == null)
+	//Set the iframe location
+	_app.iframe.src = _url;
+	document.title = _url;
+
+	if (_showtab)
 	{
-		this.tag.tab = this.tag.parentFw.tabsUi.addTab(this.tag.icon,
-			this.tag.parentFw.tabClickCallback, this.tag.parentFw.tabCloseClickCallback,
-			this.tag);
-		this.tag.tab.setContent("<iframe src=\"" + this.tag.execName +  
-			"\" style=\"width:100%; height:700px; border:none;\"></iframe>");
-		this.tag.tab.setTitle(this.tag.displayName);
+		//Show the tab
+		this.tabsUi.showTab(_app.tab);
 
-		//Display the close buttons if one than more tab is visible
-		this.tag.tab.parent.setCloseable(this.tag.tab.parent.tabs.length > 1);
+		//Open the sidemenu entry content
+		if (_app.hasSideboxMenuContent)
+		{
+			_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
+		}
 	}
-
-	//Show the tab belonging to the application
-	this.tag.tab.parent.showTab(this.tag.tab);
 }
 
 /**
@@ -233,10 +248,28 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 	}
 }
 
-/*egw_fw.prototype.link*/
+egw_fw.prototype.linkHandler = function(_link, _app)
+{
+	var app = this.getApplicationByName(_app);
+	if (app != null)
+	{
+		this.applicationTabNavigate(app, _link, true);
+	}
+}
 
 window.egw_link_handler = function(_link, _app)
 {
-	alert('LINK: ' + _link + ' APP: ' + _app);
+	if (typeof window.framework != "undefined")
+	{
+		window.framework.linkHandler(_link, _app);
+	}
+	else if (typeof window.parent.framework != "undefined")
+	{
+		window.parent.framework.linkHandler(_link, _app);
+	}
+	else
+	{
+		window.location = _link;
+	}
 }
 
