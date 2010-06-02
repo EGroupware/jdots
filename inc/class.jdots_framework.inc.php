@@ -47,21 +47,40 @@ class jdots_framework extends egw_framework
 		
 		$this->template_dir = '/jdots';		// we are packaged as an application
 	}
+	
+	/**
+	 * Extract applicaton name from given url (incl. GET parameters)
+	 * 
+	 * @param string $url
+	 * @return string appname or NULL if it could not be detected (eg. constructing javascript urls)
+	 */
+	public static function app_from_url($url)
+	{
+		if (preg_match('/menuaction=([a-z0-9_-]+)\./i',$url,$matches))
+		{
+			return $matches[1];
+		}
+		if (preg_match('/\/([^\/]+)\/([^\/]+\.php)?(\?|\/|$)/',$url,$matches))
+		{
+			return $matches[1];
+		}
+		//error_log(__METHOD__."('$url') could NOT detect application!");
+		return null;
+	}
 
 	/**
 	 * Link url generator
 	 *
 	 * @param string	$string	The url the link is for
-	 * @param string/array	$extravars	Extra params to be passed to the url
+	 * @param string|array	$extravars	Extra params to be passed to the url
 	 * @return string	The full url after processing
 	 */
 	static function link($url = '', $extravars = '')
 	{
 		$link = parent::link($url,$extravars);
-		if (!self::$raw_links)
+		if (!self::$raw_links && ($app = self::app_from_url($link)))
 		{
-			$app = 'home';
-			$link = "javascript:window.egw_link_handler('".$link."', '$app');";
+			$link = "javascript:window.egw_link_handler('$link', '$app');";
 		}
 		return $link;		
 	}
@@ -70,7 +89,7 @@ class jdots_framework extends egw_framework
 	 * Redirects direct to a generated link
 	 *
 	 * @param string	$string	The url the link is for
-	 * @param string/array	$extravars	Extra params to be passed to the url
+	 * @param string|array	$extravars	Extra params to be passed to the url
 	 */
 	static function redirect_link($url = '',$extravars='')
 	{
