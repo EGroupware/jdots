@@ -24,11 +24,12 @@ class jdots_framework extends egw_framework
 	var $topmenu_icon_arr = array();
 
 	/**
-	 * Whether unprocessed (without link_handler calls) links should be returned by the "link" function
+	 * Whether javascript:egw_link_handler calls (including given app) should be returned by the "link" function
+	 * or just the link
 	 * 
-	 * @var boolean
+	 * @var string
 	 */
-	private static $raw_links = true;
+	private static $link_app;
 
 	/**
 	* Contains array of information for additional topmenu items added
@@ -79,7 +80,8 @@ class jdots_framework extends egw_framework
 	static function link($url = '', $extravars = '')
 	{
 		$link = parent::link($url,$extravars);
-		if (!self::$raw_links && ($app = self::app_from_url($link)))
+		// self::$link_app === true --> detect application, otherwise use given application
+		if (self::$link_app && ($app = is_string(self::$link_app) ? self::$link_app : self::app_from_url($link)))
 		{
 			$link = "javascript:window.egw_link_handler('$link', '$app');";
 		}
@@ -187,6 +189,13 @@ class jdots_framework extends egw_framework
 	private $sideboxes;
 
 	/**
+	 * Should calls the first call to self::sidebox create an opened menu
+	 * 
+	 * @var boolean
+	 */
+	private $sidebox_menu_opened = true;
+
+	/**
 	 * Callback for sideboxes hooks, collects the data in a private var
 	 *
 	 * @param string $appname
@@ -195,6 +204,9 @@ class jdots_framework extends egw_framework
 	 */
 	public function sidebox($appname,$menu_title,$file)
 	{
+		if (!isset($file['menuOpened'])) $file['menuOpened'] = (boolean)$this->sidebox_menu_opened;
+		$this->sidebox_menu_opened = false;
+
 		$this->sideboxes[$appname][$menu_title] = $file;
 	}
 
@@ -202,12 +214,15 @@ class jdots_framework extends egw_framework
 	{
 		if (!isset($this->sideboxes[$appname]))
 		{
-			self::$raw_links = false;
+			self::$link_app = $appname;
 			// allow other apps to hook into sidebox menu of an app, hook-name: sidebox_$appname
+			$this->sidebox_menu_opened = true;
 			$GLOBALS['egw']->hooks->process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
+			
 			// calling the old hook
+			$this->sidebox_menu_opened = true;
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
-			self::$raw_links = true;
+			self::$link_app = null;
 		}
 
 		//If there still is no sidebox content, return null here
@@ -222,7 +237,9 @@ class jdots_framework extends egw_framework
 			$current_menu = array(
 				'menu_name' => $menu_name,
 				'entries' => array(),
+				'opened' => (boolean)$file['menuOpened'],
 			);
+			unset($file['menuOpened']);
 
 			foreach($file as $item_text => $item_link)
 			{
