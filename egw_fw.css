@@ -59,7 +59,7 @@ body {
 }
 
 #egw_fw_topbar li {
-	background-image: url(images/orange-ball.png);
+	background-image: url(images/bullet.png);
 	background-repeat: no-repeat;
 	background-position: left center;	
 	padding-left: 12px;
@@ -76,13 +76,13 @@ body {
 }
 
 #egw_fw_tabs {
-	margin: 5px 5px 5px 220px;	
+	margin: 5px 5px 5px 230px;	
 /*	background-color: RGB(128, 128, 128);		*/
 }
 
 .egw_fw_ui_sidemenu_entry_header {
 	display: block;
-	width: 180px;
+	width: 200px;
 	height: 20px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
@@ -113,7 +113,7 @@ body {
 }
 
 .egw_fw_ui_sidemenu_entry_content {
-	width: 180px;
+	width: 200px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
 	border-width: 0px 1px 0px 1px;
@@ -285,6 +285,7 @@ body {
 }
 
 .egw_fw_ui_sidemenu_listitem {
+	width: 185px;	/* minimum width */
 	padding-left: 16px;
 	background-repeat: no-repeat;
 	background-position: left center;
