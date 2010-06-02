@@ -24,6 +24,12 @@ class jdots_framework extends egw_framework
 	var $topmenu_icon_arr = array();
 
 	/**
+	 * Whether unprocessed links should be returned by the "link" function
+	 * @var boolean
+	 */
+	private static $raw_links = false;
+
+	/**
 	* Contains array of information for additional topmenu items added
 	* by hooks
 	*/
@@ -51,8 +57,13 @@ class jdots_framework extends egw_framework
 	 */
 	static function link($url = '', $extravars = '')
 	{
-		$app = 'home';
-		return 'javascript:egw_link('.parent::link($url,$extravars).', '.$app.');';
+		$link = parent::link($url,$extravars);
+		if (!self::$raw_links)
+		{
+			$app = 'home';
+			$link = "javascript:window.egw_link_handler('".$link."', '$app');";
+		}
+		return $link;		
 	}
 
 	/**
@@ -274,7 +285,10 @@ class jdots_framework extends egw_framework
 	 */
 	public function ajax_navbar_apps()
 	{
+		self::$raw_links = true;
 		$apps = parent::_get_navbar_apps();
+		self::$raw_links = false;
+
 		unset($apps['logout']);
 		unset($apps['about']);
 		unset($apps['preferences']);

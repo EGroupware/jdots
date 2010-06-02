@@ -101,8 +101,7 @@ egw_fw.prototype.applicationClickCallback = function(_sender)
 		this.tag.tab = this.tag.parentFw.tabsUi.addTab(this.tag.icon,
 			this.tag.parentFw.tabClickCallback, this.tag.parentFw.tabCloseClickCallback,
 			this.tag);
-		this.tag.tab.setContent("<iframe src=\"" + this.tag.execName + 
-			(this.tag.execName.indexOf('?') >= 0 ? '&' : '?') + 'framecontent=1' + 
+		this.tag.tab.setContent("<iframe src=\"" + this.tag.execName +  
 			"\" style=\"width:100%; height:700px; border:none;\"></iframe>");
 		this.tag.tab.setTitle(this.tag.displayName);
 
@@ -236,7 +235,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 
 /*egw_fw.prototype.link*/
 
-function egw_link(_link, _app)
+window.egw_link_handler = function(_link, _app)
 {
 	alert('LINK: ' + _link + ' APP: ' + _app);
 }
