@@ -15,8 +15,8 @@ $GLOBALS['egw_info']['template']['jdots']['title']     = 'jDots';
 $GLOBALS['egw_info']['template']['jdots']['version']   = '1.0';
 
 $GLOBALS['egw_info']['template']['jdots']['author'] = 'Andreas Stoeckel';
-$GLOBALS['egw_info']['template']['jdots']['windowed'] = False;
-$GLOBALS['egw_info']['template']['jdots']['icon'] = "phpgwapi/templates/jdots/images/idots-logo.png";
+$GLOBALS['egw_info']['template']['jdots']['license'] = 'EPL';
+$GLOBALS['egw_info']['template']['jdots']['icon'] = "jdots/images/jdots-logo.png";
 $GLOBALS['egw_info']['template']['jdots']['maintainer'] = array(
    array('name' => 'Andreas Stoeckel', 'email' => 'as@stylite.de')
 );

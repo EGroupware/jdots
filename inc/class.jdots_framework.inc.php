@@ -85,7 +85,7 @@ class jdots_framework extends egw_framework
 		// $link_app === true --> detect application, otherwise use given application
 		if ($link_app && (is_string($link_app) || ($link_app = self::app_from_url($link))))
 		{
-			$link = "javascript:window.egw_link_handler('$link', '$link_app');";
+			$link = "javascript:egw_link_handler('$link','$link_app');";
 		}
 		return $link;		
 	}
@@ -145,7 +145,15 @@ class jdots_framework extends egw_framework
 	
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
-
+		$this->tpl->set_var($this->_get_navbar());
+		
+		$this->tpl->set_var(array(
+			'home_title' => $GLOBALS['egw_info']['apps']['home']['title'],
+			'manual_title' => $GLOBALS['egw_info']['apps']['manual']['title'],
+			'preferences_title' => $GLOBALS['egw_info']['apps']['preferences']['title'],
+			'logout_title' => lang('Logout'),
+		));
+		
 		$content .= $this->tpl->fp('out','head').$content;
 		
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
@@ -153,6 +161,7 @@ class jdots_framework extends egw_framework
 			return $content;
 		}
 		// add framework div's
+		$this->tpl->set_var($this->_get_footer());
 		$content .= $this->tpl->fp('out','framework');
 		$content .= self::footer();
 		
@@ -373,6 +382,8 @@ class jdots_framework extends egw_framework
 	 */
 	function footer()
 	{
+		$vars = $this->_get_footer();
+
 		$script = '';
 		//Set the sidebox content
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')

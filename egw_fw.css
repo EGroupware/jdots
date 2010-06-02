@@ -29,16 +29,29 @@ body {
 #egw_fw_sidebar {
 	float: left;
 	padding: 4px;
+	padding-top: 0px;
 	width: 200px;
 	height: 100%;
 }
 
-#egw_fw_logo {
+#divLogo {
 	display: block;
-	height: 50px;
-	background-image: url(images/logo.png);
-	background-repeat: no-repeat;
-	background-position: center;
+	height: 42px;
+	position: relative;
+	text-align: center;
+	padding-left: 12px;
+	width: 200px;
+}
+
+#divLogo img {
+	height: 48px;
+	border: none;
+}
+
+#egw_footer {
+	padding-left: 225px;
+	right: 0;
+	text-align: center;
 }
 
 #egw_fw_sidemenu {
@@ -50,6 +63,7 @@ body {
 	text-align: right;
 	padding-top: 5px;
 	padding-bottom: 5px;
+	height: 12px;
 }
 
 #egw_fw_topbar ul, #egw_fw_topbar li {
