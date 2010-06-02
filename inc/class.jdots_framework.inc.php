@@ -75,15 +75,17 @@ class jdots_framework extends egw_framework
 	 *
 	 * @param string	$string	The url the link is for
 	 * @param string|array	$extravars	Extra params to be passed to the url
+	 * @param string $link_app=null if appname or true, some templates generate a special link-handler url
 	 * @return string	The full url after processing
 	 */
-	static function link($url = '', $extravars = '')
+	static function link($url = '', $extravars = '', $link_app=null)
 	{
+		if (is_null($link_app)) $link_app = self::$link_app;
 		$link = parent::link($url,$extravars);
-		// self::$link_app === true --> detect application, otherwise use given application
-		if (self::$link_app && ($app = is_string(self::$link_app) ? self::$link_app : self::app_from_url($link)))
+		// $link_app === true --> detect application, otherwise use given application
+		if ($link_app && (is_string($link_app) || ($link_app = self::app_from_url($link))))
 		{
-			$link = "javascript:window.egw_link_handler('$link', '$app');";
+			$link = "javascript:window.egw_link_handler('$link', '$link_app');";
 		}
 		return $link;		
 	}
