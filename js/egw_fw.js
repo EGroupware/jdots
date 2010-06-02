@@ -238,8 +238,8 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					}
 					else
 					{					
-						catContent += '<li><a href="' + _data[i].entries[j].item_link + 
-							'">' + _data[i].entries[j].lang_item + '</a></li>';
+						catContent += '<div class="egw_fw_ui_sidemenu_listitem" style="background-image:url(' + _data[i].entries[j].icon_or_star + ')"><a href="' + _data[i].entries[j].item_link + 
+							'">' + _data[i].entries[j].lang_item + '</a></div>';
 					}
 				}
 				if (catContent != '')

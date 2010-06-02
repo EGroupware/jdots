@@ -280,6 +280,12 @@ body {
 
 .egw_fw_ui_category_content {
 	margin-left: 18px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding-top: 0px;
+	padding-bottom: 5px;
+}
+
+.egw_fw_ui_sidemenu_listitem {
+	padding-left: 10px;
+	background-repeat: no-repeat;
+	background-position: left center;
 }
