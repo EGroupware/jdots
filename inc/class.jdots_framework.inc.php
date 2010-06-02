@@ -24,10 +24,11 @@ class jdots_framework extends egw_framework
 	var $topmenu_icon_arr = array();
 
 	/**
-	 * Whether unprocessed links should be returned by the "link" function
+	 * Whether unprocessed (without link_handler calls) links should be returned by the "link" function
+	 * 
 	 * @var boolean
 	 */
-	private static $raw_links = false;
+	private static $raw_links = true;
 
 	/**
 	* Contains array of information for additional topmenu items added
@@ -201,10 +202,12 @@ class jdots_framework extends egw_framework
 	{
 		if (!isset($this->sideboxes[$appname]))
 		{
+			self::$raw_links = false;
 			// allow other apps to hook into sidebox menu of an app, hook-name: sidebox_$appname
 			$GLOBALS['egw']->hooks->process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
 			// calling the old hook
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
+			self::$raw_links = true;
 		}
 
 		//If there still is no sidebox content, return null here
@@ -304,14 +307,12 @@ class jdots_framework extends egw_framework
 	 */
 	public function ajax_navbar_apps()
 	{
-		self::$raw_links = true;
 		$apps = parent::_get_navbar_apps();
-		self::$raw_links = false;
 
 		unset($apps['logout']);	// never display it
 		if (isset($apps['about'])) $apps['about']['noNavbar'] = true;
-		if (isset($apps['preferences'])) $apps['about']['noNavbar'] = true;
-		if (isset($apps['manual'])) $apps['about']['noNavbar'] = true;
+		if (isset($apps['preferences'])) $apps['preferences']['noNavbar'] = true;
+		if (isset($apps['manual'])) $apps['manual']['noNavbar'] = true;
 
 		if (!($default_app = $GLOBALS['egw_info']['user']['preferences']['common']['default_app']))
 		{
