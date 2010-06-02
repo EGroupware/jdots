@@ -288,4 +288,7 @@ body {
 	padding-left: 15px;
 	background-repeat: no-repeat;
 	background-position: left center;
+	background-size: auto 12px;
+	-moz-background-size: auto 12px;
+	-webkit-background-size: auto 12px;
 }

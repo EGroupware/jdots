@@ -253,7 +253,7 @@ class jdots_framework extends egw_framework
 				}
 		
 				$var = array();
-				$var['icon_or_star'] = $GLOBALS['egw_info']['server']['webserver_url'] . '/phpgwapi/templates/'.$this->template.'/images'.'/orange-ball.png';
+				$var['icon_or_star'] = $GLOBALS['egw_info']['server']['webserver_url'] . $this->template_dir.'/images/bullet.png';
 				$var['target'] = '';
 				if(is_array($item_link))
 				{
