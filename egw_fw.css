@@ -279,16 +279,17 @@ body {
 }
 
 .egw_fw_ui_category_content {
-	margin-left: 4px;
+	margin-left: 2px;
 	padding-top: 0px;
 	padding-bottom: 5px;
 }
 
 .egw_fw_ui_sidemenu_listitem {
-	padding-left: 15px;
+	padding-left: 16px;
 	background-repeat: no-repeat;
 	background-position: left center;
 	background-size: auto 12px;
 	-moz-background-size: auto 12px;
 	-webkit-background-size: auto 12px;
+	position: relative;
 }

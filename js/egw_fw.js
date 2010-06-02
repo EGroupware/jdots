@@ -232,15 +232,24 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				var catContent = '';
 				for (var j = 0; j < _data[i].entries.length; j++)
 				{
+					if (_data[i].entries[j].icon_or_star)
+					{
+						catContent += '<div class="egw_fw_ui_sidemenu_listitem" style="background-image:url(' + _data[i].entries[j].icon_or_star + ')">';
+					}
 					if (_data[i].entries[j].item_link == '')
 					{
 						catContent += _data[i].entries[j].lang_item;
 					}
 					else
 					{					
-						catContent += '<div class="egw_fw_ui_sidemenu_listitem" style="background-image:url(' + _data[i].entries[j].icon_or_star + ')"><a href="' + _data[i].entries[j].item_link + 
-							'">' + _data[i].entries[j].lang_item + '</a></div>';
+						catContent += '<a href="' + _data[i].entries[j].item_link + 
+							'">' + _data[i].entries[j].lang_item + '</a>';
 					}
+					if (_data[i].entries[j].icon_or_star)
+					{
+						catContent += '</div>';
+					}
+					
 				}
 				if (catContent != '')
 				{
@@ -252,6 +261,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				}
 			}
 			_app.sidemenuEntry.setContent(contDiv);
+			_app.sidebox_md5 = _md5;
 		}
 
 		_app.hasSideboxMenuContent = true;

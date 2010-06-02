@@ -210,7 +210,28 @@ class jdots_framework extends egw_framework
 		$this->sideboxes[$appname][$menu_title] = $file;
 	}
 
-	public function get_sidebox($appname)
+	/**
+	 * Return sidebox data for an application
+	 * 
+	 * @param $appname
+	 * @return array of array(
+	 * 		'menu_name' => (string),	// translated title to display
+	 * 		'opened'    => (boolean),	// menu opend or closed
+	 *  	'entries'   => array(
+	 *			array(
+	 *				'lang_item' => translated menu item or html, i item_link === false
+	 * 				'icon_or_star' => url of bullet images, or false for none
+	 *  			'item_link' => url or false (lang_item contains complete html)
+	 *  			'target' => target attribute fragment, ' target="..."' 
+	 *			),
+	 *			// more entries
+	 *		),
+	 * 	),
+	 *	array (
+	 *		// next menu
+	 *	)
+	 */
+		public function get_sidebox($appname)
 	{
 		if (!isset($this->sideboxes[$appname]))
 		{
@@ -283,25 +304,17 @@ class jdots_framework extends egw_framework
 				}
 				$current_menu['entries'][] = $var;
 			}
-
 			$data[] = $current_menu;
 		}
-
 		return $data;
 	}
 	
 	/**
 	 * Return sidebox data for an application
 	 * 
+	 * Format see get_sidebox()
+	 * 
 	 * @param $appname
-	 * @return array menu-name => array(	menu-name is already translated
-	 *		array(
-	 *			'lang_item' => translated menu item or html, i item_link === false
-	 * 			'icon_or_star' => url of bullet images, or false for none
-	 *  		'item_link' => url or false (lang_item contains complete html)
-	 *  		'target' => target attribute fragment, ' target="..."' 
-	 *		),
-	 * 	)
 	 */
 	public function ajax_sidebox($appname)
 	{
