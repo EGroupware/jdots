@@ -149,21 +149,28 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	var defaultAppEntry = null;
 
 	//Iterate through the application array returned
-	for (i = 0; i < apps.length; i++)
+	for (var i = 0; i < apps.length; i++)
 	{
-		this.applications[i] = new egw_fw_class_application(this, 
-			apps[i].name, apps[i].title, apps[i].icon, apps[i].url);
+		var app = apps[i];
+
+		appData = new egw_fw_class_application(this, 
+			app.name, app.title, app.icon, app.url);
 
 		//Create a sidebox menu entry for each application
-		this.applications[i].sidemenuEntry = this.sidemenuUi.addEntry(
-			this.applications[i].displayName, this.applications[i].icon,
-			this.applicationClickCallback, this.applications[i]);
+		if (!app.noNavbar)
+		{
+			appData.sidemenuEntry = this.sidemenuUi.addEntry(
+				appData.displayName, appData.icon,
+				this.applicationClickCallback, appData);
+		}
 
 		//If this entry is the default entry, show it using the click callback
-		if (apps[i].isDefault && (apps[i].isDefault === true))
+		if (app.isDefault && (app.isDefault === true))
 		{
-			defaultAppEntry = this.applications[i].sidemenuEntry;
+			defaultAppEntry = appData.sidemenuEntry;
 		}
+
+		this.applications[this.applications.length] = appData;
 	}
 
 	if (defaultAppEntry)
