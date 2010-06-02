@@ -3,7 +3,7 @@
  * Stylite: jdots template
  *
  * @link http://www.stylite.de
- * @package stylite
+ * @package jdots
  * @author Andreas Stöckel <as@stylite.de>
  * @author Ralf Becker <rb@stylite.de>
  * @author Nathan Gray <ng@stylite.de>
