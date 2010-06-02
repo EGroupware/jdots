@@ -103,8 +103,8 @@ body {
 	-moz-border-radius-topleft: 5px;
 	-webkit-border-top-left-radius:5px;
 	border-width: 1px 1px 0px 1px !important;
-	background-image:none;
-	background-color:white;
+	background-image:url(images/tabs_bg_hover.png);
+	/*background-color:white;*/
 }
 
 .egw_fw_ui_sidemenu_entry_header:hover {
@@ -216,6 +216,9 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	float: left;
+	background-size: auto 16px;
+	-moz-background-size: auto 16px;
+	-webkit-background-size: auto 16px;
 }
 
 .egw_fw_ui_tab_close_button {
@@ -241,4 +244,42 @@ body {
 	padding: 5px 5px 0px 5px;
 	background-image:url(images/header_tabs_bg.png);
 	background-repeat:repeat-x;
+}
+
+.egw_fw_ui_category {
+	margin: 0px;
+	padding: 0px;
+	color: RGB(0, 0, 0);
+	cursor: pointer;
+}
+
+.egw_fw_ui_category:hover {
+	color: RGB(64, 64, 64);
+}
+
+.egw_fw_ui_category h1 {
+	margin: 5px 0px 5px 0px;
+	padding: 0px;
+	font-size: 9pt;
+}
+
+.egw_fw_ui_category_arrow {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin: 0px 5px 0px 5px;
+	background-image:url(images/arrow_left.png);
+	background-repeat:no-repeat;
+	float: left;
+}
+
+.egw_fw_ui_category_active .egw_fw_ui_category_arrow {
+	background-image:url(images/arrow_down.png);
+	background-repeat:no-repeat;		
+}
+
+.egw_fw_ui_category_content {
+	margin-left: 18px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }

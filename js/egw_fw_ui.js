@@ -401,10 +401,10 @@ function egw_fw_ui_tabs(_contDiv)
  */
 egw_fw_ui_tabs.prototype.cleanHistory = function()
 {
-	for (var i = this.tabHistory.length - 1; i > 0; i--)
+	for (var i = this.tabHistory.length - 1; i >= 0; i--)
 	{
 		if (this.tabHistory[i] == this.tabHistory[i - 1])
-			delete this.tabHistory[i];
+			this.tabHistory[i].remove(i);
 	}
 }
 
@@ -537,30 +537,70 @@ egw_fw_ui_tabs.prototype.clean = function()
 
 
 /**
- * Class: egw_fw_ui_category_menu
+ * Class: egw_fw_ui_category
  * A class which manages and renderes a simple menu with categories, which can be opened and shown
  */
 
-egw_fw_ui_category_menu = function(_contDiv)
+
+function egw_fw_ui_category(_contDiv, _name, _content)
 {
+	//Copy the parameters
 	this.contDiv = _contDiv;
+	this.catName = _name;
 
-	this.categories = new Array();
+	//Create the ui divs
+	this.headerDiv = document.createElement('div');
+	$(this.headerDiv).addClass('egw_fw_ui_category');
+	
+	//Add the left arrow
+	var arrowImg = document.createElement('span');
+	$(arrowImg).addClass('egw_fw_ui_category_arrow');
+	$(this.headerDiv).append(arrowImg);
+
+	//Add the text	
+	var entryH1 = document.createElement('h1');
+	$(entryH1).append(_name);
+	$(this.headerDiv).append(entryH1);
+
+	//Add the content
+	this.contentDiv = document.createElement('div');
+	$(this.contentDiv).addClass('egw_fw_ui_category_content');
+	$(this.contentDiv).append(_content);
+	$(this.contentDiv).hide();
+
+	//Add content and header to the content div, add some magic jQuery code in order to make it foldable
+	this.headerDiv._parent = this;
+	$(this.headerDiv).click(
+		function() {
+			if (!$(this).hasClass('egw_fw_ui_category_active'))
+			{
+				this._parent.open();
+			}
+			else
+			{
+				this._parent.close();
+			}
+		});
+	$(this.contDiv).append(this.headerDiv);
+	$(this.contDiv).append(this.contentDiv);
 }
 
-egw_fw_ui_category_menu.prototype.addCategory = function()
+egw_fw_ui_category.prototype.open = function()
 {
-//	var category = new
+	$(this.headerDiv).addClass('egw_fw_ui_category_active');
+	$(this.contentDiv).slideDown();
 }
 
-egw_fw_ui_category_menu.prototype.clean = function()
+egw_fw_ui_category.prototype.close = function()
 {
-	//Remove all tabs, clean the tabs array
-/*	for (i = 0; i < this.categories.length; i++)
-	{
-		this.categories[i].remove();
-	}
-
-	//Reset all arrays and references
-	this.categories = new Array();*/
+	$(this.headerDiv).removeClass('egw_fw_ui_category_active');
+	$(this.contentDiv).slideUp();
 }
+
+egw_fw_ui_category.prototype.remove = function()
+{
+	//Delete the content and header div
+	$(this.contDiv).remove();
+	$(this.headerDiv).remove();
+}
+

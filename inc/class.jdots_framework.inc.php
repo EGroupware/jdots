@@ -51,7 +51,8 @@ class jdots_framework extends egw_framework
 	 */
 	static function link($url = '', $extravars = '')
 	{
-		return parent::link($url,$extravars);
+		$app = 'home';
+		return 'javascript:egw_link('.parent::link($url,$extravars).', '.$app.');';
 	}
 
 	/**

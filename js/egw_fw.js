@@ -205,11 +205,39 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 		//Parse the sidebox data
 		if (_data != null)
 		{
-			_app.sidemenuEntry.setContent('Hallo');
+			var contDiv = document.createElement('div');
+			for (var i = 0; i < _data.length; i++)
+			{
+				var catContent = '';
+				for (var j = 0; j < _data[i].entries.length; j++)
+				{
+					if (_data[i].entries[j].item_link == '')
+					{
+						catContent += _data[i].entries[j].lang_item;
+					}
+					else
+					{					
+						catContent += '<li><a href="' + _data[i].entries[j].item_link + 
+							'">' + _data[i].entries[j].lang_item + '</a></li>';
+					}
+				}
+				if (catContent != '')
+				{
+					var categoryUi = new egw_fw_ui_category(contDiv, _data[i].menu_name, catContent);
+				}
+			}
+			_app.sidemenuEntry.setContent(contDiv);
 		}
 
 		_app.hasSideboxMenuContent = true;
 		_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
 	}
+}
+
+/*egw_fw.prototype.link*/
+
+function egw_link(_link, _app)
+{
+	alert('LINK: ' + _link + ' APP: ' + _app);
 }
 
