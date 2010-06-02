@@ -308,10 +308,11 @@ class jdots_framework extends egw_framework
 		$apps = parent::_get_navbar_apps();
 		self::$raw_links = false;
 
-		unset($apps['logout']);
-		unset($apps['about']);
-		unset($apps['preferences']);
-		
+		unset($apps['logout']);	// never display it
+		if (isset($apps['about'])) $apps['about']['noNavbar'] = true;
+		if (isset($apps['preferences'])) $apps['about']['noNavbar'] = true;
+		if (isset($apps['manual'])) $apps['about']['noNavbar'] = true;
+
 		if (!($default_app = $GLOBALS['egw_info']['user']['preferences']['common']['default_app']))
 		{
 			$default_app = 'home';
