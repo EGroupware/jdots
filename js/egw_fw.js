@@ -80,6 +80,7 @@ egw_fw.prototype.tabClickCallback = function(_sender)
 {
 	this.parent.showTab(this);
 	this.tag.sidemenuEntry.parent.open(this.tag.sidemenuEntry);
+	document.title = this.tag.website_title ? this.tag.website_title : this.tag.appName;
 }
 
 /**
@@ -113,7 +114,6 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 
 	//Set the iframe location
 	_app.iframe.src = _url;
-	document.title = _url;
 
 	if (_showtab)
 	{
@@ -267,6 +267,16 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 		_app.hasSideboxMenuContent = true;
 		_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
 	}
+}
+
+/**
+ * Sets the website title of an application
+ * @param object _app the application whose title should be set.
+ * @param string _title title to set
+ */
+egw_fw.prototype.setWebsiteTitle = function(_app,_title)
+{
+	document.title = _app.website_title = _title;
 }
 
 egw_fw.prototype.linkHandler = function(_link, _app)

@@ -36,7 +36,7 @@ class jdots_framework extends egw_framework
 	* by hooks
 	*/
 	private static $hook_items = array();
-
+	
 	/**
 	* Constructor
 	*
@@ -102,6 +102,13 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
+	 * Private var to store website_title between calls of header() and footer()
+	 * 
+	 * @var string
+	 */
+	private $website_title;
+
+	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
 	 * @return string with html
@@ -137,6 +144,7 @@ class jdots_framework extends egw_framework
 		$js->validate_file('.','egw_json');
 	
 		$this->tpl->set_var($vars = $this->_get_header());
+		$this->website_title = $vars['website_title'];
 
 		$content .= $this->tpl->fp('out','head').$content;
 		
@@ -372,15 +380,15 @@ class jdots_framework extends egw_framework
 			$app = $GLOBALS['egw_info']['flags']['currentapp'];
 			$content = json_encode($this->get_sidebox($app));
 			$md5 = md5($content);
-			$script .= 
-				"<script type=\"text/javascript\">\n".
-				"	if (typeof window.parent.framework != \"undefined\")\n".
-				"	{\n".
-				"		var app = window.parent.framework.getApplicationByName('$app');\n".
-				"		window.parent.framework.setSidebox(app, $content, '$md5');\n".
-				"	}\n".
-				"</script>\n";
+			$script .= '<script type="text/javascript">
+	if (typeof window.parent.framework != "undefined")
+	{
+		var app = window.parent.framework.getApplicationByName("'.$app.'");
+		window.parent.framework.setSidebox(app,'.$content.',"'.$md5.'");
+		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($this->website_title).'");
+	}
+</script>';
 		}
-		return $script."</body>\n</html>\n";
+		return $script."\n</body>\n</html>\n";
 	}
 }
