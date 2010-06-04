@@ -149,3 +149,47 @@ a:link, a:visited, select, input, textarea {
 .divLoginboxHeader {
 	background-image: url(../images/gradient22.png);
 }
+/* felamimail uses the styledefinitions below to format navButton/navSeparator */
+tr.navbarBackground {
+	background-color:#dddddd;
+}
+
+div.navButton { 
+	background-color:#dddddd;
+	float:left;
+	padding: 2px;
+	margin: 2px;
+	border: solid #dddddd 1px;
+}
+
+div.navButton:hover, div.navButtonHover { 
+	background-color:#eeeeee;
+	float:left;
+	padding: 2px;
+	margin: 2px;
+	border: solid white 1px;
+	border-right: solid black 1px;
+	border-bottom: solid black 1px;
+	position: relative;
+}
+
+div.navButton:active, div.navButtonActive { 
+	background-color:#dddddd;
+	float:left;
+	padding: 2px;
+	margin: 2px;
+	border: solid white 1px;
+	border-left: solid black 1px;
+	border-top: solid black 1px;
+	position: relative;
+}
+
+div.navSeparator { 
+	background-color:#dddddd;
+	float:left;
+	padding: 0px;
+	margin: 2px;
+	border: solid silver 1px;
+	height:24px;
+	position: relative;
+}
