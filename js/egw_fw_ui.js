@@ -165,6 +165,7 @@ function egw_fw_ui_sidemenu(_baseDiv)
 {
 	this.baseDiv = _baseDiv;
 	this.entries = new Array();
+	this.currentEntry = null;
 }
 
 /**
@@ -200,6 +201,7 @@ egw_fw_ui_sidemenu.prototype.open = function(_entry)
 	}
 
 	_entry.open();
+	this.currentEntry = _entry;
 }
 
 
@@ -214,6 +216,7 @@ egw_fw_ui_sidemenu.prototype.clean = function()
 	}
 
 	this.entries = new Array();
+	this.currentEntry = null;
 }
 
 

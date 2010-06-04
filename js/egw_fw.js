@@ -48,6 +48,9 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 
 	//Register the global alert handler
 	window.egw_alertHandler = this.alertHandler;
+
+	//Override the old egw_openWindowCentered2
+	window.egw_openWindowCentered2 = this.egw_openWindowCentered2;
 }
 
 egw_fw.prototype.alertHandler = function(_message, _details)
@@ -321,9 +324,23 @@ egw_fw.prototype.linkHandler = function(_link, _app)
 	}
 }
 
-egw_fw.prototype.openWindow = function(_url, _windowName, _width, _height, _status)
+egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _height, _status)
 {
-//	var wnd = ;
+	windowWidth = egw_getWindowOuterWidth();
+	windowHeight = egw_getWindowOuterHeight();
+
+	positionLeft = (windowWidth/2)-(_width/2)+egw_getWindowLeft();
+	positionTop  = (windowHeight/2)-(_height/2)+egw_getWindowTop();
+
+	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application	
+	var parentWindow = window;
+	var appEntry = framework.sidemenuUi.currentEntry;
+	if (appEntry != null && appEntry.tag.iframe != null)
+		parentWindow = appEntry.tag.iframe.contentWindow;
+
+	windowID = parentWindow.open(_url, _windowName, "width=" + _width + ",height=" + _height +
+		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
+		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
 }
 
 

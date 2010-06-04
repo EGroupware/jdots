@@ -10,8 +10,8 @@
  */
 
 body {
-	margin: 0px;
-	padding: 0px;
+	margin: 0px !important;
+	padding: 0px !important;
 /*	min-width: 800px;
 	min-height: 600px;*/
 }
@@ -53,10 +53,13 @@ body {
 }
 
 #egw_fw_footer {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
 	text-align: center;
-	margin-top: 5px;
-	padding-top: 5px;
+	padding: 3px;
 	border-top: 1px solid #c6ced6;
+	background-color: #e2e7f0;
 	clear: both;
 	height: 10px;
 }
@@ -103,7 +106,7 @@ body {
 
 .egw_fw_ui_sidemenu_entry_header {
 	display: block;
-	width: 200px;
+	width: 215px;
 	height: 20px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
@@ -134,7 +137,7 @@ body {
 }
 
 .egw_fw_ui_sidemenu_entry_content {
-	width: 200px;
+	width: 215px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
 	border-width: 0px 1px 0px 1px;
