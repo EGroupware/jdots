@@ -51,6 +51,9 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 
 	//Override the old egw_openWindowCentered2
 	window.egw_openWindowCentered2 = this.egw_openWindowCentered2;
+
+	//Override the app_window function
+	window.egw_appWindow = this.egw_appWindow;
 }
 
 egw_fw.prototype.alertHandler = function(_message, _details)
@@ -341,6 +344,17 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	windowID = parentWindow.open(_url, _windowName, "width=" + _width + ",height=" + _height +
 		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
 		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
+}
+
+egw_fw.prototype.egw_appWindow = function(_app)
+{
+	var app = framework.getApplicationByName(_app);
+	var result = null;
+	if (app != null && app.iframe != null)
+	{
+		result = app.iframe.contentWindow;
+	}
+	return result;
 }
 
 
