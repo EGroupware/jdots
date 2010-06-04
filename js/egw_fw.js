@@ -43,6 +43,9 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
 
+	//Register the resize handler
+	$(window).resize(function(){window.framework.resizeHandler()});
+
 	//Register the global alert handler
 	window.egw_alertHandler = this.alertHandler;
 }
@@ -78,6 +81,24 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 	tabsUi.setCloseable(tabsUi.tabs.length > 1);
 }
 
+egw_fw.prototype.resizeHandler = function()
+{
+	for (var i = 0; i < this.applications.length; i++)
+	{
+		if (this.applications[i].iframe != null)
+		{
+			this.applications[i].iframe.style.height = this.getIFrameHeight() + 'px';
+		}
+	}
+}
+
+egw_fw.prototype.getIFrameHeight = function()
+{
+	var height = $(window).height() - (this.tabsUi.contHeaderDiv.offsetTop +
+		this.tabsUi.contHeaderDiv.offsetHeight + 50); /* 50 is the height of the footer */
+	return height;
+}
+
 /**
  * tabClickCallback is used internally by egw_fw in order to handle clicks on
  * a tab.
@@ -107,14 +128,14 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 	//Create the tab if it isn't already there
 	if ((_app.iframe == null) || (_app.tab == null))
 	{
-		_app.iframe = document.createElement('iframe');
-		_app.iframe.style.width = "100%";
-		_app.iframe.style.height = "600px";
-		_app.iframe.style.borderWidth = 0;
-
 		_app.tab = this.tabsUi.addTab(_app.icon, this.tabClickCallback, this.tabCloseClickCallback,
 			_app);
 		_app.tab.setTitle(_app.displayName);
+
+		_app.iframe = document.createElement('iframe');
+		_app.iframe.style.width = "100%";
+		_app.iframe.style.borderWidth = 0;
+		_app.iframe.style.height = this.getIFrameHeight() + 'px';
 		_app.tab.setContent(_app.iframe);
 		
 		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);

@@ -12,26 +12,30 @@
 body {
 	margin: 0px;
 	padding: 0px;
-	min-width: 800px;
-	min-height: 600px;
+/*	min-width: 800px;
+	min-height: 600px;*/
 }
 
 #egw_fw_basecontainer {
 	/*position: fixed;*/
 	width: 100%;
 	height: 100%;
-	min-width: 800px;
-	min-height: 600px;
+/*	min-width: 800px;
+	min-height: 600px;*/
 	font-family: Arial, Helvetica, Sans-Serif;
 	font-size: 8pt;
+	padding: 0px;
+	margin: 0px;
 }
 
 #egw_fw_sidebar {
 	float: left;
 	padding: 4px;
 	padding-top: 0px;
-	width: 200px;
+	width: 235px;
 	height: 100%;
+	position: fixed;
+	overflow: hidden;
 }
 
 #divLogo {
@@ -40,7 +44,7 @@ body {
 	position: relative;
 	text-align: center;
 	padding-left: 12px;
-	width: 200px;
+	width: 220px;
 }
 
 #divLogo img {
@@ -48,10 +52,13 @@ body {
 	border: none;
 }
 
-#egw_footer {
-	padding-left: 225px;
-	right: 0;
+#egw_fw_footer {
 	text-align: center;
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #c6ced6;
+	clear: both;
+	height: 20px;
 }
 
 #egw_fw_sidemenu {
@@ -90,7 +97,7 @@ body {
 }
 
 #egw_fw_tabs {
-	margin: 5px 5px 5px 230px;	
+	margin: 5px 5px 5px 245px;	
 /*	background-color: RGB(128, 128, 128);		*/
 }
 
@@ -299,7 +306,6 @@ body {
 }
 
 .egw_fw_ui_sidemenu_listitem {
-	width: 185px;	/* minimum width */
 	padding-left: 16px;
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -308,3 +314,4 @@ body {
 	-webkit-background-size: auto 12px;
 	position: relative;
 }
+

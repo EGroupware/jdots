@@ -41,8 +41,8 @@
 			<div id="egw_fw_main"> 
 				<div id="egw_fw_tabs" /> 
 			</div>
-			<div id="egw_footer">{powered_by}</div>
 		</div> 
+		<div id="egw_fw_footer">{powered_by}</div>
  
 		<script type="text/javascript"> 
 			var
