@@ -145,7 +145,7 @@ class jdots_framework extends egw_framework
 	
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
-		$this->tpl->set_var($this->_get_navbar());
+		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));
 		
 		$this->tpl->set_var(array(
 			'home_title' => $GLOBALS['egw_info']['apps']['home']['title'],
@@ -250,7 +250,7 @@ class jdots_framework extends egw_framework
 	 *		// next menu
 	 *	)
 	 */
-		public function get_sidebox($appname)
+	public function get_sidebox($appname)
 	{
 		if (!isset($this->sideboxes[$appname]))
 		{
