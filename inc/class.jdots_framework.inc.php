@@ -142,7 +142,7 @@ class jdots_framework extends egw_framework
 		$js->validate_file('jquery','jquery');
 		$js->validate_file('jquery','jquery-ui');
 		$js->validate_file('.','egw_json');
-	
+		
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
 		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));
@@ -326,6 +326,19 @@ class jdots_framework extends egw_framework
 			$data[] = $current_menu;
 		}
 		return $data;
+	}
+	
+	/**
+	 * Ajax callback to store opened/closed status of menu's within one apps sidebox
+	 * 
+	 * @param string $app
+	 * @param string $menu_name
+	 * @param boolean $opened true = user opened menu, false = user closed it
+	 * @todo implement storing and using stored values in get_sidebox
+	 */
+	public function ajax_sidebox_menu_opened($app,$menu_name,$opened)
+	{
+		
 	}
 	
 	/**
