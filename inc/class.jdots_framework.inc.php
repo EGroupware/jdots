@@ -98,7 +98,14 @@ class jdots_framework extends egw_framework
 	 */
 	static function redirect_link($url = '',$extravars='')
 	{
-		egw::redirect(parent::link($url, $extravars));
+		$link = parent::link($url, $extravars);
+		if (strpos($link,'cd=yes') === false && strpos($link,'/login.php') === false)
+		{
+			egw::redirect($link);
+		}
+		// redirect top frame
+		echo "<html>\n<head>\n<script type='text/javascript'>\nalert('Redirecting...');top.location='$link';</script>\n</head>\n</html>\n";
+		common::egw_exit();
 	}
 
 	/**
