@@ -545,11 +545,13 @@ egw_fw_ui_tabs.prototype.clean = function()
  */
 
 
-function egw_fw_ui_category(_contDiv, _name, _content)
+function egw_fw_ui_category(_contDiv, _name, _content, _callback, _tag)
 {
 	//Copy the parameters
 	this.contDiv = _contDiv;
 	this.catName = _name;
+	this.callback = _callback;
+	this.tag = _tag;
 
 	//Create the ui divs
 	this.headerDiv = document.createElement('div');
@@ -590,12 +592,14 @@ function egw_fw_ui_category(_contDiv, _name, _content)
 
 egw_fw_ui_category.prototype.open = function()
 {
+	this.callback.call(this, true);
 	$(this.headerDiv).addClass('egw_fw_ui_category_active');
 	$(this.contentDiv).slideDown();
 }
 
 egw_fw_ui_category.prototype.close = function()
 {
+	this.callback.call(this, false);
 	$(this.headerDiv).removeClass('egw_fw_ui_category_active');
 	$(this.contentDiv).slideUp();
 }

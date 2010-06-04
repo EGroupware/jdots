@@ -35,7 +35,7 @@ body {
 	width: 235px;
 	height: 100%;
 	position: fixed;
-	overflow: hidden;
+/*	overflow: hidden;*/
 }
 
 #divLogo {

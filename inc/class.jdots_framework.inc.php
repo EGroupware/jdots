@@ -142,7 +142,8 @@ class jdots_framework extends egw_framework
 		$js->validate_file('jquery','jquery');
 		$js->validate_file('jquery','jquery-ui');
 		$js->validate_file('.','egw_json');
-		
+
+		$GLOBALS['egw']->jscalendar;
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
 		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));

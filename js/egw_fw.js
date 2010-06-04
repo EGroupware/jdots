@@ -32,6 +32,8 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 	this.sidemenuUi = null;
 	this.tabsUi = null;
 
+	this.categoryOpenCache = new Object();
+
 	this.applications = new Array();
 
 	if (this.sidemenuDiv && this.tabsDiv)
@@ -85,6 +87,9 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 	}
 
 	tabsUi.setCloseable(tabsUi.tabs.length > 1);
+
+	/* As a new tab might remove a row from the tab header, we have to resize all iframes */
+	this.tag.parentFw.resizeHandler();
 }
 
 egw_fw.prototype.resizeHandler = function()
@@ -145,6 +150,9 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 		_app.tab.setContent(_app.iframe);
 		
 		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
+
+		/* As a new tab might add a new row in the tab header, we have to resize all iframes */
+		this.resizeHandler();
 	}
 
 	//Set the iframe location
@@ -249,6 +257,48 @@ egw_fw.prototype.getApplicationByName = function(_name)
 }
 
 /**
+ * Seperates all script tags from the given html code and returns the seperately
+ * @param object _html object that the html code from which the script should be seperated. The html code has to be stored in _html.html, the result js will be written to _html.js
+ */
+
+egw_fw.prototype.seperateJavaScript = function(_html)
+{
+	var html = _html.html;
+	
+	var in_pos = html.search(/<script/im);
+	var out_pos = html.search(/<\/script>/im);
+	while (in_pos > -1 && out_pos > -1)
+	{
+		/*Seperate the whole <script...</script> tag */
+		var js_str = html.substring(in_pos, out_pos+9);
+
+		/*Remove the initial tag */
+		/*js_str = js_str.substring(js_str.search(/>/) + 1);*/
+		_html.js += js_str;
+
+		html = html.substring(0, in_pos) + html.substring(out_pos+9);
+
+		var in_pos = html.search(/<script/im);
+		var out_pos = html.search(/<\/script>/im);
+	}
+
+	_html.html = html;
+}
+
+/**
+ * Sends sidemenu entry category open/close information to the server using an AJAX request
+ */
+egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
+{
+	var req = new egw_json_request("home.jdots_framework.ajax_sidebox_menu_opened",
+		[this.tag.appName, this.catName, _opened]);
+	req.sendRequest(true);
+
+	/* Store the state of the category lokaly */	
+	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
+}
+
+/**
  * Sets the sidebox data of an application
  * @param object _app the application whose sidebox content should be set.
  * @param object _data an array/object containing the data of the sidebox content
@@ -262,41 +312,57 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 		if (_data != null)
 		{
 			var contDiv = document.createElement('div');
+			var contJS = ''; //new Array();
 			for (var i = 0; i < _data.length; i++)
 			{
 				var catContent = '';
 				for (var j = 0; j < _data[i].entries.length; j++)
 				{
+					/* As jquery executes all script tags which are found inside
+					   the html and removes them afterwards, we have to seperate the
+					   javaScript from the html in lang_item and add it manually. */
+					html = new Object();
+					html.html = _data[i].entries[j].lang_item;
+					html.js = new Array();
+
+					this.seperateJavaScript(html);
+					contJS += html.js;//contJS.concat(html.js);
+
 					if (_data[i].entries[j].icon_or_star)
 					{
 						catContent += '<div class="egw_fw_ui_sidemenu_listitem" style="background-image:url(' + _data[i].entries[j].icon_or_star + ')">';
 					}
 					if (_data[i].entries[j].item_link == '')
 					{
-						catContent += _data[i].entries[j].lang_item;
+						catContent += html.html;
 					}
 					else
 					{					
 						catContent += '<a href="' + _data[i].entries[j].item_link + 
-							'">' + _data[i].entries[j].lang_item + '</a>';
+							'">' + html.html + '</a>';
 					}
 					if (_data[i].entries[j].icon_or_star)
 					{
 						catContent += '</div>';
-					}
-					
+					}										
 				}
+
+				/* Append the category content */
 				if (catContent != '')
 				{
-					var categoryUi = new egw_fw_ui_category(contDiv, _data[i].menu_name, catContent);
-					if (_data[i].opened)
+					var categoryUi = new egw_fw_ui_category(contDiv,
+						_data[i].menu_name, catContent, this.categoryOpenCloseCallback, _app);
+					if (_data[i].opened )
 					{
 						categoryUi.open();
 					}
 				}
 			}
+
 			_app.sidemenuEntry.setContent(contDiv);
 			_app.sidebox_md5 = _md5;
+
+			$(contDiv).append(contJS);
 		}
 
 		_app.hasSideboxMenuContent = true;
