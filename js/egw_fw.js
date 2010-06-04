@@ -42,6 +42,14 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
+
+	//Register the global alert handler
+	window.egw_alertHandler = this.alertHandler;
+}
+
+egw_fw.prototype.alertHandler = function(_message, _details)
+{
+	alert('Error:\n ' + _message + '\n\nDetails:\n ' + _details);
 }
 
 /**
@@ -285,6 +293,10 @@ egw_fw.prototype.linkHandler = function(_link, _app)
 	if (app != null)
 	{
 		this.applicationTabNavigate(app, _link, true);
+	}
+	else
+	{
+		egw_alertHandler('Application not found.', 'The application "' + _app + '" the link "' + _link + '" points to is not registered.');
 	}
 }
 
