@@ -54,11 +54,11 @@ body {
 
 #egw_fw_footer {
 	text-align: center;
-	margin-top: 10px;
-	padding-top: 10px;
+	margin-top: 5px;
+	padding-top: 5px;
 	border-top: 1px solid #c6ced6;
 	clear: both;
-	height: 20px;
+	height: 10px;
 }
 
 #egw_fw_sidemenu {

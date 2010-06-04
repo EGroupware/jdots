@@ -95,7 +95,7 @@ egw_fw.prototype.resizeHandler = function()
 egw_fw.prototype.getIFrameHeight = function()
 {
 	var height = $(window).height() - (this.tabsUi.contHeaderDiv.offsetTop +
-		this.tabsUi.contHeaderDiv.offsetHeight + 50); /* 50 is the height of the footer */
+		this.tabsUi.contHeaderDiv.offsetHeight + 30); /* 30 is the height of the footer */
 	return height;
 }
 
@@ -317,9 +317,15 @@ egw_fw.prototype.linkHandler = function(_link, _app)
 	}
 	else
 	{
-		egw_alertHandler('Application not found.', 'The application "' + _app + '" the link "' + _link + '" points to is not registered.');
+		egw_alertHandler('Application "' + _app + '" not found.', 'The application "' + _app + '" the link "' + _link + '" points to is not registered.');
 	}
 }
+
+egw_fw.prototype.openWindow = function(_url, _windowName, _width, _height, _status)
+{
+//	var wnd = ;
+}
+
 
 window.egw_link_handler = function(_link, _app)
 {
