@@ -143,7 +143,16 @@ class jdots_framework extends egw_framework
 		$js->validate_file('jquery','jquery-ui');
 		$js->validate_file('.','egw_json');
 
-		$GLOBALS['egw']->jscalendar;
+		// load jscalendar for calendar users
+		if ($GLOBALS['egw_info']['user']['apps']['calendar'])
+		{
+			$GLOBALS['egw']->jscalendar;
+		}
+		// load dhtmlxtree for pm or email users
+		if ($GLOBALS['egw_info']['user']['apps']['projectmanager'] || $GLOBALS['egw_info']['user']['apps']['felamimail'])
+		{
+			$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
+		}
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
 		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));
