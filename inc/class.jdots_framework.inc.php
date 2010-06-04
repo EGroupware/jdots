@@ -385,7 +385,13 @@ class jdots_framework extends egw_framework
 		if (isset($apps['about'])) $apps['about']['noNavbar'] = true;
 		if (isset($apps['preferences'])) $apps['preferences']['noNavbar'] = true;
 		if (isset($apps['manual'])) $apps['manual']['noNavbar'] = true;
+		if (isset($apps['home'])) $apps['home']['noNavbar'] = true;
 
+		// no need for website icon, if we have sitemgr
+		if (isset($apps['sitemgr']) && isset($apps['sitemgr-link']))
+		{
+			unset($apps['sitemgr-link']);
+		}
 		if (!($default_app = $GLOBALS['egw_info']['user']['preferences']['common']['default_app']))
 		{
 			$default_app = 'home';
