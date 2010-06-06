@@ -121,9 +121,10 @@ body {
 	-webkit-border-top-left-radius:5px;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	border-width: 2px 2px 2px 0px;
+	border-width: 1px;
 	background-image:url(images/gradient30blue.png);
 	border-top: none;
+	border-bottom: none;
 }
 
 .egw_fw_ui_sidemenu_entry_header:hover {
