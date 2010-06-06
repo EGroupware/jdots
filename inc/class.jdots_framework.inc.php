@@ -93,19 +93,15 @@ class jdots_framework extends egw_framework
 	/**
 	 * Redirects direct to a generated link
 	 *
+	 * If a session could not be verified or during login time, jDots is NOT used!
+	 * It's only used if user preferences are loaded AND user select it in his prefs
+	 * 
 	 * @param string	$string	The url the link is for
 	 * @param string|array	$extravars	Extra params to be passed to the url
 	 */
 	static function redirect_link($url = '',$extravars='')
 	{
-		$link = parent::link($url, $extravars);
-		if (strpos($link,'cd=yes') === false && strpos($link,'/login.php') === false)
-		{
-			egw::redirect($link);
-		}
-		// redirect top frame
-		echo "<html>\n<head>\n<script type='text/javascript'>\nalert('Redirecting...');top.location='$link';</script>\n</head>\n</html>\n";
-		common::egw_exit();
+		return parent::redirect_link($url, $extravars);
 	}
 
 	/**
@@ -160,6 +156,17 @@ class jdots_framework extends egw_framework
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
 		}
+		// reload framework if not yet loaded
+		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
+		{
+			$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
+	if (typeof top.framework == "undefined")
+	{
+		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
+	}
+</script>';
+		}
+		
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
 		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));

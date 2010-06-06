@@ -216,8 +216,19 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		this.applications[this.applications.length] = appData;
 	}
 
-	if (defaultAppEntry)
+	// check if a menuaction is specified in the url --> display that
+	var matches = location.search.match(/menuaction=([a-z0-9_-]+)\./i);
+	var _app,_url;
+	if (matches && (_app = this.getApplicationByName(matches[1])))
+	{
+		_url = window.location.href.replace(/&?cd=yes/,'');
+		this.applicationTabNavigate(_app,_url,true);
+	}
+	// else display the default application
+	else if (defaultAppEntry)
+	{
 		this.applicationClickCallback.call(defaultAppEntry, null);
+	}
 }
 
 /**
