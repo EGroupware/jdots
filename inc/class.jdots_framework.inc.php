@@ -160,7 +160,7 @@ class jdots_framework extends egw_framework
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
-	if (typeof top.framework == "undefined")
+	if (typeof top.framework == "undefined" && typeof opener.framework == "undefined")
 	{
 		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
 	}
@@ -288,7 +288,7 @@ class jdots_framework extends egw_framework
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
 			self::$link_app = null;
 		}
-
+error_log(__METHOD__."($appname) array_keys(this->sideboxes)=".array2string(array_keys($this->sideboxes[$appname])));
 		//If there still is no sidebox content, return null here
 		if (!isset($this->sideboxes[$appname]))
 		{
@@ -299,15 +299,15 @@ class jdots_framework extends egw_framework
 		foreach($this->sideboxes[$appname] as $menu_name => &$file)
 		{
 			$current_menu = array(
-				'menu_name' => $menu_name,
+				'menu_name' => md5($menu_name),	// can contain html tags and javascript!
+				'title' => $menu_name,
 				'entries' => array(),
 				'opened' => (boolean)$file['menuOpened'],
 			);
-			unset($file['menuOpened']);
-
 			foreach($file as $item_text => $item_link)
 			{
-				if($item_text === '_NewLine_' || $item_link === '_NewLine_')
+				if ($item_text === 'menuOpened' ||	// flag, not menu entry
+					$item_text === '_NewLine_' || $item_link === '_NewLine_')
 				{
 					continue;
 				}

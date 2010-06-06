@@ -361,8 +361,8 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				/* Append the category content */
 				if (catContent != '')
 				{
-					var categoryUi = new egw_fw_ui_category(contDiv,
-						_data[i].menu_name, catContent, this.categoryOpenCloseCallback, _app);
+					var categoryUi = new egw_fw_ui_category(contDiv,_data[i].menu_name,
+						_data[i].title, catContent, this.categoryOpenCloseCallback, _app);
 					if (_data[i].opened )
 					{
 						categoryUi.open();

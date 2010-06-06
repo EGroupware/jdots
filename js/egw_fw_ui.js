@@ -545,7 +545,7 @@ egw_fw_ui_tabs.prototype.clean = function()
  */
 
 
-function egw_fw_ui_category(_contDiv, _name, _content, _callback, _tag)
+function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _tag)
 {
 	//Copy the parameters
 	this.contDiv = _contDiv;
@@ -564,7 +564,7 @@ function egw_fw_ui_category(_contDiv, _name, _content, _callback, _tag)
 
 	//Add the text	
 	var entryH1 = document.createElement('h1');
-	$(entryH1).append(_name);
+	$(entryH1).append(_title);
 	$(this.headerDiv).append(entryH1);
 
 	//Add the content
