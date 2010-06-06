@@ -12,16 +12,11 @@
 body {
 	margin: 0px !important;
 	padding: 0px !important;
-/*	min-width: 800px;
-	min-height: 600px;*/
 }
 
 #egw_fw_basecontainer {
-	/*position: fixed;*/
 	width: 100%;
 	height: 100%;
-/*	min-width: 800px;
-	min-height: 600px;*/
 	font-family: Arial, Helvetica, Sans-Serif;
 	font-size: 8pt;
 	padding: 0px;
@@ -35,7 +30,6 @@ body {
 	width: 235px;
 	height: 100%;
 	position: fixed;
-/*	overflow: hidden;*/
 }
 
 #divLogo {
@@ -58,8 +52,6 @@ body {
 	width: 100%;
 	text-align: center;
 	padding: 3px;
-	x-border-top: 1px solid #c6ced6;
-	x-background-color: #e2e7f0;
 	background-image:url(images/gradient22.png);
 	background-position: bottom;
 	clear: both;
@@ -80,8 +72,6 @@ body {
 
 #egw_fw_topbar ul, #egw_fw_topbar li {
 	display: inline;
-/*	padding: 0px;*/
-/*	margin: 0px;*/
 }
 
 #egw_fw_topbar li {
@@ -98,12 +88,11 @@ body {
 }
 
 #egw_fw_main {
-/*	background-color: RGB(255, 255, 255);	*/
+
 }
 
 #egw_fw_tabs {
 	margin: 5px 5px 5px 240px;	
-/*	background-color: RGB(128, 128, 128);		*/
 }
 
 .egw_fw_ui_sidemenu_entry_header {
@@ -119,21 +108,21 @@ body {
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
 	border-radius:5px;
-	x-background-image:url(images/tabs_bg.png);
 	background-image:url(images/gradient30.png);
 }
 
 .egw_fw_ui_sidemenu_entry_header_active {
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
+	border-radius: 0px;
 	-moz-border-radius-topright: 5px;
 	-webkit-border-top-right-radius:5px;
 	-moz-border-radius-topleft: 5px;
 	-webkit-border-top-left-radius:5px;
-	x-border-width: 0px 1px 0px 1px !important;
-	x-background-image:url(images/tabs_bg_hover.png);
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	border-width: 2px 2px 2px 0px;
 	background-image:url(images/gradient30blue.png);
-	/*background-color:white;*/
 }
 
 .egw_fw_ui_sidemenu_entry_header:hover {
@@ -143,17 +132,22 @@ body {
 }
 
 .egw_fw_ui_sidemenu_entry_content {
-	width: 215px;
-	padding: 2px 0px 2px 0px;
+	width: 213px;
 	margin: 0px 5px 0px 5px;
-	border-width: 0px 1px 0px 1px;
 	border-style: solid;
-	border-color: #c6ced6;
+	border-color: #b4c5e6;
+	border-width: 2px;
+	background-image:url(images/gradient10blue.png);
+	background-position: bottom;
+	background-repeat: repeat-x;
 	background-color: white;
+	padding-bottom: 5px;
 	-moz-border-radius-bottomright: 5px;
 	-webkit-border-bottom-right-radius:5px;
 	-moz-border-radius-bottomleft: 5px;
 	-webkit-border-bottom-left-radius:5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 
 .egw_fw_ui_sidemenu_entry_content_bottom {
@@ -174,9 +168,9 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	float: left;
-	background-size: auto 20px;
 	-moz-background-size: auto 20px;
 	-webkit-background-size: auto 20px;
+	background-size: auto 20px;
 }
 
 .egw_fw_ui_ajaxloader {
@@ -199,7 +193,8 @@ body {
 	-webkit-border-top-right-radius:3px;
 	-moz-border-radius-topleft:3px;
 	-webkit-border-top-left-radius:3px;
-	
+	border-top-right-radius:3px;
+	border-top-left-radius:3px;
 	background-color: RGB(230, 230, 230);
 	display: inline-block;
 	margin: 0px 5px 0px 0px;
@@ -208,7 +203,6 @@ body {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #c6ced6;
-	
 	background-image:url(images/tabs_bg.png);
 	background-repeat:repeat-x;	
 }
@@ -246,9 +240,9 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	float: left;
-	background-size: auto 16px;
 	-moz-background-size: auto 16px;
 	-webkit-background-size: auto 16px;
+	background-size: auto 16px;
 }
 
 .egw_fw_ui_tab_close_button {
@@ -271,6 +265,8 @@ body {
 	-webkit-border-top-right-radius:5px;
 	-moz-border-radius-topleft:5px;
 	-webkit-border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	border-top-left-radius:5px;
 	padding: 5px 5px 0px 5px;
 	x-background-image:url(images/header_tabs_bg.png);
 	background-image:url(images/gradient22.png);
@@ -326,4 +322,3 @@ body {
 	-webkit-background-size: auto 12px;
 	position: relative;
 }
-
