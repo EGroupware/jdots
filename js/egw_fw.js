@@ -437,10 +437,15 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 
 	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application	
 	var parentWindow = window;
+	var navigate = false;
 	if (typeof _app != 'undefined')
 	{
 		var appEntry = framework.getApplicationByName(_app);
-		framework.applicationTabNavigate(appEntry, 'about:blank');
+		if (appEntry.iframe == null)
+		{
+			navigate = true;
+			framework.applicationTabNavigate(appEntry, 'about:blank');
+		}
 	}
 	else
 	{
@@ -454,7 +459,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
 		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
 
-	if (typeof _app != 'undefined')
+	if (navigate)
 	{
 		window.setTimeout("framework.applicationTabNavigate(framework.activeApp, framework.activeApp.execName);", 500);
 	}
