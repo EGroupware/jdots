@@ -35,6 +35,7 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 	this.categoryOpenCache = new Object();
 
 	this.applications = new Object();
+	this.activeApp = null;
 
 	if (this.sidemenuDiv && this.tabsDiv)
 	{
@@ -119,7 +120,7 @@ egw_fw.prototype.getIFrameHeight = function()
 egw_fw.prototype.tabClickCallback = function(_sender)
 {
 	this.parent.showTab(this);
-	this.tag.sidemenuEntry.parent.open(this.tag.sidemenuEntry);
+	this.tag.parentFw.sidemenuUi.open(this.tag.sidemenuEntry);
 	document.title = this.tag.website_title ? this.tag.website_title : this.tag.appName;
 }
 
@@ -159,15 +160,25 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 	//Set the iframe location
 	_app.iframe.src = _url;
 
+	//Set this application as the active application
+	_app.parentFw.activeApp = _app;
+
 	if (_showtab)
 	{
 		//Show the tab
 		this.tabsUi.showTab(_app.tab);
 
-		//Open the sidemenu entry content
-		if (_app.hasSideboxMenuContent)
+		if (_app.sidemenuEntry != null)
 		{
-			_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
+			//Open the sidemenu entry content
+			if (_app.hasSideboxMenuContent)
+			{
+				_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
+			}
+		}
+		else
+		{
+			_app.parentFw.sidemenuUi.open(null);
 		}
 	}
 }
@@ -318,7 +329,7 @@ egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
  */
 egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 {
-	if ((_app != null) && (_app.sidebox_md5 != _md5))
+	if ((_app != null) && (_app.sidebox_md5 != _md5) && (_app.sidemenuEntry != null))
 	{
 		//Parse the sidebox data
 		if (_data != null)
@@ -427,7 +438,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 
 	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application	
 	var parentWindow = window;
-	var appEntry = framework.sidemenuUi.currentEntry;
+	var appEntry = framework.activeApp;
 	if (appEntry != null && appEntry.tag.iframe != null)
 		parentWindow = appEntry.tag.iframe.contentWindow;
 
