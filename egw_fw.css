@@ -6,7 +6,7 @@
  * @author Andreas Stöckel <as@stylite.de>
  * @author Ralf Becker <rb@stylite.de>
  * @author Nathan Gray <ng@stylite.de>
- * @version $Id: class.jdots_framework.inc.php 958 2010-06-02 09:32:26Z ralfbecker $
+ * @version $Id$
  */
 
 body {
@@ -57,7 +57,6 @@ body {
 	background-image:url(images/gradient22.png);
 	background-position: bottom;
 	clear: both;
-	height: 10px;
 }
 
 #egw_fw_sidemenu {
@@ -206,6 +205,7 @@ body {
 .egw_fw_ui_sidemenu_entry_header h1 {
 	display: inline;
 	font-size: 10pt;
+	font-weight: bold;
 }
 
 .egw_fw_ui_tab_header {
