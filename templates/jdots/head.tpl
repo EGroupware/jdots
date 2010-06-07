@@ -25,19 +25,20 @@
 		{include_wz_tooltip}
 <!-- END head -->
 <!-- BEGIN framework -->
-		<div id="egw_fw_basecontainer"> 
-			<div id="egw_fw_sidebar"> 
+		<div id="egw_fw_basecontainer">
+			<div id="egw_fw_sidebar">
 				<div id="divLogo"><a href="{logo_url}" target="_blank"><img src="{logo_file}" title="{logo_title}" alt="EGroupware"/></a></div>
-				<div id="egw_fw_sidemenu"></div> 
-			</div> 
+				<div id="egw_fw_sidemenu"></div>
+			</div>
 			<div id="egw_fw_topmenu">
 				<div id="egw_fw_topmenu_items">{topmenu_items}</div>
 				<div id="egw_fw_topmenu_info_items">{topmenu_info_items}</div>
-			</div> 
-			<div id="egw_fw_main"> 
-				<div id="egw_fw_tabs" /> 
 			</div>
-		</div> 
+{hook_after_navbar}
+			<div id="egw_fw_main">
+				<div id="egw_fw_tabs"></div>
+			</div>
+		</div>
 		<div id="egw_fw_footer">{powered_by}</div>
  
 		<script type="text/javascript"> 

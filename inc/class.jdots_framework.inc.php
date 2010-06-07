@@ -177,14 +177,10 @@ class jdots_framework extends egw_framework
 		// from here on, only framework
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
 		$this->tpl->set_var($this->topmenu($vars,$apps));
-/*
-		$this->tpl->set_var(array(
-			'home_title' => $GLOBALS['egw_info']['apps']['home']['title'],
-			'manual_title' => $GLOBALS['egw_info']['apps']['manual']['title'],
-			'preferences_title' => $GLOBALS['egw_info']['apps']['preferences']['title'],
-			'logout_title' => lang('Logout'),
-		));
-*/
+		
+		// hook after_navbar (eg. notifications)
+		$this->tpl->set_var('hook_after_navbar',$this->_get_after_navbar());
+
 		// add framework div's
 		$this->tpl->set_var($this->_get_footer());
 		$content .= $this->tpl->fp('out','framework');
