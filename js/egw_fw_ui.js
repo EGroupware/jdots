@@ -33,14 +33,16 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 	this.icon = _icon;
 	this.tag = _tag;
 	this.parent = _parent;
+	this.atTop = false;
 
 	//Add a new div for the new entry to the base div
 	this.headerDiv = document.createElement("div");
-	$(this.headerDiv).addClass("egw_fw_ui_sidemenu_entry_header");	
+	$(this.headerDiv).addClass("egw_fw_ui_sidemenu_entry_header");
 
 	//Create the icon and set its image
-	var iconDiv = document.createElement("div");
-	iconDiv.style.backgroundImage = "url(" + this.icon + ")";
+	var iconDiv = document.createElement("img");
+	iconDiv.src = this.icon;
+	iconDiv.alt = _name;
 	$(iconDiv).addClass("egw_fw_ui_sidemenu_entry_icon");
 	
 	//Create the AJAX loader image (currently NOT used)
@@ -68,7 +70,12 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 
 	this.setBottomLine(this.parent.entries);
 
+	//Add in invisible marker to store the original position of this element in the DOM tree
+	this.marker = document.createElement("div");
+	$(this.marker).hide();
+
 	//Append header and content div to the base div
+	$(this.baseDiv).append(this.marker);
 	$(this.baseDiv).append(this.headerDiv);
 	$(this.baseDiv).append(this.contentDiv);
 }
@@ -76,7 +83,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 /**
  * setBottomLine marks this element as the bottom element in the application list.
  * This adds the egw_fw_ui_sidemenu_entry_content_bottom/egw_fw_ui_sidemenu_entry_header_bottom CSS classes
- * which should care about adding an closing bottom line to the sidemenu. Theese classes are removed from
+ * which should care about adding an closing bottom line to the sidemenu. These classes are removed from
  * all other entries in the side menu.
  *
  * @param array _entryList is a reference to the list which contains the sidemenu_entry entries.
@@ -110,8 +117,13 @@ egw_fw_ui_sidemenu_entry.prototype.setContent = function(_content)
  */
 egw_fw_ui_sidemenu_entry.prototype.open = function()
 {
+	/* Move this entry to the top of the list */
+	$(this.baseDiv).prepend(this.contentDiv);
+	$(this.baseDiv).prepend(this.headerDiv);
+	this.atTop = true;
+
 	$(this.headerDiv).addClass("egw_fw_ui_sidemenu_entry_header_active");
-	$(this.contentDiv).slideDown();
+	$(this.contentDiv).show();
 }
 
 /**
@@ -119,8 +131,16 @@ egw_fw_ui_sidemenu_entry.prototype.open = function()
  */
 egw_fw_ui_sidemenu_entry.prototype.close = function()
 {
+	/* Move the content and header div behind the marker again */
+	if (this.atTop)
+	{
+		$(this.marker).after(this.contentDiv);
+		$(this.marker).after(this.headerDiv);
+		this.atTop = false;
+	}
+
 	$(this.headerDiv).removeClass("egw_fw_ui_sidemenu_entry_header_active");
-	$(this.contentDiv).slideUp();
+	$(this.contentDiv).hide();
 }
 
 /**
@@ -201,6 +221,7 @@ egw_fw_ui_sidemenu.prototype.open = function(_entry)
 	}
 
 	_entry.open();
+
 	this.currentEntry = _entry;
 }
 
@@ -264,14 +285,15 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			if (!$(this).hasClass("egw_fw_ui_tab_header_active"))
 				$(this).addClass("egw_fw_ui_tab_header_hover");
 		},
-		function() {
+		function() {http://localhost/egroupware/index.php?menuaction=addressbook.addressbook_ui.index
 			$(this).removeClass("egw_fw_ui_tab_header_hover")
 		});
 		
 	//Create the icon and append it to the header div
-	var icon = document.createElement("span");
+	var icon = document.createElement("img");
 	$(icon).addClass("egw_fw_ui_tab_icon");
-	icon.style.backgroundImage = "url(" + _icon + ")";	
+	icon.src = _icon;
+	icon.alt = 'Tab icon';
 	$(this.headerDiv).append(icon);
 
 	//Create the title h1 and append it to the header div
@@ -293,6 +315,13 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			}
 			return true;
 		});
+
+	//Special treatment for IE	
+	if (typeof jQuery.browser['msie'] != 'undefined')
+	{
+		this.closeButton.style.styleFloat = 'none';
+	}
+
 	$(this.headerDiv).append(this.closeButton);
 		
 	this.contentDiv = document.createElement("div");
@@ -557,11 +586,6 @@ function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _tag)
 	this.headerDiv = document.createElement('div');
 	$(this.headerDiv).addClass('egw_fw_ui_category');
 	
-	//Add the left arrow
-	var arrowImg = document.createElement('span');
-	$(arrowImg).addClass('egw_fw_ui_category_arrow');
-	$(this.headerDiv).append(arrowImg);
-
 	//Add the text	
 	var entryH1 = document.createElement('h1');
 	$(entryH1).append(_title);

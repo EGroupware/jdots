@@ -27,7 +27,7 @@ body {
 	float: left;
 	padding: 4px;
 	padding-top: 0px;
-	width: 235px;
+	width: 240px;
 	height: 100%;
 	position: fixed;
 }
@@ -60,6 +60,7 @@ body {
 
 #egw_fw_sidemenu {
 	display: block;
+	margin-top: 10px;
 }
 
 #egw_fw_topbar {
@@ -97,7 +98,7 @@ body {
 
 .egw_fw_ui_sidemenu_entry_header {
 	display: block;
-	width: 205px;
+	width: 210px;
 	height: 20px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
@@ -130,11 +131,11 @@ body {
 .egw_fw_ui_sidemenu_entry_header:hover {
 	background-color: RGB(230, 230, 255);
 	background-image:url(images/gradient30blue.png);
-	x-background-image:url(images/tabs_bg_hover.png);
+/*	x-background-image:url(images/tabs_bg_hover.png);*/
 }
 
 .egw_fw_ui_sidemenu_entry_content {
-	width: 213px;
+	width: 218px;
 	margin: 0px 5px 0px 5px;
 	border-style: solid;
 	border-color: #b4c5e6;
@@ -167,12 +168,7 @@ body {
 	height: 20px;
 	padding-left: 0;
 	padding-right: 10px;
-	background-repeat: no-repeat;
-	background-position: center;
 	float: left;
-	-moz-background-size: auto 20px;
-	-webkit-background-size: auto 20px;
-	background-size: auto 20px;
 }
 
 .egw_fw_ui_ajaxloader {
@@ -206,7 +202,7 @@ body {
 	border-style: solid;
 	border-color: #c6ced6;
 	background-image:url(images/tabs_bg.png);
-	background-repeat:repeat-x;	
+	background-repeat:repeat-x;
 }
 
 .egw_fw_ui_tab_header_hover{
@@ -216,6 +212,7 @@ body {
 .egw_fw_ui_tab_header h1{
 	display: inline;
 	font-size: 10pt;
+	margin: 0;
 }
 
 .egw_fw_ui_tab_header_active {
@@ -239,12 +236,7 @@ body {
 	width: 16px;
 	height: 16px;
 	margin-right: 5px;
-	background-repeat: no-repeat;
-	background-position: center;
 	float: left;
-	-moz-background-size: auto 16px;
-	-webkit-background-size: auto 16px;
-	background-size: auto 16px;
 }
 
 .egw_fw_ui_tab_close_button {
@@ -289,24 +281,24 @@ body {
 }
 
 .egw_fw_ui_category h1 {
-	margin: 5px 0px 5px 0px;
-	padding: 0px;
+	margin: 5px 0px 3px 5px;
+	padding: 0px 0px 0px 15px;
 	font-size: 9pt;
+	background-image:url(images/arrow_left.png);
+	background-repeat:no-repeat;
+	background-position:left center;
 }
 
-.egw_fw_ui_category_arrow {
+/*.egw_fw_ui_category_arrow {
 	display: inline-block;
 	width: 8px;
 	height: 8px;
 	margin: 0px 5px 0px 5px;
-	background-image:url(images/arrow_left.png);
-	background-repeat:no-repeat;
 	float: left;
-}
+}*/
 
-.egw_fw_ui_category_active .egw_fw_ui_category_arrow {
+.egw_fw_ui_category_active h1 {
 	background-image:url(images/arrow_down.png);
-	background-repeat:no-repeat;		
 }
 
 .egw_fw_ui_category_content {
@@ -316,11 +308,16 @@ body {
 }
 
 .egw_fw_ui_sidemenu_listitem {
+	display: block;
 	padding-left: 16px;
-	background-repeat: no-repeat;
-	background-position: left center;
-	background-size: auto 12px;
-	-moz-background-size: auto 12px;
-	-webkit-background-size: auto 12px;
-	position: relative;
+	padding-right: 3px;
+}
+
+.egw_fw_ui_sidemenu_listitem_icon {	
+	display: inline;
+	margin-left: -16px;
+	padding-right: 3px;
+	width: 12px;
+	height: 12px;
+	float: left;
 }

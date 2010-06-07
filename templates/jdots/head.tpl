@@ -28,7 +28,7 @@
 		<div id="egw_fw_basecontainer"> 
 			<div id="egw_fw_sidebar"> 
 				<div id="divLogo"><a href="{logo_url}" target="_blank"><img src="{logo_file}" title="{logo_title}" alt="EGroupware"/></a></div>
-				<div id="egw_fw_sidemenu">&nbsp;</div> 
+				<div id="egw_fw_sidemenu"></div> 
 			</div> 
 			<div id="egw_fw_topbar"> 
 				<ul> 

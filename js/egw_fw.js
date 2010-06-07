@@ -289,7 +289,8 @@ egw_fw.prototype.seperateJavaScript = function(_html)
 		/*js_str = js_str.substring(js_str.search(/>/) + 1);*/
 		_html.js += js_str;
 
-		html = html.substring(0, in_pos) + html.substring(out_pos+9);
+		
+		html = html.substring(0, in_pos - 1) + html.substring(out_pos + 9);
 
 		var in_pos = html.search(/<script/im);
 		var out_pos = html.search(/<\/script>/im);
@@ -336,14 +337,14 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					   javaScript from the html in lang_item and add it manually. */
 					html = new Object();
 					html.html = _data[i].entries[j].lang_item;
-					html.js = new Array();
+					html.js = '';
 
 					this.seperateJavaScript(html);
 					contJS += html.js;//contJS.concat(html.js);
 
 					if (_data[i].entries[j].icon_or_star)
 					{
-						catContent += '<div class="egw_fw_ui_sidemenu_listitem" style="background-image:url(' + _data[i].entries[j].icon_or_star + ')">';
+						catContent += '<div class="egw_fw_ui_sidemenu_listitem"><img class="egw_fw_ui_sidemenu_listitem_icon" src="' + _data[i].entries[j].icon_or_star + '" />';
 					}
 					if (_data[i].entries[j].item_link == '')
 					{
