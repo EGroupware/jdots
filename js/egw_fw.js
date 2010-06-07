@@ -352,6 +352,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					else
 					{					
 						catContent += '<a href="' + _data[i].entries[j].item_link + 
+							(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
 							'">' + html.html + '</a>';
 					}
 					if (_data[i].entries[j].icon_or_star)

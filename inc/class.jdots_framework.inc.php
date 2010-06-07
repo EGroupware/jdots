@@ -328,13 +328,11 @@ class jdots_framework extends egw_framework
 					$var['item_link'] = $item_link['link'];
 					if ($item_link['target'])
 					{
-						if (strpos($item_link['target'], 'target=') !== false)
+						// we only support real targets not html markup with target in it
+						if (strpos($item_link['target'], 'target=') === false &&
+							strpos($item_link['target'], '"') === false)
 						{
 							$var['target'] = $item_link['target'];
-						}
-						else
-						{
-							$var['target'] = ' target="' . $item_link['target'] . '"';
 						}
 					}
 				}

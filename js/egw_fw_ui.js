@@ -43,7 +43,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 	iconDiv.style.backgroundImage = "url(" + this.icon + ")";
 	$(iconDiv).addClass("egw_fw_ui_sidemenu_entry_icon");
 	
-	//Create the AJAX loader image
+	//Create the AJAX loader image (currently NOT used)
 	this.ajaxloader = document.createElement("div");
 	$(this.ajaxloader).addClass("egw_fw_ui_ajaxloader");
 	$(this.ajaxloader).hide();
