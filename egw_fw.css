@@ -39,6 +39,8 @@ body {
 	text-align: center;
 	padding-left: 5px;
 	width: 220px;
+	left: 0;
+	top: 0;
 }
 
 #divLogo img {
@@ -63,19 +65,32 @@ body {
 	margin-top: 10px;
 }
 
-#egw_fw_topbar {
+#egw_fw_topmenu {
 	display: block;	
 	text-align: right;
-	padding-top: 5px;
+	padding-top: 0;
 	padding-bottom: 5px;
-	height: 12px;
+	height: 13px;
+	margin-left: 240px;
+	background-image:url(images/gradient22.png);
+	background-position: bottom;
+	-webkit-border-bottom-left-radius: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	border-bottom-left-radius: 10px;
 }
 
-#egw_fw_topbar ul, #egw_fw_topbar li {
+#egw_fw_topmenu ul, #egw_fw_topmenu li, .topmenu_info_item, #egw_fw_topmenu_items, #egw_fw_topmenu_info_items {
 	display: inline;
 }
+#egw_fw_topmenu_items ul {
+	padding: 10px;
+}
+#egw_fw_topmenu_items {
+	float: left;
+	padding-top: 2px;
+}
 
-#egw_fw_topbar li {
+#egw_fw_topmenu li {
 	background-image: url(images/bullet.png);
 	background-repeat: no-repeat;
 	background-position: left center;	
@@ -83,7 +98,14 @@ body {
 	padding-right: 10px;
 }
 
-#egw_fw_topbar a {
+#egw_fw_topmenu_info_items select {
+	margin-top: 0;
+}
+.topmenu_info_item {
+	padding-left: 10px;
+}
+
+#egw_fw_topmenu a {
 	text-decoration: none;
 	color: black;
 }

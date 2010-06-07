@@ -30,13 +30,9 @@
 				<div id="divLogo"><a href="{logo_url}" target="_blank"><img src="{logo_file}" title="{logo_title}" alt="EGroupware"/></a></div>
 				<div id="egw_fw_sidemenu"></div> 
 			</div> 
-			<div id="egw_fw_topbar"> 
-				<ul> 
-					<li><a href="javascript:egw_link_handler('home/index.php','home')">{home_title}</a></li> 
-					<li><a href="javascript:egw_link_handler('preferences/index.php','preferences')">{preferences_title}</a></li> 
-					<li><a href="logout.php">{logout_title}</a></li> 
-					<li><a href="javascript:egw_link_handler('manual/index.php','manual')">{manual_title}</a></li> 
-				</ul> 
+			<div id="egw_fw_topmenu">
+				<div id="egw_fw_topmenu_items">{topmenu_items}</div>
+				<div id="egw_fw_topmenu_info_items">{topmenu_info_items}</div>
 			</div> 
 			<div id="egw_fw_main"> 
 				<div id="egw_fw_tabs" /> 

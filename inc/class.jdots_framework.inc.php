@@ -168,21 +168,23 @@ class jdots_framework extends egw_framework
 		}
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
-		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));
-		
-		$this->tpl->set_var(array(
-			'home_title' => $GLOBALS['egw_info']['apps']['home']['title'],
-			'manual_title' => $GLOBALS['egw_info']['apps']['manual']['title'],
-			'preferences_title' => $GLOBALS['egw_info']['apps']['preferences']['title'],
-			'logout_title' => lang('Logout'),
-		));
-		
 		$content .= $this->tpl->fp('out','head').$content;
 		
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
 		{
 			return $content;
 		}
+		// from here on, only framework
+		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
+		$this->tpl->set_var($this->topmenu($vars,$apps));
+/*
+		$this->tpl->set_var(array(
+			'home_title' => $GLOBALS['egw_info']['apps']['home']['title'],
+			'manual_title' => $GLOBALS['egw_info']['apps']['manual']['title'],
+			'preferences_title' => $GLOBALS['egw_info']['apps']['preferences']['title'],
+			'logout_title' => lang('Logout'),
+		));
+*/
 		// add framework div's
 		$this->tpl->set_var($this->_get_footer());
 		$content .= $this->tpl->fp('out','framework');
@@ -191,36 +193,99 @@ class jdots_framework extends egw_framework
 		echo $content;
 		common::egw_exit();
 	}
+	
+	private $topmenu_items;
+	private $topmenu_info_items;
 
 	/**
-	* Returns the html from the body-tag til the main application area (incl. opening div tag)
+	 * Compile entries for topmenu:
+	 * - regular items: links
+	 * - info items
+	 *
+	 * @param array $vars
+	 * @param array $apps
+	 * @return array
+	 */
+	function topmenu(array $vars,array $apps)
+	{
+		$this->topmenu_items = $this->topmenu_info_items = array();
+
+		parent::topmenu($vars,$apps);
+		$vars['topmenu_items'] = "<ul>\n<li>".implode("</li>\n<li>",$this->topmenu_items)."</li>\n</ul>";
+		$vars['topmenu_info_items'] = '<div class="topmenu_info_item">'.
+			implode("</div>\n".'<div class="topmenu_info_item">',$this->topmenu_info_items)."</div>\n";
+		
+		$this->topmenu_items = $this->topmenu_info_items = null;
+
+		return $vars;
+	}
+
+
+	/**
+	* Add menu items to the topmenu template class to be displayed
 	*
-	* @return string with html
+	* @param array $app application data
+	* @param mixed $alt_label string with alternative menu item label default value = null
+	* @param string $urlextra string with alternate additional code inside <a>-tag
+	* @access protected
+	* @return void
 	*/
+	function _add_topmenu_item(array $app_data,$alt_label=null)
+	{
+		if (strpos($app_data['url'],'logout.php') === false)
+		{
+			$app_data['url'] = "javascript:egw_link_handler('".$app_data['url']."','".
+				(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ? 
+					$app_data['name'] : 'about')."')";
+		}
+		$this->topmenu_items[] = '<a href="'.htmlspecialchars($app_data['url']).'">'.
+			htmlspecialchars($alt_label ? $alt_label : $app_data['title']).'</a>';
+	}
+
+	/**
+	 * Add info items to the topmenu template class to be displayed
+	 *
+	 * @param string $content html of item
+	 * @access protected
+	 * @return void
+	 */
+	function _add_topmenu_info_item($content)
+	{
+		$this->topmenu_info_items[] = $content;
+	}
+
+	/**
+	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
+	 * 
+	 * jDots does NOT use a navbar!
+	 *
+	 * @return string with html
+	 */
 	function navbar()
 	{
-		if (self::$navbar_done) return '';
-		self::$navbar_done = true;
-
-		return ""; //"<h1>Navbar</h1>";
+		return '';
 	}
 
 	/**
-	* displays a login screen
-	*
-	* @param string $extra_vars for login url
-	*/
+	 * displays a login screen
+	 * 
+	 * Currently not used for jDots, as it's no login template set!
+	 *
+	 * @param string $extra_vars for login url
+	 */
 	function login_screen($extra_vars)
 	{
-		_debug_array($extra_vars);
+
 	}
 
 	/**
-	* displays a login denied message
-	*/
+	 * displays a login denied message
+	 * 
+	 * Currently not used for jDots, as it's no login template set!
+	 */
 	function denylogin_screen()
 	{
-		return "Login not possible";
+
 	}
 
 	/**
@@ -257,7 +322,8 @@ class jdots_framework extends egw_framework
 	 * 
 	 * @param $appname
 	 * @return array of array(
-	 * 		'menu_name' => (string),	// translated title to display
+	 * 		'menu_name' => (string),	// menu name, currently md5(title)
+	 * 		'title'     => (string),	// translated title to display
 	 * 		'opened'    => (boolean),	// menu opend or closed
 	 *  	'entries'   => array(
 	 *			array(

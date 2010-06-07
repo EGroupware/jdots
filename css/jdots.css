@@ -13,100 +13,12 @@
 @import url("../jquery-ui.css");
 @import url("../egw_fw.css");
 
-body {
-	/*padding: 5px !important;*/
-	background-image:none;
-}
-
 /**
- * Stylite theme changes
+ * theme changes from idots-traditional follow
  */
-#divAppIconBar {
-	padding-top: 5px;
-	border: none;
-	background-position: 0px 30px;
-	background-color: white;
-	background-image: url(../images/gradient22.png);
-}
 
-#divStatusBar {
-	height: 22px;
-}
-
-#divAppboxHeader {
-	background-image: url(../images/gradient22.png);
-	border: none;
-	height: 18px;
-	line-height: 18px;
-}
-
-.divSidebox,.textSidebox {
-	border: none;
-	overflow: auto;
-}
-
-.textSidebox {
-	border-top: 1px solid #d3d3d3;
-}
-
-.divSidebox table {
-	border: 1px solid #d3d3d3;
-	border-top: none;
-}
-
-.divSideboxHeader {
-	background-image: url(../images/gradient22.png);
-	border: none;
-	height: 18px;
-	line-height: 18px;
-	padding-top: 0;
-}
-
-#divAppbox {
-	padding-left: 15px;
-	padding-right: 10px;
-	border: 1px solid #d3d3d3;
-}
-
-#divMain {
-	padding: 0px;
-	border: none;
-}
-
-#divLogo {
-	left: 0;
-	top: 0;
-}
-
-#divUpperTabs {
-	position: absolute;
-	top: 69px;
-	right: 6px;
-}
-#divUpperTabs li
-{
-	border: 1px solid #d3d3d3;
-	border-top: none;
-}
-
-#topmenu {
-	background-image: url(../images/gradient22.png);
-	border: none;
-	x-background-color: #e0e0e0;
-	x-background-image: none;
-	x-border-bottom: 1px solid silver;
-	line-height: 12px;
-	padding-top: 2px;
-	height: auto;
-	color: black;
-}
-
-#topmenu a {
-	color: black;
-}
-
-#sideresize {
-	background-image:url(../images/resize-transparent.png);
+body {
+	background-image:none;
 }
 
 .th {
@@ -114,9 +26,6 @@ body {
 }
 
 a:link, a:visited, select, input, textarea {
-	color: #004090;
-	color: #4a6184;
-	color: #336699;
 	color: #003075;
 }
 
