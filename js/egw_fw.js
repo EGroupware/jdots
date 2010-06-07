@@ -365,9 +365,20 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				{
 					var categoryUi = new egw_fw_ui_category(contDiv,_data[i].menu_name,
 						_data[i].title, catContent, this.categoryOpenCloseCallback, _app);
-					if (_data[i].opened )
+
+					//Lookup whether this entry was opened before. If no data is
+					//stored about this, use the information we got from the server
+					var opened = this.categoryOpenCache[
+						_app.appName + '#' + _data[i].menu_name];
+					if (typeof opened == 'undefined')
 					{
-						categoryUi.open();
+						opened = _data[i].opened;
+					}
+
+
+					if (opened)
+					{
+						categoryUi.open(true);
 					}
 				}
 			}

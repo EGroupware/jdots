@@ -603,29 +603,45 @@ function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _tag)
 		function() {
 			if (!$(this).hasClass('egw_fw_ui_category_active'))
 			{
-				this._parent.open();
+				this._parent.open(false);
 			}
 			else
 			{
-				this._parent.close();
+				this._parent.close(false);
 			}
 		});
 	$(this.contDiv).append(this.headerDiv);
 	$(this.contDiv).append(this.contentDiv);
 }
 
-egw_fw_ui_category.prototype.open = function()
+egw_fw_ui_category.prototype.open = function(_instantly)
 {
 	this.callback.call(this, true);
 	$(this.headerDiv).addClass('egw_fw_ui_category_active');
-	$(this.contentDiv).slideDown();
+
+	if (_instantly)
+	{
+		$(this.contentDiv).show();
+	}
+	else
+	{
+		$(this.contentDiv).slideDown();
+	}
 }
 
-egw_fw_ui_category.prototype.close = function()
+egw_fw_ui_category.prototype.close = function(_instantly)
 {
 	this.callback.call(this, false);
 	$(this.headerDiv).removeClass('egw_fw_ui_category_active');
-	$(this.contentDiv).slideUp();
+
+	if (_instantly)
+	{
+		$(this.contentDiv).hide();
+	}
+	else
+	{
+		$(this.contentDiv).slideUp();
+	}
 }
 
 egw_fw_ui_category.prototype.remove = function()
