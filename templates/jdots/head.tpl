@@ -47,7 +47,7 @@
 		<script type="text/javascript"> 
 			var
 				framework = null;
- 
+
 			$(document).ready(function() {
 				framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "{webserver_url}");
 			}

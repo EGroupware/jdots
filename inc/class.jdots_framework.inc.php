@@ -156,17 +156,16 @@ class jdots_framework extends egw_framework
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
 		}
-		// reload framework if not yet loaded
+		// load framework if not yet loaded for an url WITHOUT cd=yes
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
-	if (typeof top.framework == "undefined" && typeof opener.framework == "undefined")
+	if (typeof top.framework == "undefined" && !opener)
 	{
 		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
 	}
 </script>';
 		}
-		
 		$this->tpl->set_var($vars = $this->_get_header());
 		$this->website_title = $vars['website_title'];
 		$this->tpl->set_var($this->_get_navbar($this->_get_navbar_apps()));
@@ -288,7 +287,6 @@ class jdots_framework extends egw_framework
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
 			self::$link_app = null;
 		}
-error_log(__METHOD__."($appname) array_keys(this->sideboxes)=".array2string(array_keys($this->sideboxes[$appname])));
 		//If there still is no sidebox content, return null here
 		if (!isset($this->sideboxes[$appname]))
 		{
@@ -362,7 +360,7 @@ error_log(__METHOD__."($appname) array_keys(this->sideboxes)=".array2string(arra
 	 */
 	public function ajax_sidebox_menu_opened($app,$menu_name,$opened)
 	{
-		
+		error_log(__METHOD__."('$app','$menu_name',$opened)");
 	}
 	
 	/**
