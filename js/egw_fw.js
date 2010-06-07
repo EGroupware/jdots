@@ -34,7 +34,7 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 
 	this.categoryOpenCache = new Object();
 
-	this.applications = new Array();
+	this.applications = new Object();
 
 	if (this.sidemenuDiv && this.tabsDiv)
 	{
@@ -94,11 +94,11 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 
 egw_fw.prototype.resizeHandler = function()
 {
-	for (var i = 0; i < this.applications.length; i++)
+	for (var app in this.applications)
 	{
-		if (this.applications[i].iframe != null)
+		if (this.applications[app].iframe != null)
 		{
-			this.applications[i].iframe.style.height = this.getIFrameHeight() + 'px';
+			this.applications[app].iframe.style.height = this.getIFrameHeight() + 'px';
 		}
 	}
 }
@@ -214,7 +214,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 			defaultAppEntry = appData.sidemenuEntry;
 		}
 
-		this.applications[this.applications.length] = appData;
+		this.applications[appData.appName] = appData;
 	}
 
 	// check if a menuaction or app is specified in the url --> display that
@@ -259,12 +259,9 @@ egw_fw.prototype.loadApplications = function(_menuaction)
  */
 egw_fw.prototype.getApplicationByName = function(_name)
 {
-	for (var i = 0; i < this.applications.length; i++)
+	if (typeof this.applications[_name] != 'undefined')
 	{
-		if (this.applications[i].appName == _name)
-		{
-			return this.applications[i];
-		}
+		return this.applications[_name]
 	}
 
 	return null;
