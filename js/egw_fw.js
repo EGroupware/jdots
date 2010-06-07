@@ -216,10 +216,12 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		this.applications[this.applications.length] = appData;
 	}
 
-	// check if a menuaction is specified in the url --> display that
+	// check if a menuaction or app is specified in the url --> display that
 	var matches = location.search.match(/menuaction=([a-z0-9_-]+)\./i);
 	var _app,_url;
-	if (matches && (_app = this.getApplicationByName(matches[1])))
+	if (matches && (_app = this.getApplicationByName(matches[1])) ||
+		(matches = location.href.match(/\/([^\/]+)\/[^\/]+\.php/i)) &&
+			(_app = this.getApplicationByName(matches[1])))
 	{
 		_url = window.location.href.replace(/&?cd=yes/,'');
 		this.applicationTabNavigate(_app,_url,true);
