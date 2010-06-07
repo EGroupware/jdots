@@ -147,6 +147,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 		_app.iframe.style.width = "100%";
 		_app.iframe.style.borderWidth = 0;
 		_app.iframe.style.height = this.getIFrameHeight() + 'px';
+		_app.iframe.frameBorder = 0;
 		_app.tab.setContent(_app.iframe);
 		
 		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);

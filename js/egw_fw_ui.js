@@ -436,7 +436,7 @@ egw_fw_ui_tabs.prototype.cleanHistory = function()
 	for (var i = this.tabHistory.length - 1; i >= 0; i--)
 	{
 		if (this.tabHistory[i] == this.tabHistory[i - 1])
-			this.tabHistory[i].remove(i);
+			this.tabHistory.remove(i);
 	}
 }
 
@@ -531,7 +531,7 @@ egw_fw_ui_tabs.prototype.showTab = function(_tab)
 		//Limit the tabHistory size in order to save memory			
 		if (this.tabHistory.length > 50)
 		{
-			delete this.tabHistory[0];
+			this.tabHistory.remove(0);
 		}
 	}
 }
