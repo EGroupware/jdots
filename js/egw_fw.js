@@ -132,10 +132,12 @@ egw_fw.prototype.tabClickCallback = function(_sender)
  */
 egw_fw.prototype.applicationClickCallback = function(_sender)
 {
-	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.execName, true);
+	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.execName);
 }
 
-egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
+/**
+ */
+egw_fw.prototype.applicationTabNavigate = function(_app, _url)
 {
 	//Create the tab if it isn't already there
 	if ((_app.iframe == null) || (_app.tab == null))
@@ -163,23 +165,20 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _showtab)
 	//Set this application as the active application
 	_app.parentFw.activeApp = _app;
 
-	if (_showtab)
-	{
-		//Show the tab
-		this.tabsUi.showTab(_app.tab);
+	//Show the tab
+	this.tabsUi.showTab(_app.tab);
 
-		if (_app.sidemenuEntry != null)
+	if (_app.sidemenuEntry != null)
+	{
+		//Open the sidemenu entry content
+		if (_app.hasSideboxMenuContent)
 		{
-			//Open the sidemenu entry content
-			if (_app.hasSideboxMenuContent)
-			{
-				_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
-			}
+			_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
 		}
-		else
-		{
-			_app.parentFw.sidemenuUi.open(null);
-		}
+	}
+	else
+	{
+		_app.parentFw.sidemenuUi.open(null);
 	}
 }
 
@@ -236,7 +235,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 			(_app = this.getApplicationByName(matches[1])))
 	{
 		_url = window.location.href.replace(/&?cd=yes/,'');
-		this.applicationTabNavigate(_app,_url,true);
+		this.applicationTabNavigate(_app,_url);
 	}
 	// else display the default application
 	else if (defaultAppEntry)
@@ -420,7 +419,7 @@ egw_fw.prototype.linkHandler = function(_link, _app)
 	var app = this.getApplicationByName(_app);
 	if (app != null)
 	{
-		this.applicationTabNavigate(app, _link, true);
+		this.applicationTabNavigate(app, _link);
 	}
 	else
 	{
@@ -428,7 +427,7 @@ egw_fw.prototype.linkHandler = function(_link, _app)
 	}
 }
 
-egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _height, _status)
+egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _height, _status, _app)
 {
 	windowWidth = egw_getWindowOuterWidth();
 	windowHeight = egw_getWindowOuterHeight();
@@ -438,13 +437,27 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 
 	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application	
 	var parentWindow = window;
-	var appEntry = framework.activeApp;
-	if (appEntry != null && appEntry.tag.iframe != null)
-		parentWindow = appEntry.tag.iframe.contentWindow;
+	if (typeof _app != 'undefined')
+	{
+		var appEntry = framework.getApplicationByName(_app);
+		framework.applicationTabNavigate(appEntry, 'about:blank');
+	}
+	else
+	{
+		var appEntry = framework.activeApp;
+	}
+
+	if (appEntry != null && appEntry.iframe != null)
+		parentWindow = appEntry.iframe.contentWindow;
 
 	windowID = parentWindow.open(_url, _windowName, "width=" + _width + ",height=" + _height +
 		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
 		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
+
+	if (typeof _app != 'undefined')
+	{
+		window.setTimeout("framework.applicationTabNavigate(framework.activeApp, framework.activeApp.execName);", 500);
+	}
 }
 
 egw_fw.prototype.egw_appWindow = function(_app)
