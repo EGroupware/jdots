@@ -171,7 +171,7 @@ class jdots_framework extends egw_framework
 						'referer' => ($_SERVER['HTTPS'] ? 'https://' : 'http://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
 					)));
 				$content .= '
-	function callManual(_url)
+	window.callManual = function(_url)
 	{
 		var _framework = window.opener ? window.opener.parent.framework :  window.parent.framework;
 		if (typeof _url == "undefined" || !_url) _url = "'.$manual_url.'";
@@ -185,7 +185,7 @@ class jdots_framework extends egw_framework
 		if ($GLOBALS['egw_info']['user']['apps']['manual'])
 		{
 			$content .= '<script type="text/javascript">
-	function callManual()
+	window.callManual = function(_url)
 	{
 		framework.activeApp.iframe.contentWindow.callManual();		
 	}
