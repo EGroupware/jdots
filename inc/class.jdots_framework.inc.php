@@ -116,30 +116,43 @@ class jdots_framework extends egw_framework
 		$this->tpl->set_block('_head','head');
 		$this->tpl->set_block('_head','framework');
 		
+		// should we draw the framework, or just a header
+		$do_framework = isset($_GET['cd']) && $_GET['cd'] === 'yes';
+		
 		// include needed javascript files
 		$js = $GLOBALS['egw']->js;
-		$js->validate_file('.','egw_fw','jdots');
-		$js->validate_file('.','egw_fw_ui','jdots');
-		$js->validate_file('.','egw_fw_classes','jdots');
 		$js->validate_file('jquery','jquery');
-		$js->validate_file('jquery','jquery-ui');
+		//not yet used: $js->validate_file('jquery','jquery-ui');
 		$js->validate_file('.','egw_json');
 
-		// load jscalendar for calendar users
-		if ($GLOBALS['egw_info']['user']['apps']['calendar'])
+		if ($do_framework)
 		{
-			$GLOBALS['egw']->jscalendar;
+			// framework javascript classes only need for framework
+			$js->validate_file('.','egw_fw','jdots');
+			$js->validate_file('.','egw_fw_ui','jdots');
+			$js->validate_file('.','egw_fw_classes','jdots');
+
+			egw_cache::unsetSession(__CLASS__,'sidebox_md5');	// sideboxes need to be send again
+
+			// load jscalendar for calendar users
+			if ($GLOBALS['egw_info']['user']['apps']['calendar'])
+			{
+				$GLOBALS['egw']->jscalendar;
+			}
+			// load dhtmlxtree for pm or email users
+			if ($GLOBALS['egw_info']['user']['apps']['projectmanager'] || $GLOBALS['egw_info']['user']['apps']['felamimail'])
+			{
+				$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
+			}
 		}
-		// load dhtmlxtree for pm or email users
-		if ($GLOBALS['egw_info']['user']['apps']['projectmanager'] || $GLOBALS['egw_info']['user']['apps']['felamimail'])
-		{
-			$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
-		}
-		// load framework if not yet loaded for an url WITHOUT cd=yes
-		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
+		// for an url WITHOUT cd=yes --> load framework if not yet loaded:
+		// - check if iframe parent (top) has a framework loaded or
+		// - we are a popup (opener) or
+		// - we are an iframe in a popup (top.opener)
+		if (!$do_framework)
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
-	if (typeof top.framework == "undefined" && !opener)
+	if (typeof top.framework == "undefined" && !opener && !top.opener)
 	{
 		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
 	}
@@ -148,17 +161,14 @@ class jdots_framework extends egw_framework
 		$this->tpl->set_var($vars = $this->_get_header());
 		$content .= $this->tpl->fp('out','head').$content;
 		
-		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
+		if (!$do_framework)
 		{
-			//Set the sidebox content
+			// set app_header
 			$app = $GLOBALS['egw_info']['flags']['currentapp'];
-			$sidebox = json_encode($this->get_sidebox($app));
-			$md5 = md5($sidebox);
 			$content .= '<script type="text/javascript">
 	if (typeof window.parent.framework != "undefined")
 	{
 		var app = window.parent.framework.getApplicationByName("'.$app.'");
-		window.parent.framework.setSidebox(app,'.$sidebox.',"'.$md5.'");
 		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($vars['website_title']).'");
 	}';
 			// if manual is enabled, assamble manual url and define global callManual() function
@@ -181,6 +191,7 @@ class jdots_framework extends egw_framework
 			$content .= "\n</script>";
 			return $content;
 		}
+
 		// from here on, only framework
 		if ($GLOBALS['egw_info']['user']['apps']['manual'])
 		{
@@ -291,13 +302,44 @@ class jdots_framework extends egw_framework
 	/**
 	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
 	 * 
-	 * jDots does NOT use a navbar!
+	 * jDots does NOT use a navbar, but we use this to send the sidebox content!
+	 * 
+	 * We store in the session the md5 of each sidebox menu already send to client.
+	 * If the framework get reloaded, that list gets cleared in header();
+	 * Most apps never change sidebox, so we not even need to generate it more then once.
+	 * We use a negative list for apps known to change sidebox: calendar, fmail, pm, sitemgr
 	 *
-	 * @return string with html
+	 * @return string with javascript to set sidebox
 	 */
 	function navbar()
 	{
-		return '';
+		$app = $GLOBALS['egw_info']['flags']['currentapp'];
+		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
+		
+		if (isset($md5_session[$app]) &&	// negativ list of apps known to change sidebox menu
+			!in_array($app,array('calendar','projectmanager','felamimail','sitemgr')))
+		{
+			//error_log(__METHOD__."() md5_session[$app]==='{$md5_session[$app]}' already set --> nothing to do");
+			return '';
+		}
+		//Set the sidebox content
+		$sidebox = json_encode($this->get_sidebox($app));
+		$md5 = md5($sidebox);
+		
+		if ($md5_session[$app] === $md5)
+		{
+			//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
+			return '';	// no need to send to client
+		}
+		$md5_session[$app] = $md5;	// update md5 in session
+
+		return '<script type="text/javascript">
+	if (typeof window.parent.framework != "undefined")
+	{
+		var app = window.parent.framework.getApplicationByName("'.$app.'");
+		window.parent.framework.setSidebox(app,'.$sidebox.',"'.$md5.'");
+	}
+</script>';
 	}
 
 	/**
