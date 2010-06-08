@@ -60,6 +60,7 @@ body {
 	padding: 3px;
 	background-image:url(images/gradient22.png);
 	background-position: bottom;
+	background-repeat: repeat-x;
 	clear: both;
 }
 
