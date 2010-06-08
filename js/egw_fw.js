@@ -417,6 +417,22 @@ egw_fw.prototype.setWebsiteTitle = function(_app,_title)
 	document.title = _app.website_title = _title;
 }
 
+/**
+ * Change timezone and refresh current app
+ * @param _tz
+ */
+egw_fw.prototype.tzSelection = function(_tz)
+{
+	//Perform an AJAX request to tell server
+	var req = new egw_json_request('home.jdots_framework.ajax_tz_selection.template',[_tz]);
+	req.sendRequest(false);		// false = synchron
+	
+	if (this.activeApp)
+	{
+		this.activeApp.iframe.contentDocument.location.reload();
+	}
+}
+
 egw_fw.prototype.linkHandler = function(_link, _app)
 {
 	var app = this.getApplicationByName(_app);

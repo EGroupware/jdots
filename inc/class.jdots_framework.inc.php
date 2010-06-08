@@ -268,7 +268,24 @@ class jdots_framework extends egw_framework
 	 */
 	function _add_topmenu_info_item($content)
 	{
+		if (strpos($content,'tz_selection') != false)
+		{
+			$content = preg_replace('/onchange="[^"]+"/','onchange="framework.tzSelection(this.value); return false;"',$content);
+		}
 		$this->topmenu_info_items[] = $content;
+	}
+	
+	/**
+	 * Change timezone
+	 * 
+	 * @param string $tz
+	 */
+	function ajax_tz_selection($tz)
+	{
+		egw_time::setUserPrefs($tz);	// throws exception, if tz is invalid
+	
+		$GLOBALS['egw']->preferences->add('common','tz',$tz);
+		$GLOBALS['egw']->preferences->save_repository();
 	}
 
 	/**
