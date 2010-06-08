@@ -16,14 +16,6 @@
 class jdots_framework extends egw_framework
 {
 	/**
-	* Contains array with linked icons in the topmenu
-	*
-	* @var mixed
-	* @access public
-	*/
-	var $topmenu_icon_arr = array();
-
-	/**
 	 * Whether javascript:egw_link_handler calls (including given app) should be returned by the "link" function
 	 * or just the link
 	 * 
@@ -31,12 +23,6 @@ class jdots_framework extends egw_framework
 	 */
 	private static $link_app;
 
-	/**
-	* Contains array of information for additional topmenu items added
-	* by hooks
-	*/
-	private static $hook_items = array();
-	
 	/**
 	* Constructor
 	*
@@ -105,13 +91,6 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
-	 * Private var to store website_title between calls of header() and footer()
-	 * 
-	 * @var string
-	 */
-	private $website_title;
-
-	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
 	 * @return string with html
@@ -167,14 +146,50 @@ class jdots_framework extends egw_framework
 </script>';
 		}
 		$this->tpl->set_var($vars = $this->_get_header());
-		$this->website_title = $vars['website_title'];
 		$content .= $this->tpl->fp('out','head').$content;
 		
 		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
 		{
+			//Set the sidebox content
+			$app = $GLOBALS['egw_info']['flags']['currentapp'];
+			$sidebox = json_encode($this->get_sidebox($app));
+			$md5 = md5($sidebox);
+			$content .= '<script type="text/javascript">
+	if (typeof window.parent.framework != "undefined")
+	{
+		var app = window.parent.framework.getApplicationByName("'.$app.'");
+		window.parent.framework.setSidebox(app,'.$sidebox.',"'.$md5.'");
+		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($vars['website_title']).'");
+	}';
+			// if manual is enabled, assamble manual url and define global callManual() function
+			if ($GLOBALS['egw_info']['user']['apps']['manual'])
+			{
+				$manual_url = egw::link('/index.php',array(
+						'menuaction' => 'manual.uimanual.view',
+					)+($GLOBALS['egw_info']['flags']['params']['manual'] ?
+					$GLOBALS['egw_info']['flags']['params']['manual'] : array(
+						'referer' => ($_SERVER['HTTPS'] ? 'https://' : 'http://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
+					)));
+				$content .= '
+	function callManual(_url)
+	{
+		var _framework = window.opener ? window.opener.parent.framework :  window.parent.framework;
+		if (typeof _url == "undefined" || !_url) _url = "'.$manual_url.'";
+		_framework.linkHandler(_url,"manual");
+	}';
+			}
+			$content .= "\n</script>";
 			return $content;
 		}
 		// from here on, only framework
+		$content .= '<script type="text/javascript">
+	function callManual()
+	{
+		framework.activeApp.iframe.contentWindow.callManual();		
+	}
+</script>';
+
+		// topmenu
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
 		$this->tpl->set_var($this->topmenu($vars,$apps));
 		
@@ -228,7 +243,11 @@ class jdots_framework extends egw_framework
 	*/
 	function _add_topmenu_item(array $app_data,$alt_label=null)
 	{
-		if (strpos($app_data['url'],'logout.php') === false)
+		if ($app_data['name'] == 'manual')
+		{
+			$app_data['url'] = "javascript:callManual();";
+		}
+		elseif (strpos($app_data['url'],'logout.php') === false)
 		{
 			$app_data['url'] = "javascript:egw_link_handler('".$app_data['url']."','".
 				(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ? 
@@ -483,24 +502,17 @@ class jdots_framework extends egw_framework
 	 */
 	function footer()
 	{
-		$vars = $this->_get_footer();
-
-		$script = '';
-		//Set the sidebox content
-		if (!isset($_GET['cd']) || $_GET['cd'] != 'yes')
-		{
-			$app = $GLOBALS['egw_info']['flags']['currentapp'];
-			$content = json_encode($this->get_sidebox($app));
-			$md5 = md5($content);
-			$script .= '<script type="text/javascript">
-	if (typeof window.parent.framework != "undefined")
-	{
-		var app = window.parent.framework.getApplicationByName("'.$app.'");
-		window.parent.framework.setSidebox(app,'.$content.',"'.$md5.'");
-		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($this->website_title).'");
+		return "\n</body>\n</html>\n";
 	}
-</script>';
-		}
-		return $script."\n</body>\n</html>\n";
+	
+	/**
+	 * Return javascript (eg. for onClick) to open manual with given url
+	 * 
+	 * @param string $url
+	 * @return string
+	 */
+	function open_manual_js($url)
+	{
+		return "callManual('$url')";
 	}
 }
