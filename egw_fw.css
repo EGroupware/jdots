@@ -43,8 +43,8 @@ body {
 
 #egw_divLogo {
 	display: block;
-/*	padding: 5px 0px 5px 5px;*/
-	margin-left: -4px;
+	margin-left: -8px;
+	text-align: center;
 }
 
 #egw_divLogo img {
@@ -65,9 +65,9 @@ body {
 }
 
 #egw_fw_sidemenu {
-	margin-top: 10px;
 	display: block;
 	width: 205px;
+	padding-top: 5px;
 }
 
 #egw_fw_topmenu {
@@ -157,7 +157,6 @@ body {
 .egw_fw_ui_sidemenu_entry_header:hover {
 	background-color: RGB(230, 230, 255);
 	background-image:url(images/gradient30blue.png);
-/*	x-background-image:url(images/tabs_bg_hover.png);*/
 }
 
 .egw_fw_ui_sidemenu_entry_content {
@@ -288,7 +287,7 @@ body {
 	-webkit-border-top-left-radius:5px;
 	border-top-right-radius:5px;
 	border-top-left-radius:5px;
-	padding: 5px 5px 0px 5px;
+	padding: 15px 5px 0px 5px;
 	x-background-image:url(images/header_tabs_bg.png);
 	background-image:url(images/gradient22.png);
 	background-position: bottom;
@@ -315,14 +314,6 @@ body {
 	background-repeat:no-repeat;
 	background-position:left center;
 }
-
-/*.egw_fw_ui_category_arrow {
-	display: inline-block;
-	width: 8px;
-	height: 8px;
-	margin: 0px 5px 0px 5px;
-	float: left;
-}*/
 
 .egw_fw_ui_category_active h1 {
 	background-image:url(images/arrow_down.png);
