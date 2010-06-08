@@ -139,6 +139,10 @@ egw_fw.prototype.applicationClickCallback = function(_sender)
 }
 
 /**
+ * navigate to tab of an applications (opening the tab if not yet open)
+ * 
+ * @param egw_fw_class_application _app
+ * @param string _url optional url, default index page of app
  */
 egw_fw.prototype.applicationTabNavigate = function(_app, _url)
 {
@@ -163,7 +167,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url)
 	}
 
 	//Set the iframe location
-	_app.iframe.src = _url;
+	_app.iframe.src = typeof(_url) == "undefined" ? _app.execName : _url;
 
 	//Set this application as the active application
 	_app.parentFw.activeApp = _app;
@@ -203,7 +207,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url)
  */
 egw_fw.prototype.loadApplicationsCallback = function(apps)
 {
-	var defaultAppEntry = null;
+	var defaultApp = null;
 
 	//Iterate through the application array returned
 	for (var i = 0; i < apps.length; i++)
@@ -224,7 +228,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		//If this entry is the default entry, show it using the click callback
 		if (app.isDefault && (app.isDefault === true))
 		{
-			defaultAppEntry = appData.sidemenuEntry;
+			defaultApp = appData;
 		}
 
 		this.applications[appData.appName] = appData;
@@ -241,9 +245,9 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		this.applicationTabNavigate(_app,_url);
 	}
 	// else display the default application
-	else if (defaultAppEntry)
+	else if (defaultApp)
 	{
-		this.applicationClickCallback.call(defaultAppEntry, null);
+		this.applicationTabNavigate(defaultApp);
 	}
 }
 
