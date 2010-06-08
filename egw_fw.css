@@ -65,6 +65,7 @@ body {
 }
 
 #egw_fw_sidemenu {
+	margin-top: 10px;
 	display: block;
 	width: 205px;
 }
