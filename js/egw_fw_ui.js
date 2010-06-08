@@ -266,6 +266,8 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	this.title = '';
 	this.tag = _tag;
 	this.closeable = true;
+	this.callback = _callback;
+	this.closeCallback = _closeCallback;
 	
 	//Create the header div and set its "click" function and "hover" event
 	this.headerDiv = document.createElement("span");
@@ -484,14 +486,13 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 		{
 			//Check whether there is another tab in the tab history,
 			//if not, simply show the first tab in the list.
-			if (this.tabHistory[this.tabHistory.length - 1])
+			var tab = this.tabs[0];
+			if (typeof this.tabHistory[this.tabHistory.length - 1] != 'undefined')
 			{
-				this.showTab(this.tabHistory[this.tabHistory.length - 1])
+				tab = this.tabHistory[this.tabHistory.length - 1];
 			}
-			else
-			{
-				this.showTab(this.tabs[0]);
-			}
+
+			tab.callback.call(tab);
 		}
 	}
 	

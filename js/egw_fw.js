@@ -122,8 +122,9 @@ egw_fw.prototype.tabClickCallback = function(_sender)
 	this.parent.showTab(this);
 	this.tag.parentFw.sidemenuUi.open(this.tag.sidemenuEntry);
 	document.title = this.tag.website_title ? this.tag.website_title : this.tag.appName;
+
 	//Set this application as the active application
-	this.activeApp = this.tag;
+	this.tag.parentFw.activeApp = this.tag;
 }
 
 /**
