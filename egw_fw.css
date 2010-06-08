@@ -35,7 +35,7 @@ body {
 	left: 0px;
 	top: 0px;
 	bottom: 20px;
-	width: 240px;
+	width: 225px;
 
 	padding: 0px 4px 4px 4px;
 	margin: 0px 0px 0px 0px;
@@ -43,8 +43,8 @@ body {
 
 #egw_divLogo {
 	display: block;
-	padding: 5px 0px 5px 5px;
-	width: 220px;
+/*	padding: 5px 0px 5px 5px;*/
+	margin-left: -4px;
 }
 
 #egw_divLogo img {
@@ -66,7 +66,7 @@ body {
 
 #egw_fw_sidemenu {
 	display: block;
-	width: 220px;
+	width: 205px;
 }
 
 #egw_fw_topmenu {
@@ -114,7 +114,7 @@ body {
 }
 
 #egw_fw_main {
-	margin-left: 240px;
+	margin-left: 225px;
 }
 
 #egw_fw_tabs {
@@ -123,7 +123,7 @@ body {
 
 .egw_fw_ui_sidemenu_entry_header {
 	display: block;
-	width: 210px;
+	width: 195px;
 	height: 20px;
 	padding: 2px 5px 2px 5px;
 	margin: 0px 5px 0px 5px;
@@ -160,7 +160,7 @@ body {
 }
 
 .egw_fw_ui_sidemenu_entry_content {
-	width: 218px;
+	width: 203px;
 	margin: 0px 5px 0px 5px;
 	border-style: solid;
 	border-color: #b4c5e6;
