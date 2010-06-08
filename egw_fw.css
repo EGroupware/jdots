@@ -12,38 +12,42 @@
 body {
 	margin: 0px !important;
 	padding: 0px !important;
+	width: 100% !important;
+	height: 100% !important;
 }
 
 #egw_fw_basecontainer {
+	position: fixed;
 	width: 100%;
 	height: 100%;
-	font-family: Arial, Helvetica, Sans-Serif;
-	font-size: 8pt;
+
 	padding: 0px;
 	margin: 0px;
+
+	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: 8pt;
 }
 
 #egw_fw_sidebar {
-	float: left;
-	padding: 4px;
-	padding-top: 0px;
-	width: 220px;
-	height: 100%;
 	position: fixed;
+	overflow: hidden;
+
+	left: 0px;
+	top: 0px;
+	bottom: 20px;
+	width: 240px;
+
+	padding: 0px 4px 4px 4px;
+	margin: 0px 0px 0px 0px;
 }
 
-#divLogo {
+#egw_divLogo {
 	display: block;
-	height: 42px;
-	position: relative;
-	text-align: center;
-	padding-left: 5px;
+	padding: 5px 0px 5px 5px;
 	width: 220px;
-	left: 0;
-	top: 0;
 }
 
-#divLogo img {
+#egw_divLogo img {
 	height: 48px;
 	border: none;
 }
@@ -61,7 +65,7 @@ body {
 
 #egw_fw_sidemenu {
 	display: block;
-	margin-top: 10px;
+	width: 220px;
 }
 
 #egw_fw_topmenu {
@@ -70,7 +74,6 @@ body {
 	padding-top: 0;
 	padding-bottom: 5px;
 	height: 13px;
-	margin-left: 240px;
 	background-image:url(images/gradient22.png);
 	background-position: bottom;
 	-webkit-border-bottom-left-radius: 10px;
@@ -110,11 +113,11 @@ body {
 }
 
 #egw_fw_main {
-
+	margin-left: 240px;
 }
 
 #egw_fw_tabs {
-	margin: 5px 5px 5px 240px;	
+/*	margin: 5px 5px 5px 0px;	*/
 }
 
 .egw_fw_ui_sidemenu_entry_header {
