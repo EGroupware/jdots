@@ -338,6 +338,7 @@ body {
 	display: block;
 	padding-left: 16px;
 	padding-right: 3px;
+	position: relative;
 }
 
 .egw_fw_ui_sidemenu_listitem_icon {	
