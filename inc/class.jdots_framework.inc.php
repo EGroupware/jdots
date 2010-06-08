@@ -279,9 +279,13 @@ class jdots_framework extends egw_framework
 	 */
 	function _add_topmenu_info_item($content)
 	{
-		if (strpos($content,'tz_selection') != false)
+		if (strpos($content,'tz_selection') !== false)
 		{
 			$content = preg_replace('/onchange="[^"]+"/','onchange="framework.tzSelection(this.value); return false;"',$content);
+		}
+		elseif(strpos($content,'menuaction=admin.uicurrentsessions.list_sessions') !== false)
+		{
+			$content = preg_replace('/href="([^"]+)"/',"href=\"javascript:egw_link_handler('\\1','admin')\"",$content);
 		}
 		$this->topmenu_info_items[] = $content;
 	}
