@@ -182,13 +182,15 @@ class jdots_framework extends egw_framework
 			return $content;
 		}
 		// from here on, only framework
-		$content .= '<script type="text/javascript">
+		if ($GLOBALS['egw_info']['user']['apps']['manual'])
+		{
+			$content .= '<script type="text/javascript">
 	function callManual()
 	{
 		framework.activeApp.iframe.contentWindow.callManual();		
 	}
 </script>';
-
+		}
 		// topmenu
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
 		$this->tpl->set_var($this->topmenu($vars,$apps));
