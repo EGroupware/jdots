@@ -175,7 +175,7 @@ class jdots_framework extends egw_framework
 			//Register the global key press handler
 			$content .= "
 	window.keyPressHandler = function(event) {
-		if (event.keyCode = 112)
+		if (event.keyCode == 112)
 		{
 			event.preventDefault();
 			window.callManual();
