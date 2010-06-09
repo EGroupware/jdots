@@ -18,7 +18,10 @@ $GLOBALS['egw_info']['template']['jdots']['author'] = array(
    array('name' => 'Andreas Stoeckel', 'email' => 'as@stylite.de'),
    array('name' => 'Ralf Becker', 'email' => 'rb@stylite.de'),
 );
-$GLOBALS['egw_info']['template']['jdots']['license'] = 'EPL';
+$GLOBALS['egw_info']['template']['jdots']['license'] = array(
+	'name' => 'Stylite EPL license',
+	'url'  => 'http://www.stylite.de/EPL',
+);
 $GLOBALS['egw_info']['template']['jdots']['icon'] = "jdots/images/jdots-logo.png";
 $GLOBALS['egw_info']['template']['jdots']['maintainer'] = array(
    array('name' => 'Stylite GmbH', 'url' => 'http://www.stylite.de/')
