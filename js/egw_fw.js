@@ -52,6 +52,9 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 	//Register the global alert handler
 	window.egw_alertHandler = this.alertHandler;
 
+	//Register the key press handler
+	$(document).keypress(this.keyPressHandler);
+
 	//Override the old egw_openWindowCentered2
 	window.egw_openWindowCentered2 = this.egw_openWindowCentered2;
 
@@ -62,6 +65,36 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 egw_fw.prototype.alertHandler = function(_message, _details)
 {
 	alert('Error:\n ' + _message + '\n\nDetails:\n ' + _details);
+}
+
+/**
+ * Function called whenever F1 is pressed inside the framework
+ * @returns boolean true if the call manual function could be called, false if the manual is not available
+ */
+egw_fw.prototype.f1Handler = function()
+{
+	if (typeof window.callManual != 'undefined')
+	{
+		window.callManual();
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Function called whenever a key is pressed
+ * @param object event describes the key press event
+ */
+egw_fw.prototype.keyPressHandler = function(event)
+{
+	switch (event.keyCode)
+	{
+		case 112: //F1
+		{
+			event.preventDefault();
+			framework.f1Handler();
+		}
+	}
 }
 
 /**
@@ -501,6 +534,16 @@ egw_fw.prototype.egw_appWindow = function(_app)
 
 window.egw_link_handler = function(_link, _app)
 {
+	/*var frmwrk = getFramwork();
+	if (frmwrk != null)
+	{
+		frmwrk.linkHandler(_link, _app)
+	}
+	else
+	{
+		window.location = _link;
+	}*/
+
 	if (typeof window.framework != "undefined")
 	{
 		window.framework.linkHandler(_link, _app);
@@ -514,3 +557,20 @@ window.egw_link_handler = function(_link, _app)
 		window.location = _link;
 	}
 }
+
+window.getFramework = function()
+{
+	if (typeof window.framework != 'undefined')
+	{
+		return framework;
+	}
+	else if (typeof window.parent.getFramework != "undefined")
+	{
+		return window.parent.getFramework();
+	}
+	else
+	{
+		return null;
+	}
+}
+

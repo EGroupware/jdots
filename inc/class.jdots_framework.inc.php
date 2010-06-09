@@ -149,7 +149,7 @@ class jdots_framework extends egw_framework
 		// - check if iframe parent (top) has a framework loaded or
 		// - we are a popup (opener) or
 		// - we are an iframe in a popup (top.opener)
-		if (!$do_framework)
+		if(!$do_framework)
 		{
 			$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
 	if (typeof top.framework == "undefined" && !opener && !top.opener)
@@ -171,6 +171,18 @@ class jdots_framework extends egw_framework
 		var app = window.parent.framework.getApplicationByName("'.$app.'");
 		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($vars['website_title']).'");
 	}';
+
+			//Register the global key press handler
+			$content .= "
+	window.keyPressHandler = function(event) {
+		if (event.keyCode = 112)
+		{
+			event.preventDefault();
+			window.callManual();
+		}
+	}
+	$(document).keypress(keyPressHandler);\n";
+
 			// if manual is enabled, assamble manual url and define global callManual() function
 			if ($GLOBALS['egw_info']['user']['apps']['manual'])
 			{
