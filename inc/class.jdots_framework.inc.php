@@ -317,7 +317,6 @@ class jdots_framework extends egw_framework
 	 * We store in the session the md5 of each sidebox menu already send to client.
 	 * If the framework get reloaded, that list gets cleared in header();
 	 * Most apps never change sidebox, so we not even need to generate it more then once.
-	 * We use a negative list for apps known to change sidebox: calendar, fmail, pm, sitemgr
 	 *
 	 * @return string with javascript to set sidebox
 	 */
@@ -326,12 +325,6 @@ class jdots_framework extends egw_framework
 		$app = $GLOBALS['egw_info']['flags']['currentapp'];
 		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
 		
-		if (isset($md5_session[$app]) &&	// negativ list of apps known to change sidebox menu
-			!in_array($app,array('calendar','projectmanager','felamimail','sitemgr','filemanager')))
-		{
-			//error_log(__METHOD__."() md5_session[$app]==='{$md5_session[$app]}' already set --> nothing to do");
-			return '';
-		}
 		//Set the sidebox content
 		$sidebox = json_encode($this->get_sidebox($app));
 		$md5 = md5($sidebox);
