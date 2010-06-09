@@ -464,7 +464,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	if (typeof _app != 'undefined')
 	{
 		var appEntry = framework.getApplicationByName(_app);
-		if (appEntry.iframe == null)
+		if (appEntry && appEntry.iframe == null)
 		{
 			navigate = true;
 			framework.applicationTabNavigate(appEntry, 'about:blank');
