@@ -352,9 +352,10 @@ egw_fw.prototype.seperateJavaScript = function(_html)
  */
 egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 {
-	var req = new egw_json_request("home.jdots_framework.ajax_sidebox_menu_opened",
-		[this.tag.appName, this.catName, _opened]);
-	req.sendRequest(true);
+	// switched off, 'til we start using it
+	//var req = new egw_json_request("home.jdots_framework.ajax_sidebox_menu_opened",
+	//	[this.tag.appName, this.catName, _opened]);
+	//req.sendRequest(true);
 
 	/* Store the state of the category lokaly */	
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
