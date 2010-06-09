@@ -224,7 +224,7 @@ class jdots_framework extends egw_framework
 		// add framework div's
 		$this->tpl->set_var($this->_get_footer());
 		$content .= $this->tpl->fp('out','framework');
-		$content .= self::footer();
+		$content .= self::footer(false);
 		
 		echo $content;
 		common::egw_exit();
@@ -333,7 +333,7 @@ class jdots_framework extends egw_framework
 		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
 		
 		if (isset($md5_session[$app]) &&	// negativ list of apps known to change sidebox menu
-			!in_array($app,array('calendar','projectmanager','felamimail','sitemgr')))
+			!in_array($app,array('calendar','projectmanager','felamimail','sitemgr','filemanager')))
 		{
 			//error_log(__METHOD__."() md5_session[$app]==='{$md5_session[$app]}' already set --> nothing to do");
 			return '';
@@ -516,7 +516,7 @@ class jdots_framework extends egw_framework
 	 */
 	public function ajax_sidebox_menu_opened($app,$menu_name,$opened)
 	{
-		error_log(__METHOD__."('$app','$menu_name',$opened)");
+		//error_log(__METHOD__."('$app','$menu_name',$opened)");
 	}
 	
 	/**
@@ -575,11 +575,19 @@ class jdots_framework extends egw_framework
 	/**
 	 * Returns the html from the closing div of the main application area to the closing html-tag
 	 *
+	 * @param boolean $no_framework=true
 	 * @return string
 	 */
-	function footer()
+	function footer($no_framework=true)
 	{
-		return "\n</body>\n</html>\n";
+		static $footer_done;
+		if ($footer_done++) return;	// prevent multiple footers, not sure we still need this (RalfBecker)
+
+		if($no_framework && $GLOBALS['egw_info']['user']['preferences']['common']['show_generation_time'])
+		{
+			$vars = $this->_get_footer();
+		}
+		return "\n{$vars['page_generation_time']}\n</body>\n</html>\n";
 	}
 	
 	/**
