@@ -119,18 +119,12 @@ class jdots_framework extends egw_framework
 		// should we draw the framework, or just a header
 		$do_framework = isset($_GET['cd']) && $_GET['cd'] === 'yes';
 		
-		// include needed javascript files
-		$js = $GLOBALS['egw']->js;
-		$js->validate_file('jquery','jquery');
-		//not yet used: $js->validate_file('jquery','jquery-ui');
-		$js->validate_file('.','egw_json');
-
 		if ($do_framework)
 		{
 			// framework javascript classes only need for framework
-			$js->validate_file('.','egw_fw','jdots');
-			$js->validate_file('.','egw_fw_ui','jdots');
-			$js->validate_file('.','egw_fw_classes','jdots');
+			self::validate_file('.','egw_fw','jdots');
+			self::validate_file('.','egw_fw_ui','jdots');
+			self::validate_file('.','egw_fw_classes','jdots');
 
 			egw_cache::unsetSession(__CLASS__,'sidebox_md5');	// sideboxes need to be send again
 
