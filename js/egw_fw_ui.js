@@ -651,3 +651,203 @@ egw_fw_ui_category.prototype.remove = function()
 	$(this.headerDiv).remove();
 }
 
+/**
+ * egw_fw_ui_scrollarea class
+ */
+
+function egw_fw_ui_scrollarea(_contDiv)
+{
+	this.startScrollSpeed = 50.0; //in px/sec
+	this.endScrollSpeed = 150.0; //in px/sec
+	this.scrollSpeedAccel = 50.0; //in px/sec^2
+	this.timerInterval = 0.04; //in seconds  //20ms is the timer base timer resolution on windows systems
+
+	this.contDiv = _contDiv;
+	this.contHeight = 0;
+	this.boxHeight = 0;
+	this.scrollPos = 0;
+	this.buttonScrollOffs = 0;
+	this.maxScrollPos = 0;
+	this.buttonsVisible = true;
+	this.mouseOver = false;
+	this.scrollTime = 0.0;
+	this.btnUpEnabled = true;
+	this.btnDownEnabled = true;
+
+	//Wrap a new "scroll" div around the content of the content div
+	this.scrollDiv = document.createElement("div");
+	this.scrollDiv.style.position = "relative";
+	$(this.scrollDiv).addClass("egw_fw_ui_scrollarea");
+
+	//Create a container which contains the up/down buttons and the scrollDiv
+	this.outerDiv = document.createElement("div");
+	$(this.outerDiv).addClass("egw_fw_ui_scrollarea_outerdiv");
+	$(this.outerDiv).append(this.scrollDiv);
+
+	$(this.contDiv).children().appendTo(this.scrollDiv);
+	$(this.contDiv).append(this.outerDiv);
+	this.contentDiv = this.scrollDiv;
+
+	//Create the "up" and the "down" button
+	this.btnUp = document.createElement("span");
+	$(this.btnUp).addClass("egw_fw_ui_scrollarea_button");
+	$(this.btnUp).addClass("egw_fw_ui_scrollarea_button_up");
+	$(this.btnUp).hide();
+
+	this.btnUp._parent = this;
+	$(this.btnUp).mouseenter(function(){
+		this._parent.mouseOverToggle(true, -1);
+		$(this).addClass("egw_fw_ui_scrollarea_button_hover");
+	});
+	$(this.btnUp).mouseleave(function(){
+		this._parent.mouseOverToggle(false, -1);
+		$(this).removeClass("egw_fw_ui_scrollarea_button_hover");
+	});
+
+	$(this.outerDiv).prepend(this.btnUp);
+
+	this.btnDown = document.createElement("span");
+	$(this.btnDown).addClass("egw_fw_ui_scrollarea_button");
+	$(this.btnDown).addClass("egw_fw_ui_scrollarea_button_down");
+	$(this.btnDown).hide();
+
+	this.btnDown._parent = this;
+	$(this.btnDown).mouseenter(function(){
+		this._parent.mouseOverToggle(true, 1);
+		$(this).addClass("egw_fw_ui_scrollarea_button_hover");
+	});
+	$(this.btnDown).mouseleave(function(){
+		this._parent.mouseOverToggle(false, 1);
+		$(this).removeClass("egw_fw_ui_scrollarea_button_hover");
+	});
+
+	$(this.outerDiv).prepend(this.btnDown);
+
+	//Update - read height of the children elements etc.
+	this.update();
+}
+
+egw_fw_ui_scrollarea.prototype.setScrollPos = function(_pos)
+{
+	if (this.buttonsVisible)
+	{
+		if (_pos <= 0)
+		{			
+			if (this.btnUpEnabled)
+				$(this.btnUp).addClass("egw_fw_ui_scrollarea_button_disabled");
+			if (!this.btnDownEnabled)
+				$(this.btnDown).removeClass("egw_fw_ui_scrollarea_button_disabled");
+			this.btnDownEnabled = true;
+			this.btnUpEnabled = false;
+
+			_pos = 0;
+		}
+		else if (_pos >= this.maxScrollPos)
+		{
+			if (this.btnDownEnabled)
+				$(this.btnDown).addClass("egw_fw_ui_scrollarea_button_disabled");
+			if (!this.btnUpEnabled)
+				$(this.btnUp).removeClass("egw_fw_ui_scrollarea_button_disabled");
+			this.btnDownEnabled = false;
+			this.btnUpEnabled = true;
+
+			_pos = this.maxScrollPos;
+		}
+		else
+		{
+			if (!this.btnUpEnabled)
+				$(this.btnUp).removeClass("egw_fw_ui_scrollarea_button_disabled");
+			if (!this.btnDownEnabled)
+				$(this.btnDown).removeClass("egw_fw_ui_scrollarea_button_disabled");
+			this.btnUpEnabled = true;
+			this.btnDownEnabled = true;
+		}
+
+		this.scrollPos = _pos;
+
+		//Apply the calculated scroll position to the scrollDiv
+		this.scrollDiv.style.top = Math.round(-_pos) + 'px';
+	}
+}
+
+egw_fw_ui_scrollarea.prototype.scrollDelta = function(_delta)
+{
+	this.setScrollPos(this.scrollPos + _delta);
+}
+
+egw_fw_ui_scrollarea.prototype.toggleButtons = function(_visible)
+{
+	if (_visible)
+	{
+		$(this.btnDown).show();
+		$(this.btnUp).show();
+		this.buttonHeight = $(this.btnDown).outerHeight();
+		this.maxScrollPos = this.contHeight - this.boxHeight;
+		this.setScrollPos(this.scrollPos);
+	}
+	else
+	{
+		this.scrollDiv.style.top = '0';
+		$(this.btnDown).hide();
+		$(this.btnUp).hide();
+	}
+
+	this.buttonsVisible = _visible;
+}
+
+egw_fw_ui_scrollarea.prototype.update = function()
+{
+	//Get the height of the content and the outer box
+	this.contHeight = $(this.scrollDiv).outerHeight();
+	this.boxHeight = $(this.outerDiv).height();
+
+	this.toggleButtons(this.contHeight > this.boxHeight);
+	this.setScrollPos(this.scrollPos);
+}
+
+egw_fw_ui_scrollarea.prototype.getScrollDelta = function(_timeGap)
+{
+	//Calculate the current scroll speed
+	var curScrollSpeed = this.startScrollSpeed + this.scrollSpeedAccel * this.scrollTime;
+	if (curScrollSpeed > this.endScrollSpeed)
+	{
+		curScrollSpeed = this.endScrollSpeed;
+	}
+
+	//Increment the scroll time counter
+	this.scrollTime = this.scrollTime + _timeGap;
+
+	//Return the actual delta value
+	return curScrollSpeed * _timeGap;
+}
+
+egw_fw_ui_scrollarea.prototype.mouseOverCallback = function(_context)
+{
+	//Do the scrolling
+	_context.scrollDelta(_context.getScrollDelta(_context.timerInterval) * 
+		_context.dir);
+
+	if (_context.mouseOver)
+	{
+		//Set the next timeout
+		window.setTimeout(_context.mouseOverCallback, Math.round(_context.timerInterval * 1000),
+			_context);
+	}
+}
+
+egw_fw_ui_scrollarea.prototype.mouseOverToggle = function(_over, _dir)
+{
+	this.mouseOver = _over;
+	this.dir = _dir;
+
+	if (_over)
+	{
+		window.setTimeout(this.mouseOverCallback, Math.round(this.timerInterval * 1000),
+			this);
+	}
+	else
+	{
+		this.scrollTime = 0.0;
+	}
+}
+

@@ -39,8 +39,11 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 
 	if (this.sidemenuDiv && this.tabsDiv)
 	{
+		//Wrap a scroll area handler around the applications
+		this.scrollAreaUi = new egw_fw_ui_scrollarea(this.sidemenuDiv);
+
 		//Create the sidemenu and the tabs area
-		this.sidemenuUi = new egw_fw_ui_sidemenu(this.sidemenuDiv);
+		this.sidemenuUi = new egw_fw_ui_sidemenu(this.scrollAreaUi.contentDiv);
 		this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
@@ -134,6 +137,7 @@ egw_fw.prototype.resizeHandler = function()
 		{
 			this.applications[app].iframe.style.height = this.getIFrameHeight() + 'px';
 		}
+		this.scrollAreaUi.update();
 	}
 }
 
@@ -220,6 +224,8 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url)
 	{
 		_app.parentFw.sidemenuUi.open(null);
 	}
+	
+	_app.parentFw.scrollAreaUi.update();
 }
 
 /**
@@ -282,6 +288,8 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	{
 		this.applicationTabNavigate(defaultApp);
 	}
+
+	this.scrollAreaUi.update();
 }
 
 /**
@@ -359,6 +367,7 @@ egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 
 	/* Store the state of the category lokaly */	
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
+	this.tag.parentFw.scrollAreaUi.update();
 }
 
 /**
@@ -442,6 +451,9 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 
 		_app.hasSideboxMenuContent = true;
 		_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
+
+		_app.parentFw.scrollAreaUi.update();
+		_app.parentFw.scrollAreaUi.setScrollPos(0);
 	}
 }
 
