@@ -122,6 +122,7 @@ class jdots_framework extends egw_framework
 		if ($do_framework)
 		{
 			// framework javascript classes only need for framework
+			self::validate_file('jquery','jquery-ui');
 			self::validate_file('.','egw_fw','jdots');
 			self::validate_file('.','egw_fw_ui','jdots');
 			self::validate_file('.','egw_fw_classes','jdots');
