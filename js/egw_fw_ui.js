@@ -574,12 +574,13 @@ egw_fw_ui_tabs.prototype.clean = function()
  */
 
 
-function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _tag)
+function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _animationCallback, _tag)
 {
 	//Copy the parameters
 	this.contDiv = _contDiv;
 	this.catName = _name;
 	this.callback = _callback;
+	this.animationCallback = _animationCallback;
 	this.tag = _tag;
 
 	//Create the ui divs
@@ -593,6 +594,7 @@ function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _tag)
 
 	//Add the content
 	this.contentDiv = document.createElement('div');
+	this.contentDiv._parent = this;
 	$(this.contentDiv).addClass('egw_fw_ui_category_content');
 	$(this.contentDiv).append(_content);
 	$(this.contentDiv).hide();
@@ -622,10 +624,13 @@ egw_fw_ui_category.prototype.open = function(_instantly)
 	if (_instantly)
 	{
 		$(this.contentDiv).show();
+		this.animationCallback();
 	}
 	else
 	{
-		$(this.contentDiv).slideDown();
+		$(this.contentDiv).slideDown(200, function() {
+			this._parent.animationCallback.call(this._parent);
+		});
 	}
 }
 
@@ -637,10 +642,13 @@ egw_fw_ui_category.prototype.close = function(_instantly)
 	if (_instantly)
 	{
 		$(this.contentDiv).hide();
+		this.animationCallback();
 	}
 	else
 	{
-		$(this.contentDiv).slideUp();
+		$(this.contentDiv).slideUp(200, function() {
+			this._parent.animationCallback.call(this._parent);
+		});
 	}
 }
 

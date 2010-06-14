@@ -121,6 +121,7 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 
 		//Activate the new application in the sidebar menu
 		app.parentFw.sidemenuUi.open(tabsUi.activeTab.tag.sidemenuEntry);
+		app.parentFw.scrollAreaUi.update();
 	}
 
 	tabsUi.setCloseable(tabsUi.tabs.length > 1);
@@ -158,6 +159,8 @@ egw_fw.prototype.tabClickCallback = function(_sender)
 {
 	this.parent.showTab(this);
 	this.tag.parentFw.sidemenuUi.open(this.tag.sidemenuEntry);
+	this.tag.parentFw.scrollAreaUi.update();
+
 	document.title = this.tag.website_title ? this.tag.website_title : this.tag.appName;
 
 	//Set this application as the active application
@@ -367,6 +370,11 @@ egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 
 	/* Store the state of the category lokaly */	
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
+//	this.tag.parentFw.scrollAreaUi.update();
+}
+
+egw_fw.prototype.categoryAnimationCallback = function()
+{
 	this.tag.parentFw.scrollAreaUi.update();
 }
 
@@ -424,7 +432,8 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				if (catContent != '')
 				{
 					var categoryUi = new egw_fw_ui_category(contDiv,_data[i].menu_name,
-						_data[i].title, catContent, this.categoryOpenCloseCallback, _app);
+						_data[i].title, catContent, this.categoryOpenCloseCallback, 
+						this.categoryAnimationCallback, _app);
 
 					//Lookup whether this entry was opened before. If no data is
 					//stored about this, use the information we got from the server
