@@ -32,13 +32,10 @@ body {
 	position: fixed;
 	overflow: hidden;
 
-	left: 0px;
 	top: 0px;
+	left: 0px;
 	bottom: 20px;
-	width: 225px;
-
-	padding: 0px 4px 4px 4px;
-	margin: 0px 0px 0px 0px;
+/*	width: 225px;*/
 }
 
 #egw_divLogo {
@@ -68,10 +65,19 @@ body {
 	position: absolute;
 	top: 53px;
 	bottom: 4px;
-	width: 217px;
-	padding-top: 3px;
+	left: 4px;
+	right: 8px;
 	overflow: hidden;
 	z-index: 0;
+}
+
+#egw_fw_splitter {
+	position: absolute;
+/*	background-color: RGB(200, 200, 255);*/
+/*	width: 5px;*/
+	top: 53px;
+	bottom: 4px;
+	right: 6px;
 }
 
 #egw_fw_topmenu {
@@ -119,16 +125,15 @@ body {
 }
 
 #egw_fw_main {
-	margin-left: 225px;
+/*	margin-left: 240px;*/
 }
 
 #egw_fw_tabs {
-/*	margin: 5px 5px 5px 0px;	*/
+/*	margin: 5px 5px 5px 0px;*/
 }
 
 .egw_fw_ui_sidemenu_entry_header {
 	display: block;
-/*	width: 195px;*/
 	height: 20px;
 	padding: 2px 5px 2px 5px;
 	margin: 0;
@@ -395,4 +400,34 @@ body {
 .egw_fw_ui_scrollarea_outerdiv
 {
 	height: 100%;
+}
+
+.egw_fw_ui_splitter {
+	background-color: RGB(250, 250, 250);
+}
+
+.egw_fw_ui_splitter_hover {
+	background-color: RGB(220, 220, 220);
+}
+
+.egw_fw_ui_splitter_horizontal {
+	background-image:url(images/splitter_horz.png);
+	background-position:center;
+	background-repeat:no-repeat;
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	cursor: n-resize;
+	cursor: ns-resize;
+}
+
+.egw_fw_ui_splitter_vertical {
+	background-image:url(images/splitter_vert.png);
+	background-position:center;
+	background-repeat:no-repeat;
+	position: absolute;
+	width: 5px;
+	height: 100%;
+	cursor: e-resize;
+	cursor: ew-resize;
 }

@@ -865,3 +865,154 @@ egw_fw_ui_scrollarea.prototype.mouseOverToggle = function(_over, _dir)
 	}
 }
 
+/**
+ * egw_fw_ui_splitter class
+ */
+
+var EGW_SPLITTER_HORIZONTAL = 0;
+var EGW_SPLITTER_VERTICAL = 1;
+
+function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraints)
+{
+	//Copy the parameters
+	this.contDiv = _contDiv;
+	this.orientation = _orientation;
+	this.resizeCallback = _resizeCallback;
+	this.startPos = 0;
+	this.constraints =
+	[
+		{
+			"size": 0,
+			"minsize": 0,
+			"maxsize": 0
+		},
+		{
+			"size": 0,
+			"minsize": 0,
+			"maxsize": 0
+		}
+	];
+
+	//Copy the given constraints parameter, keeping the default values set above
+	if (_constraints.constructor == Array)
+	{
+		for (var i = 0; i < 2; i++)
+		{		
+			if (typeof _constraints[i] != 'undefined')
+			{
+				if (typeof _constraints[i].size != 'undefined')
+					this.constraints[i].size = _constraints[i].size;
+				if (typeof _constraints[i].minsize != 'undefined')
+					this.constraints[i].minsize = _constraints[i].minsize;
+				if (typeof _constraints[i].maxsize != 'undefined')
+					this.constraints[i].maxsize = _constraints[i].maxsize;
+			}
+		}
+	}
+
+	//Create the actual splitter div
+	this.splitterDiv = document.createElement('div');
+	this.splitterDiv._parent = this;
+	$(this.splitterDiv).addClass("egw_fw_ui_splitter");
+
+	//Setup the options for the dragable object
+	var dragoptions = {
+		opacity: 0.7,
+		helper: 'clone',
+		start: function(event, ui) {
+			return this._parent.dragStartHandler.call(this._parent, event, ui);
+		},
+		stop: function(event, ui) {
+			return this._parent.dragStopHandler.call(this._parent, event, ui);
+		},
+		containment: 'document',
+		appendTo: 'body',
+		iframeFix: true,
+		zIndex: 10000
+	};
+
+	switch (this.orientation)
+	{
+		case EGW_SPLITTER_HORIZONTAL:
+			dragoptions.axis = 'y';
+			$(this.splitterDiv).addClass("egw_fw_ui_splitter_horizontal");
+			break;
+		case EGW_SPLITTER_VERTICAL:
+			dragoptions.axis = 'x';
+			$(this.splitterDiv).addClass("egw_fw_ui_splitter_vertical");
+			break;
+	}
+	$(this.splitterDiv).draggable(dragoptions);
+
+	//Handle mouse hovering of the splitter div
+	$(this.splitterDiv).mouseenter(function() {
+		$(this).addClass("egw_fw_ui_splitter_hover");
+	});
+	$(this.splitterDiv).mouseleave(function() {
+		$(this).removeClass("egw_fw_ui_splitter_hover");
+	});
+
+	$(this.contDiv).append(this.splitterDiv);
+}
+
+egw_fw_ui_splitter.prototype.clipDelta = function(_delta)
+{
+	var result = _delta;
+
+	for (var i = 0; i < 2; i++)
+	{
+		var mul = (i == 0) ? 1 : -1;
+
+		if (this.constraints[i].maxsize > 0)
+		{
+			var size = this.constraints[i].size + mul * result;
+			if (size > this.constraints[i].maxsize)
+				result += mul * (this.constraints[i].maxsize - size);
+		}
+
+		if (this.constraints[i].minsize > 0)
+		{
+			var size = this.constraints[i].size + mul * result;
+			if (size < this.constraints[i].minsize)
+				result += mul * (this.constraints[i].minsize - size);
+		}
+	}
+
+	return result;
+}
+
+egw_fw_ui_splitter.prototype.dragStartHandler = function(event, ui)
+{
+	switch (this.orientation)
+	{
+		case EGW_SPLITTER_HORIZONTAL:
+			this.startPos = ui.position.top;
+			break;
+		case EGW_SPLITTER_VERTICAL:
+			this.startPos = ui.position.left;
+			break;
+	}
+}
+
+
+egw_fw_ui_splitter.prototype.dragStopHandler = function(event, ui)
+{
+	var delta = 0;
+	switch (this.orientation)
+	{
+		case EGW_SPLITTER_HORIZONTAL:
+			delta = ui.position.top - this.startPos;
+			break;
+		case EGW_SPLITTER_VERTICAL:
+			delta = ui.position.left - this.startPos;
+			break;
+	}
+
+	//Clip the delta value
+	delta = this.clipDelta(delta);
+
+	this.constraints[0].size += delta;
+	this.constraints[1].size -= delta;
+
+	this.resizeCallback(this.constraints[0].size, this.constraints[1].size);
+}

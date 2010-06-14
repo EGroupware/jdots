@@ -21,12 +21,15 @@
  * @param string _tabsId specifies the name of the div container which should cotain the tab area
  * @param string _webserverUrl specifies the egroupware root url
  */
-function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
+function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCallback,
+	_sideboxStartSize)
 {
 	/* Get the base div */
 	this.sidemenuDiv = document.getElementById(_sidemenuId);
 	this.tabsDiv = document.getElementById(_tabsId);
+	this.splitterDiv = document.getElementById(_splitterId);
 	this.webserverUrl = _webserverUrl;
+	this.sideboxSizeCallback = _sideboxSizeCallback;
 	window.egw_webserverUrl = _webserverUrl;
 
 	this.sidemenuUi = null;
@@ -37,17 +40,29 @@ function egw_fw(_sidemenuId, _tabsId, _webserverUrl)
 	this.applications = new Object();
 	this.activeApp = null;
 
-	if (this.sidemenuDiv && this.tabsDiv)
+	if (this.sidemenuDiv && this.tabsDiv && this.splitterDiv)
 	{
 		//Wrap a scroll area handler around the applications
 		this.scrollAreaUi = new egw_fw_ui_scrollarea(this.sidemenuDiv);
 
-		//Create the sidemenu and the tabs area
+		//Create the sidemenu, the tabs area and the splitter
 		this.sidemenuUi = new egw_fw_ui_sidemenu(this.scrollAreaUi.contentDiv);
 		this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
+		this.splitterUi = new egw_fw_ui_splitter(this.splitterDiv,
+			EGW_SPLITTER_VERTICAL, this.sideboxSizeCallback, 
+			[
+				{
+					"size": _sideboxStartSize,
+					"minsize": _sideboxStartSize,
+					"maxsize": 0
+				},
+			]);
+		
 
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
+
+	_sideboxSizeCallback(_sideboxStartSize);
 
 	//Register the resize handler
 	$(window).resize(function(){window.framework.resizeHandler()});
