@@ -666,8 +666,8 @@ egw_fw_ui_category.prototype.remove = function()
 function egw_fw_ui_scrollarea(_contDiv)
 {
 	this.startScrollSpeed = 50.0; //in px/sec
-	this.endScrollSpeed = 150.0; //in px/sec
-	this.scrollSpeedAccel = 50.0; //in px/sec^2
+	this.endScrollSpeed = 250.0; //in px/sec
+	this.scrollSpeedAccel = 75.0; //in px/sec^2
 	this.timerInterval = 0.04; //in seconds  //20ms is the timer base timer resolution on windows systems
 
 	this.contDiv = _contDiv;
@@ -707,6 +707,9 @@ function egw_fw_ui_scrollarea(_contDiv)
 		this._parent.mouseOverToggle(true, -1);
 		$(this).addClass("egw_fw_ui_scrollarea_button_hover");
 	});
+	$(this.btnUp).click(function(){
+		this._parent.setScrollPos(0);
+	});
 	$(this.btnUp).mouseleave(function(){
 		this._parent.mouseOverToggle(false, -1);
 		$(this).removeClass("egw_fw_ui_scrollarea_button_hover");
@@ -723,6 +726,9 @@ function egw_fw_ui_scrollarea(_contDiv)
 	$(this.btnDown).mouseenter(function(){
 		this._parent.mouseOverToggle(true, 1);
 		$(this).addClass("egw_fw_ui_scrollarea_button_hover");
+	});
+	$(this.btnDown).click(function() {
+		this._parent.setScrollPos(this._parent.maxScrollPos);
 	});
 	$(this.btnDown).mouseleave(function(){
 		this._parent.mouseOverToggle(false, 1);

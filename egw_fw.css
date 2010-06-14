@@ -361,12 +361,12 @@ body {
 	z-index: 1;	
 }
 
-.egw_fw_ui_scrollarea_button_up .egw_fw_ui_scrollarea_button_hover
+.egw_fw_ui_scrollarea_button_up.egw_fw_ui_scrollarea_button_hover
 {
 	background-image:url(images/gradient_scroll_up_hover.png);
 }
 
-.egw_fw_ui_scrollarea_button_down .egw_fw_ui_scrollarea_button_hover
+.egw_fw_ui_scrollarea_button_down.egw_fw_ui_scrollarea_button_hover
 {
 	background-image:url(images/gradient_scroll_down_hover.png);
 }
