@@ -42,7 +42,7 @@ class jdots_framework extends egw_framework
 	private static function get_sidebar_width($app)
 	{
 		//If the global_sidebar_width option is set, we'll simply return false
-		if (!$GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width'])
+		if (isset($GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width']) && !$GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width'])
 		{
 			$width = 225;
 
