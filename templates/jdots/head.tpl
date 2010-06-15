@@ -54,7 +54,7 @@
 
 			$(document).ready(function() {
 				framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
-					"{webserver_url}", egw_setSideboxSize, 225);
+					"{webserver_url}", egw_setSideboxSize, {sidebox_width});
 			}
 			);
 		</script>

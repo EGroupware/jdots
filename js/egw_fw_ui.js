@@ -872,9 +872,10 @@ egw_fw_ui_scrollarea.prototype.mouseOverToggle = function(_over, _dir)
 var EGW_SPLITTER_HORIZONTAL = 0;
 var EGW_SPLITTER_VERTICAL = 1;
 
-function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraints)
+function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraints, _tag)
 {
 	//Copy the parameters
+	this.tag = _tag;
 	this.contDiv = _contDiv;
 	this.orientation = _orientation;
 	this.resizeCallback = _resizeCallback;
@@ -921,6 +922,9 @@ function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraint
 		helper: 'clone',
 		start: function(event, ui) {
 			return this._parent.dragStartHandler.call(this._parent, event, ui);
+		},
+		drag: function(event, ui) {
+			return this._parent.dragHandler.call(this._parent, event, ui);
 		},
 		stop: function(event, ui) {
 			return this._parent.dragStopHandler.call(this._parent, event, ui);
@@ -986,12 +990,30 @@ egw_fw_ui_splitter.prototype.dragStartHandler = function(event, ui)
 	switch (this.orientation)
 	{
 		case EGW_SPLITTER_HORIZONTAL:
-			this.startPos = ui.position.top;
+			this.startPos = ui.offset.top;
 			break;
 		case EGW_SPLITTER_VERTICAL:
-			this.startPos = ui.position.left;
+			this.startPos = ui.offset.left;
 			break;
 	}
+}
+
+egw_fw_ui_splitter.prototype.dragHandler = function(event, ui)
+{
+/*	var delta = 0;
+	switch (this.orientation)
+	{
+		case EGW_SPLITTER_HORIZONTAL:
+			var old = ui.offset.top - this.startPos;
+			clipped = this.clipDelta(old);
+			$(this.splitterDiv).data('draggable').offset.click.top += (old - clipped);
+			break;
+		case EGW_SPLITTER_VERTICAL:
+			var old = ui.offset.left - this.startPos;
+			clipped = this.clipDelta(old);
+			$(this.splitterDiv).data('draggable').offset.click.left += (old - clipped);
+			break;
+	}*/
 }
 
 
@@ -1001,10 +1023,10 @@ egw_fw_ui_splitter.prototype.dragStopHandler = function(event, ui)
 	switch (this.orientation)
 	{
 		case EGW_SPLITTER_HORIZONTAL:
-			delta = ui.position.top - this.startPos;
+			delta = ui.offset.top - this.startPos;
 			break;
 		case EGW_SPLITTER_VERTICAL:
-			delta = ui.position.left - this.startPos;
+			delta = ui.offset.left - this.startPos;
 			break;
 	}
 
