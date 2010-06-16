@@ -181,7 +181,7 @@ egw_fw.prototype.sortCallback = function(_entriesArray)
 	
 	//Send the sort order to the server via ajax
 	var req = new egw_json_request('home.jdots_framework.ajax_appsort',
-		name_array);
+		[name_array]);
 	req.sendRequest(true);
 }
 

@@ -599,7 +599,36 @@ class jdots_framework extends egw_framework
 	public function ajax_sideboxwidth($appname, $width)
 	{
 //		error_log(__METHOD__."($appname, $width)");
-		self::set_sidebar_width($appname, $width);
+		//Check whether the supplied parameters are valid
+		if (is_number($width) && $GLOBALS['egw_info']['user']['apps'][$appname])
+		{
+			self::set_sidebar_width($appname, $width);
+		}
+	}
+
+	/**
+	 * Stores the user defined sorting of the applications inside the preferences
+	*/
+	public function ajax_appsort($apps)
+	{
+		$order = array();
+		$i = 0;
+
+		//Parse the "$apps" array for valid content (security)
+		foreach($apps as $app)
+		{
+			//Check whether the app really exists and add it to the $app_arr var
+			if ($GLOBALS['egw_info']['user']['apps'][$app])
+			{
+				$order[$app] = $i;
+				$i++;
+			}
+		}
+
+		//Store the order array inside the common user preferences
+		$GLOBALS['egw']->preferences->read_repository();
+		$GLOBALS['egw']->preferences->change('common', 'user_apporder', serialize($order));
+		$GLOBALS['egw']->preferences->save_repository(true);
 	}
 
 	/**
