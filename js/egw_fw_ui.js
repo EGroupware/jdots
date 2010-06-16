@@ -26,14 +26,17 @@
  * @param function(_sender) _callback specifies the function which should be called when the entry is clicked. The _sender parameter passed is a reference to this egw_fw_ui_sidemenu_entry element.
  * @param object _tag can be used to attach any user data to the object. Inside egw_fw _tag is used to attach an egw_fw_class_application to each sidemenu entry.
  */
-function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _tag)
+function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _callback,
+	_tag)
 {
 	this.baseDiv = _baseDiv;
+	this.elemDiv = _elemDiv;
 	this.entryName = _name;
 	this.icon = _icon;
 	this.tag = _tag;
 	this.parent = _parent;
 	this.atTop = false;
+	this.isDraged = false;
 
 	//Add a new div for the new entry to the base div
 	this.headerDiv = document.createElement("div");
@@ -58,9 +61,13 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 	$(this.headerDiv).append(iconDiv);
 	$(this.headerDiv).append(entryH1);
 	$(this.headerDiv).append(this.ajaxloader);
+	this.headerDiv._parent = this;
 	this.headerDiv._callbackObject = new egw_fw_class_callback(this, _callback);
 	$(this.headerDiv).click(function(){
-		this._callbackObject.call(this);
+		if (!this._parent.isDraged)
+			this._callbackObject.call(this);
+		this._parent.isDraged = false;
+		return true;
 	});
 
 	//Create the content div
@@ -72,12 +79,43 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _name, _icon, _callback, _t
 
 	//Add in invisible marker to store the original position of this element in the DOM tree
 	this.marker = document.createElement("div");
+	this.marker._parent = this;
+	this.marker.className = '_menu_marker';
 	$(this.marker).hide();
 
+	//Create a container which contains all generated elements and is then added
+	//to the baseDiv
+	this.containerDiv = document.createElement("div");
+	this.containerDiv._parent = this;
+	$(this.containerDiv).append(this.marker);
+	$(this.containerDiv).append(this.headerDiv);
+	$(this.containerDiv).append(this.contentDiv);
+
 	//Append header and content div to the base div
-	$(this.baseDiv).append(this.marker);
-	$(this.baseDiv).append(this.headerDiv);
-	$(this.baseDiv).append(this.contentDiv);
+	$(this.elemDiv).append(this.containerDiv);
+
+	//Make the base Div sortable. Set all elements with the style "egw_fw_ui_sidemenu_entry_header"
+	//as handle
+	$(this.elemDiv).sortable("destroy");
+	$(this.elemDiv).sortable({
+		handle: ".egw_fw_ui_sidemenu_entry_header",
+		distance: 15,
+		start: function(event, ui)
+		{
+			var parent = ui.item.context._parent;
+			parent.isDraged = true;
+		},
+		stop: function(event, ui)
+		{
+			var parent = ui.item.context._parent;
+			parent.parent.refreshSort.call(parent.parent);
+		},
+		
+		opacity: 0.7,
+//		appendTo: 'body',
+//		helper: 'clone',
+		axis: 'y',
+	});
 }
 
 /**
@@ -143,7 +181,7 @@ egw_fw_ui_sidemenu_entry.prototype.close = function()
 	$(this.contentDiv).hide();
 }
 
-/**
+/**egw_fw_ui_sidemenu_entry_header_active
  * showAjaxLoader shows the AjaxLoader animation which should be displayed when
  * the content of the sidemenu entry is just being loaded.
  */
@@ -181,10 +219,46 @@ egw_fw_ui_sidemenu_entry.prototype.remove = function()
  *
  * @param object _baseDiv specifies the "div" in which all entries added by the addEntry function should be displayed.
  */
-function egw_fw_ui_sidemenu(_baseDiv)
+function egw_fw_ui_sidemenu(_baseDiv, _sortCallback)
 {
 	this.baseDiv = _baseDiv;
+	this.elemDiv = document.createElement('div');
+	this.sortCallback = _sortCallback;
+	$(this.baseDiv).append(this.elemDiv);
 	this.entries = new Array();
+}
+
+/**
+ * Funtion used internally to recursively step through a dom tree and add all appliction
+ * markers in their order of appereance
+ */
+egw_fw_ui_sidemenu.prototype._searchMarkers = function(_resultArray, _children)
+{
+	for (var i = 0; i < _children.length; i++)
+	{
+		var child = _children[i];
+		
+		if (child.className == '_menu_marker' && typeof child._parent != 'undefined')
+		{
+			_resultArray.push(child._parent);
+		}
+
+		this._searchMarkers(_resultArray, child.childNodes);
+	}
+}
+
+/**
+ * Called by the sidemenu elements whenever they were sorted. An array containing 
+ * the sidemenu_entries ui-objects is generated and passed to the sort callback
+ */
+egw_fw_ui_sidemenu.prototype.refreshSort = function()
+{
+	//Step through all children of elemDiv and add all markers to the result array
+	var resultArray = new Array();
+	this._searchMarkers(resultArray, this.elemDiv.childNodes);
+
+	//Call the sort callback with the array containing the sidemenu_entries
+	this.sortCallback(resultArray);
 }
 
 /**
@@ -197,9 +271,10 @@ function egw_fw_ui_sidemenu(_baseDiv)
 egw_fw_ui_sidemenu.prototype.addEntry = function(_name, _icon, _callback, _tag)
 {
 	//Create a new sidemenu entry and add it to the list
-	var entry = new egw_fw_ui_sidemenu_entry(this, this.baseDiv, _name, _icon, _callback, _tag);
+	var entry = new egw_fw_ui_sidemenu_entry(this, this.baseDiv, this.elemDiv, _name, _icon,
+		_callback, _tag);
 	this.entries[this.entries.length] = entry;
-	
+
 	return entry;
 }
 
@@ -286,9 +361,10 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			if (!$(this).hasClass("egw_fw_ui_tab_header_active"))
 				$(this).addClass("egw_fw_ui_tab_header_hover");
 		},
-		function() {http://localhost/egroupware/index.php?menuaction=addressbook.addressbook_ui.index
+		function() {var parent = ui.item.context._parent;
 			$(this).removeClass("egw_fw_ui_tab_header_hover")
-		});
+		}
+	);
 		
 	//Create the icon and append it to the header div
 	var icon = document.createElement("img");
@@ -931,6 +1007,7 @@ function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraint
 		},
 		containment: 'document',
 		appendTo: 'body',
+		axis: 'y',
 		iframeFix: true,
 		zIndex: 10000
 	};

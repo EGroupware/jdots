@@ -46,7 +46,8 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 		this.scrollAreaUi = new egw_fw_ui_scrollarea(this.sidemenuDiv);
 
 		//Create the sidemenu, the tabs area and the splitter
-		this.sidemenuUi = new egw_fw_ui_sidemenu(this.scrollAreaUi.contentDiv);
+		this.sidemenuUi = new egw_fw_ui_sidemenu(this.scrollAreaUi.contentDiv,
+			this.sortCallback);
 		this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 		this.splitterUi = new egw_fw_ui_splitter(this.splitterDiv,
 			EGW_SPLITTER_VERTICAL, this.splitterResize, 
@@ -164,6 +165,24 @@ egw_fw.prototype.setActiveApp = function(_app)
 		//...and scroll to the top
 		this.scrollAreaUi.setScrollPos(0);
 	}
+}
+
+/**
+ * Function called whenever the sidemenu entries are sorted
+ */
+egw_fw.prototype.sortCallback = function(_entriesArray)
+{
+	//Create an array with the names of the applications in their sort order	
+	var name_array = new Array();
+	for (var i = 0; i < _entriesArray.length; i++)
+	{
+		name_array.push(_entriesArray[i].tag.appName);
+	}
+	
+	//Send the sort order to the server via ajax
+	var req = new egw_json_request('home.jdots_framework.ajax_appsort',
+		name_array);
+	req.sendRequest(true);
 }
 
 /**

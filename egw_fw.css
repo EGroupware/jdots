@@ -363,7 +363,7 @@ body {
 	display: block;
 	width: 100%;
 	height: 12px;
-	z-index: 1;	
+	z-index: 2;	
 }
 
 .egw_fw_ui_scrollarea_button_up.egw_fw_ui_scrollarea_button_hover
