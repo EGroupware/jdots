@@ -80,7 +80,10 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	//Add in invisible marker to store the original position of this element in the DOM tree
 	this.marker = document.createElement("div");
 	this.marker._parent = this;
-	this.marker.className = '_menu_marker';
+	this.marker.className = 'egw_fw_ui_sidemenu_marker';
+	var entryH1 = document.createElement("h1");
+	$(entryH1).append(this.entryName);
+	$(this.marker).append(entryH1);
 	$(this.marker).hide();
 
 	//Create a container which contains all generated elements and is then added
@@ -104,10 +107,12 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 		{
 			var parent = ui.item.context._parent;
 			parent.isDraged = true;
+			parent.parent.startDrag.call(parent.parent);
 		},
 		stop: function(event, ui)
 		{
 			var parent = ui.item.context._parent;
+			parent.parent.stopDrag.call(parent.parent);
 			parent.parent.refreshSort.call(parent.parent);
 		},
 		
@@ -226,6 +231,7 @@ function egw_fw_ui_sidemenu(_baseDiv, _sortCallback)
 	this.sortCallback = _sortCallback;
 	$(this.baseDiv).append(this.elemDiv);
 	this.entries = new Array();
+	this.activeEntry = null;
 }
 
 /**
@@ -238,12 +244,30 @@ egw_fw_ui_sidemenu.prototype._searchMarkers = function(_resultArray, _children)
 	{
 		var child = _children[i];
 		
-		if (child.className == '_menu_marker' && typeof child._parent != 'undefined')
+		if (child.className == 'egw_fw_ui_sidemenu_marker' && typeof child._parent != 'undefined')
 		{
 			_resultArray.push(child._parent);
 		}
 
 		this._searchMarkers(_resultArray, child.childNodes);
+	}
+}
+
+egw_fw_ui_sidemenu.prototype.startDrag = function()
+{
+	if (this.activeEntry)
+	{
+		$(this.activeEntry.marker).show();
+		$(this.elemDiv).sortable("refresh");
+	}
+}
+
+egw_fw_ui_sidemenu.prototype.stopDrag = function()
+{
+	if (this.activeEntry)
+	{
+		$(this.activeEntry.marker).hide();
+		$(this.elemDiv).sortable("refresh");
 	}
 }
 
@@ -298,6 +322,8 @@ egw_fw_ui_sidemenu.prototype.open = function(_entry)
 	{
 		_entry.open();
 	}
+
+	this.activeEntry = _entry;
 }
 
 

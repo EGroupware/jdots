@@ -216,10 +216,26 @@ body {
 	float: right;
 }
 
-.egw_fw_ui_sidemenu_entry_header h1 {
+.egw_fw_ui_sidemenu_entry_header h1, .egw_fw_ui_sidemenu_marker h1{
 	display: inline;
 	font-size: 10pt;
 	font-weight: bold;
+}
+
+.egw_fw_ui_sidemenu_marker {
+	display: block;
+	height: 20px;
+	padding: 2px 5px 2px 34px;
+	margin: 0;
+	border-width: 0px 1px 0px 1px;
+	border-style: solid;
+	border-color: #c6ced6;
+	cursor: pointer;
+	color: gray;
+	background-color: RGB(250, 250, 250);
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
 }
 
 .egw_fw_ui_tab_header {
