@@ -114,7 +114,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 		opacity: 0.7,
 //		appendTo: 'body',
 //		helper: 'clone',
-		axis: 'y',
+		axis: 'y'
 	});
 }
 

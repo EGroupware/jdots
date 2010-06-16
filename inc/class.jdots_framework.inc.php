@@ -598,9 +598,9 @@ class jdots_framework extends egw_framework
 	 */
 	public function ajax_sideboxwidth($appname, $width)
 	{
-//		error_log(__METHOD__."($appname, $width)");
+		error_log(__METHOD__."($appname, $width)");
 		//Check whether the supplied parameters are valid
-		if (is_number($width) && $GLOBALS['egw_info']['user']['apps'][$appname])
+		if (is_int($width) && $GLOBALS['egw_info']['user']['apps'][$appname])
 		{
 			self::set_sidebar_width($appname, $width);
 		}
