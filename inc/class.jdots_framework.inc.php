@@ -42,7 +42,7 @@ class jdots_framework extends egw_framework
 	private static function get_sidebar_width($app)
 	{
 		//If the global_sidebar_width option is set, we'll simply return false
-		if (isset($GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width']) && !$GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width'])
+		if ($GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'])
 		{
 			$width = 225;
 
@@ -69,12 +69,12 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
-	 * Returns the global width of the sidebox. If the global sidebar width had been switched
-	 * off, the default width will be returned
+	 * Returns the global width of the sidebox. If the app_specific_sidebar_width had been switched
+	 * on, the default width will be returned
 	 */
 	private static function get_global_sidebar_width()
 	{
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width'] &&
+		if (!$GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'] &&
 		    $GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width_value'])
 		{
 			return $GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width_value'];
@@ -85,21 +85,21 @@ class jdots_framework extends egw_framework
 
 
 	/**
-	 * Sets the sidebox width accoringly to the global_sidebox_width setting, either
+	 * Sets the sidebox width accoringly to the app_specific_sidebar_width setting, either
      * in the current application or globaly
 	 */
 	private static function set_sidebar_width($app, $val)
 	{
 		$GLOBALS['egw']->preferences->read_repository();
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width'])
-		{
-//			error_log(__METHOD__.__LINE__."($app, $val) --> setting global sidebar width value");
-			$GLOBALS['egw']->preferences->change('common', 'global_sidebar_width_value', $val);
-		}
-		else
+		if ($GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'])
 		{
 //			error_log(__METHOD__.__LINE__."($app, $val) --> setting jdotssideboxwidth");
 			$GLOBALS['egw']->preferences->change($app, 'jdotssideboxwidth', $val);
+		}
+		else
+		{
+//			error_log(__METHOD__.__LINE__."($app, $val) --> setting global sidebar width value");
+			$GLOBALS['egw']->preferences->change('common', 'global_sidebar_width_value', $val);
 		}
 		$GLOBALS['egw']->preferences->save_repository(True);
 	}

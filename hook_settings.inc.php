@@ -30,15 +30,14 @@ $GLOBALS['settings'] = array(
 		'admin'  => False,
 		'forced' => false,
 	),
-	'global_sidebar_width' => array(
+	'app_specific_sidebar_width' => array(
 		'type'   => 'check',
-		'label'  => 'Sidebar menu width used globaly',
-		'name'   => 'global_sidebar_width',
-		'help'   => 'When checked, the width of the sidebar menu is stored for all applications',
+		'label'  => 'Sidebar width stored for each application',
+		'name'   => 'app_specific_sidebar_width',
+		'help'   => 'When set, the width of the sidebar menu is not stored globaly but independently for each application',
 		'xmlrpc' => false,
 		'admin'  => false,
-		'default'=> '1',
-		'forced' => true,
+		'default'=> '0',
 	),
 	'navbar_format' => false,	// not used in JDots (defined in common prefs)
 );
