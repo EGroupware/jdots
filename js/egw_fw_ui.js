@@ -65,7 +65,9 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	this.headerDiv._callbackObject = new egw_fw_class_callback(this, _callback);
 	$(this.headerDiv).click(function(){
 		if (!this._parent.isDraged)
+		{
 			this._callbackObject.call(this);
+		}
 		this._parent.isDraged = false;
 		return true;
 	});
@@ -81,9 +83,9 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	this.marker = document.createElement("div");
 	this.marker._parent = this;
 	this.marker.className = 'egw_fw_ui_sidemenu_marker';
-	var entryH1 = document.createElement("h1");
-	$(entryH1).append(this.entryName);
-	$(this.marker).append(entryH1);
+	var entryH1_ = document.createElement("h1");
+	$(entryH1_).append(this.entryName);
+	$(this.marker).append(entryH1_);
 	$(this.marker).hide();
 
 	//Create a container which contains all generated elements and is then added
@@ -387,7 +389,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			if (!$(this).hasClass("egw_fw_ui_tab_header_active"))
 				$(this).addClass("egw_fw_ui_tab_header_hover");
 		},
-		function() {var parent = ui.item.context._parent;
+		function() {
 			$(this).removeClass("egw_fw_ui_tab_header_hover")
 		}
 	);
@@ -443,7 +445,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 egw_fw_ui_tab.prototype.setTitle = function(_title)
 {
 	this.title = _title;
-	$(this.headerH1).empty;
+	$(this.headerH1).empty();
 	$(this.headerH1).append(_title);
 }
 
@@ -946,8 +948,8 @@ egw_fw_ui_scrollarea.prototype.mouseOverCallback = function(_context)
 	if (_context.mouseOver)
 	{
 		//Set the next timeout
-		window.setTimeout(_context.mouseOverCallback, Math.round(_context.timerInterval * 1000),
-			_context);
+		setTimeout(function(){_context.mouseOverCallback(_context)},
+			Math.round(_context.timerInterval * 1000));
 	}
 }
 
@@ -958,8 +960,9 @@ egw_fw_ui_scrollarea.prototype.mouseOverToggle = function(_over, _dir)
 
 	if (_over)
 	{
-		window.setTimeout(this.mouseOverCallback, Math.round(this.timerInterval * 1000),
-			this);
+		var _context = this;
+		setTimeout(function(){_context.mouseOverCallback(_context)},
+			Math.round(_context.timerInterval * 1000));
 	}
 	else
 	{
@@ -1140,4 +1143,133 @@ egw_fw_ui_splitter.prototype.dragStopHandler = function(event, ui)
 	this.constraints[1].size -= delta;
 
 	this.resizeCallback(this.constraints[0].size, this.constraints[1].size);
+}
+
+
+/**
+ * egw_fw_ui_content_browser class
+ */
+
+EGW_BROWSER_TYPE_NONE = 0;
+EGW_BROWSER_TYPE_IFRAME = 1;
+EGW_BROWSER_TYPE_DIV = 2;
+
+
+/**
+ * Creates a new content browser ui, _heightCallback must either be a function
+ * or an egw_fw_class_callback object.
+ */
+function egw_fw_ui_content_browser(_heightCallback)
+{
+	//Create a div which contains both, the legacy iframe and the contentDiv
+	this.baseDiv = document.createElement('div');
+	this.type = EGW_BROWSER_TYPE_NONE;
+	this.iframe = null;
+	this.contentDiv = null;
+	this.heightCallback = _heightCallback;
+}
+
+/**
+ * Resizes both, the contentDiv and the iframe to the size returned from the heightCallback
+ */
+egw_fw_ui_content_browser.prototype.resize = function()
+{
+	var height = this.heightCallback.call() + 'px';
+
+	//Set the height of the content div or the iframe
+	if (this.contentDiv)
+	{
+		this.contentDiv.style.height = height;
+	}
+	if (this.iframe)
+	{
+		this.iframe.style.height = height;
+	}
+}
+
+egw_fw_ui_content_browser.prototype.setBrowserType = function(_type)
+{
+	//Only do anything if the browser type has changed
+	if (_type != this.type)
+	{
+		//Destroy the iframe and/or the contentDiv
+		$(this.baseDiv).empty();
+		this.iframe = null;
+		this.contentDiv = null;
+		
+		switch (_type)
+		{
+			//Create the div for displaying the content
+			case EGW_BROWSER_TYPE_DIV:
+				this.contentDiv = document.createElement('div');
+				$(this.contentDiv).addClass('egw_fw_ui_content_browser_div');
+				$(this.baseDiv).append(this.contentDiv);
+				
+				break;
+			
+			case EGW_BROWSER_TYPE_IFRAME:
+				//Create the iframe
+				this.iframe = document.createElement('iframe');
+				this.iframe.style.width = "100%";
+				this.iframe.style.borderWidth = 0;
+				this.iframe.frameBorder = 0;
+				$(this.iframe).addClass('egw_fw_ui_content_browser_iframe');
+				$(this.baseDiv).append(this.iframe);
+
+				break;
+		}
+
+		this.resize();
+		this.type = _type;
+	}
+}
+
+egw_fw_ui_content_browser.prototype.browse = function(_url, _useIframe)
+{
+	//Set the browser type
+	if (_useIframe)
+	{
+		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
+
+		//Perform the actual "navigation"
+		this.iframe.src = _url;
+
+		//Set the "_legacy_iframe" flag to allow link handlers to easily determine
+		//the type of the link source
+		this.iframe.contentWindow._legacy_iframe = true;		
+	}
+	else
+	{
+		this.setBrowserType(EGW_BROWSER_TYPE_DIV)
+
+		//Special treatement of "about:blank"
+		if (_url = "about:blank")
+		{
+			$(this.contentDiv).empty();
+		}
+		else
+		{
+			//Not implemented.
+		}
+	}
+}
+
+egw_fw_ui_content_browser.prototype.reload = function()
+{
+	switch (_type)
+	{
+		case EGW_BROWSER_TYPE_DIV:
+
+			break;
+
+		case EGW_BROWSER_TYPE_IFRAME:
+			//Do a simple reload in the iframe case
+			this.iframe.contentWindow.location.reload();
+			break;
+	}
+}
+
+egw_fw_ui_content_browser.prototype.blank = function()
+{
+	this.browse('about:blank', this.type = EGW_BROWSER_TYPE_IFRAME);
 }

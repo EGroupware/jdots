@@ -11,7 +11,7 @@
   ----------------------------*/
 
 function egw_fw_class_application(_parentFw, _appName, _displayName, _icon,
-	_execName, _sideboxWidth)
+	_execName, _sideboxWidth, _legacyApp)
 {
 	//Copy the application properties
 	this.appName = _appName;
@@ -19,6 +19,7 @@ function egw_fw_class_application(_parentFw, _appName, _displayName, _icon,
 	this.icon = _icon;
 	this.execName = _execName;
 	this.sidebox_md5 = '';
+	this.legacyApp = _legacyApp;
 
 	this.sideboxWidth = _sideboxWidth;
 
@@ -29,7 +30,7 @@ function egw_fw_class_application(_parentFw, _appName, _displayName, _icon,
 	this.hasSideboxMenuContent = false;
 	this.sidemenuEntry = null;
 	this.tab = null;
-	this.iframe = null;
+	this.browser = null;
 }
 
 /*----------------------------
@@ -42,9 +43,9 @@ function egw_fw_class_callback(_context, _proc)
 	this.proc = _proc;
 }
 
-egw_fw_class_callback.prototype.call = function(_sender)
+egw_fw_class_callback.prototype.call = function()
 {
-	this.proc.call(this.context, _sender);
+	return this.proc.apply(this.context, arguments);
 }
 
 Array.prototype.remove = function(index)
