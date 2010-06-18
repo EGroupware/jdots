@@ -11,15 +11,16 @@
   ----------------------------*/
 
 function egw_fw_class_application(_parentFw, _appName, _displayName, _icon,
-	_execName, _sideboxWidth, _legacyApp)
+	_indexUrl, _sideboxWidth, _legacyApp)
 {
 	//Copy the application properties
 	this.appName = _appName;
 	this.displayName = _displayName;
 	this.icon = _icon;
-	this.execName = _execName;
+	this.indexUrl = _indexUrl;
 	this.sidebox_md5 = '';
 	this.legacyApp = _legacyApp;
+	this.hasPrerequisites;
 
 	this.sideboxWidth = _sideboxWidth;
 

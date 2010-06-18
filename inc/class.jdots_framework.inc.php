@@ -811,7 +811,7 @@ class jdots_framework extends egw_framework
 		// todo: only add etemplate app.css if needed AND not yet loaded
 		if ($app != 'etemplate')
 		{
-			$response->includeCSS($GLOBALS['egw_info']['server']['webserver_url'].'/etemplate/css/app.css');
+			$response->includeCSS($GLOBALS['egw_info']['server']['webserver_url'].'/etemplate/templates/default/app.css');
 		}
 
 		// app.js file of $app

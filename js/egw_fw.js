@@ -286,7 +286,7 @@ egw_fw.prototype.tabClickCallback = function(_sender)
  */
 egw_fw.prototype.applicationClickCallback = function(_sender)
 {
-	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.execName);
+	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.indexUrl);
 }
 
 /**
@@ -318,10 +318,19 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 	this.createApplicationTab(_app);
 
 	if (typeof _url == 'undefined')
-		_url = _app.execName;
+		_url = _app.indexUrl;
 
 	if (typeof _useIframe == 'undefined')
-		_useIframe = _app.legacyApp;
+	{
+		if (!_url.match(/menuaction=/))
+		{
+			_useIframe = true;
+		}
+		else
+		{
+			_useIframe = _app.legacyApp;
+		}
+	}
 
 	if (_app.browser == null)
 	{
@@ -331,7 +340,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
-	_app.browser.browse(_url, false);//_useIframe);
+	_app.browser.browse(_url, _useIframe);
 
 	this.setActiveApp(_app);
 }
@@ -696,7 +705,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 
 	if (navigate)
 	{
-		window.setTimeout("framework.applicationTabNavigate(framework.activeApp, framework.activeApp.execName);", 500);
+		window.setTimeout("framework.applicationTabNavigate(framework.activeApp, framework.activeApp.indexUrl);", 500);
 	}
 
 	if (_returnID === false)
@@ -823,9 +832,17 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 		}
 		else
 		{
-			//TODO: Check whether application prerquisites have been loaded -> if not, load them in a first step
+			//Check whether application prerquisites have been loaded -> if not, load them in a first step
+			if (!this.app.hasPrerequisites)
+			{
+				this.app.hasPrerequisites = true;
+				var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_app_includes', [this.app.appName]);
+				req.sendRequest(true);
+
+				$(this.contentDiv).addClass('egw_fw_content_browser_div_loading');
+			}
+
 			//Perform an AJAX request loading application output
-			$(this.contentDiv).addClass('egw_fw_content_browser_div_loading');
 			var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_exec',[_url]);
 			req.sendRequest(true, this.browse_callback, this);
 		}
@@ -834,8 +851,10 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
+	$(this.contentDiv).removeClass('egw_fw_content_browser_div_loading');
 	$(this.contentDiv).empty();
 	$(this.contentDiv).append(_data);
+//	console.log(_data);
 }
 
 egw_fw_content_browser.prototype.reload = function()
