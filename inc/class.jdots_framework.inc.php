@@ -769,13 +769,13 @@ class jdots_framework extends egw_framework
 		// just a hack to load the css, todo: make that a service of the framework
 		$webserver_url = $GLOBALS['egw_info']['server']['webserver_url'];
 		$currentapp    = $GLOBALS['egw_info']['flags']['currentapp'];
-		$output = "<style type='text/css'>
+/*		$output = "<style type='text/css'>
 <!--
 	@import url($webserver_url/etemplate/templates/default/app.css);
 	@import url($webserver_url/$currentapp/templates/default/app.css);
 -->
 </style>
-";
+";*/
 		$output .= ob_get_contents();
 //error_log(__METHOD__."('$link') output=$output");
 		ob_end_clean();
@@ -783,6 +783,42 @@ class jdots_framework extends egw_framework
 		if ($output)
 		{
 			$this->response->data($output);
+		}
+	}
+	
+	/**
+	 * Load standard CSS and JavaScript files for an application
+	 * 
+	 * Get's called by framework running on clients once, before calling ajax_exec
+	 * 
+	 * @param string $app
+	 */
+	public function ajax_app_includes($app)
+	{
+		$response = egw_json_response::get();
+		
+		// app.css file of $app
+		$css_file = '/'.$app.'/templates/'.$this->template.'/app.css';
+		if (!file_exists(EGW_SERVER_ROOT.$css_file))
+		{
+			$css_file = '/'.$app.'/templates/default/app.css';
+		}
+		if (file_exists(EGW_SERVER_ROOT.$css_file))
+		{
+			$response->includeCSS($GLOBALS['egw_info']['server']['webserver_url'].$css_file);
+		}
+		
+		// todo: only add etemplate app.css if needed AND not yet loaded
+		if ($app != 'etemplate')
+		{
+			$response->includeCSS($GLOBALS['egw_info']['server']['webserver_url'].'/etemplate/css/app.css');
+		}
+
+		// app.js file of $app
+		$js_file = '/'.$app.'/js/app.js';
+		if (file_exists(EGW_SERVER_ROOT.$js_file))
+		{
+			$response->includeScript($GLOBALS['egw_info']['server']['webserver_url'].$js_file);
 		}
 	}
 }
