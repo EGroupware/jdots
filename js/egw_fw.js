@@ -327,7 +327,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 	{
 		//Create a new browser ui and set it as application tab callback
 		var callback = new egw_fw_class_callback(this, this.getIFrameHeight);
-		_app.browser = new egw_fw_content_browser(callback);
+		_app.browser = new egw_fw_content_browser(_app, callback);
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
@@ -732,7 +732,7 @@ EGW_BROWSER_TYPE_DIV = 2;
  * Creates a new content browser ui, _heightCallback must either be a function
  * or an egw_fw_class_callback object.
  */
-function egw_fw_content_browser(_heightCallback)
+function egw_fw_content_browser(_app, _heightCallback)
 {
 	//Create a div which contains both, the legacy iframe and the contentDiv
 	this.baseDiv = document.createElement('div');
@@ -740,6 +740,7 @@ function egw_fw_content_browser(_heightCallback)
 	this.iframe = null;
 	this.contentDiv = null;
 	this.heightCallback = _heightCallback;
+	this.app = _app;
 }
 
 /**
@@ -797,7 +798,7 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 	}
 }
 
-egw_fw_content_browser.prototype.browse = function(_url, _useIframe, _app)
+egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 {
 	//Set the browser type
 	if (_useIframe)
@@ -824,7 +825,7 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe, _app)
 		{
 			//TODO: Check whether application prerquisites have been loaded -> if not, load them in a first step
 			//Perform an AJAX request loading application output
-			var req = new egw_json_request(_app.appName + '.jdots_framework.ajax_exec',[_url]);
+			var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_exec',[_url]);
 			req.sendRequest(true, this.browse_callback, this);
 		}
 	}
