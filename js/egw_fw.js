@@ -331,7 +331,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
-	_app.browser.browse(_url, _useIframe);
+	_app.browser.browse(_url, false);//_useIframe);
 
 	this.setActiveApp(_app);
 }
@@ -825,6 +825,7 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 		{
 			//TODO: Check whether application prerquisites have been loaded -> if not, load them in a first step
 			//Perform an AJAX request loading application output
+			$(this.contentDiv).addClass('egw_fw_content_browser_div_loading');
 			var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_exec',[_url]);
 			req.sendRequest(true, this.browse_callback, this);
 		}

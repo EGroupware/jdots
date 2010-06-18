@@ -446,8 +446,13 @@ body {
 
 .egw_fw_content_browser_div {
 	display: block;
-	overflow: scroll;
-	background-color: RGB(100, 200, 255);
+	overflow: auto;
+}
+
+.egw_fw_content_browser_div_loading {
+	background-image: url(images/ajax-loader.gif);
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 .egw_fw_content_browser_iframe {
