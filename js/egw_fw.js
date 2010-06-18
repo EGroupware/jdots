@@ -652,7 +652,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 
 	if (app)
 	{
-		this.applicationTabNavigate(app, _link);
+		this.applicationTabNavigate(app, _link, false);
 	}
 	else
 	{
@@ -779,6 +779,7 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 		$(this.baseDiv).empty();
 		this.iframe = null;
 		this.contentDiv = null;
+		this.ajaxLoaderDiv = null;
 		
 		switch (_type)
 		{
@@ -832,17 +833,9 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 		}
 		else
 		{
-			//Check whether application prerquisites have been loaded -> if not, load them in a first step
-			if (!this.app.hasPrerequisites)
-			{
-				this.app.hasPrerequisites = true;
-				var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_app_includes', [this.app.appName]);
-				req.sendRequest(true);
-
-				$(this.contentDiv).addClass('egw_fw_content_browser_div_loading');
-			}
-
 			//Perform an AJAX request loading application output
+			if (this.app.sidemenuEntry)
+				this.app.sidemenuEntry.showAjaxLoader();
 			var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_exec',[_url]);
 			req.sendRequest(true, this.browse_callback, this);
 		}
@@ -851,7 +844,8 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
-	$(this.contentDiv).removeClass('egw_fw_content_browser_div_loading');
+	if (this.app.sidemenuEntry)
+		this.app.sidemenuEntry.hideAjaxLoader();
 	$(this.contentDiv).empty();
 	$(this.contentDiv).append(_data);
 //	console.log(_data);

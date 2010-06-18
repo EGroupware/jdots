@@ -451,6 +451,12 @@ body {
 }
 
 .egw_fw_content_browser_div_loading {
+	position: absolute;
+	z-index: 1000;
+	top: 0px;
+	left: 0px;
+	width: 16px;
+	height: 16px;	
 	background-image: url(images/ajax-loader.gif);
 	background-position: center;
 	background-repeat: no-repeat;
