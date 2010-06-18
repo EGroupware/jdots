@@ -1243,15 +1243,23 @@ egw_fw_ui_content_browser.prototype.browse = function(_url, _useIframe)
 		this.setBrowserType(EGW_BROWSER_TYPE_DIV)
 
 		//Special treatement of "about:blank"
-		if (_url = "about:blank")
+		if (_url == "about:blank")
 		{
 			$(this.contentDiv).empty();
 		}
 		else
 		{
-			//Not implemented.
+			//Perform an AJAX request loading application output
+			var req = new egw_json_request('home.jdots_framework.ajax_exec',[_url]);
+			req.sendRequest(true, this.browse_callback, this);
 		}
 	}
+}
+
+egw_fw_ui_content_browser.prototype.browse_callback = function(_data)
+{
+	$(this.contentDiv).empty();
+	$(this.contentDiv).append(_data);
 }
 
 egw_fw_ui_content_browser.prototype.reload = function()

@@ -678,6 +678,13 @@ class jdots_framework extends egw_framework
 	}
 	
 	/**
+	 * Have we output the footer
+	 * 
+	 * @var boolean
+	 */
+	static private $footer_done;
+	
+	/**
 	 * Returns the html from the closing div of the main application area to the closing html-tag
 	 *
 	 * @param boolean $no_framework=true
@@ -685,10 +692,10 @@ class jdots_framework extends egw_framework
 	 */
 	function footer($no_framework=true)
 	{
-		static $footer_done;
+		if (self::$footer_done) return;	// prevent (multiple) footers
+		self::$footer_done = true;
 		if (!(!isset($GLOBALS['egw_info']['flags']['nofooter']) || !$GLOBALS['egw_info']['flags']['nofooter'])) return;
 		//error_log(__METHOD__.array2string(function_backtrace()));
-		if ($footer_done++) return;	// prevent multiple footers, not sure we still need this (RalfBecker)
 
 		if($no_framework && $GLOBALS['egw_info']['user']['preferences']['common']['show_generation_time'])
 		{
@@ -708,5 +715,74 @@ class jdots_framework extends egw_framework
 	function open_manual_js($url)
 	{
 		return "callManual('$url')";
+	}
+
+	/**
+	 * JSON reponse object
+	 * 
+	 * If set output is requested for an ajax response --> no header, navbar or footer
+	 *
+	 * @var egw_json_response
+	 */
+	public $response;
+
+	/**
+	 * Run a link via ajax, returning content via egw_json_response->data()
+	 * 
+	 * This behavies like /index.php, but returns the content via json.
+	 * 
+	 * @param string $link
+	 */
+	function ajax_exec($link)
+	{
+		$parts = parse_url($link);
+		$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $parts['path'];
+		if ($parts['query'])
+		{
+			$_SERVER['REQUEST_URI'] = '?'.$parts['query'];
+			parse_str($parts['query'],$_GET);
+		}
+
+		if (!isset($_GET['menuaction']))
+		{
+			throw new egw_exception_wrong_parameter(__METHOD__."('$link') no menuaction set!");
+		}
+		list($app,$class,$method) = explode('.',$_GET['menuaction']);
+		
+		if (!isset($GLOBALS['egw_info']['user']['apps'][$app]))
+		{
+			throw new egw_exception_no_permission_app($app);
+		}
+		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
+		
+		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
+		{
+			throw new egw_exception_no_permission("Bad menuaction {$_GET['menuaction']}, not listed in public_functions!");
+		}
+		// dont send header and footer
+		self::$header_done = self::$footer_done = true;
+
+		$this->response = egw_json_response::get();
+		ob_start();
+		$obj->$method();
+		
+		// just a hack to load the css, todo: make that a service of the framework
+		$webserver_url = $GLOBALS['egw_info']['server']['webserver_url'];
+		$currentapp    = $GLOBALS['egw_info']['flags']['currentapp'];
+		$output = "<style type='text/css'>
+<!--
+	@import url($webserver_url/etemplate/templates/default/app.css);
+	@import url($webserver_url/$currentapp/templates/default/app.css);
+-->
+</style>
+";
+		$output .= ob_get_contents();
+//error_log(__METHOD__."('$link') output=$output");
+		ob_end_clean();
+		
+		if ($output)
+		{
+			$this->response->data($output);
+		}
 	}
 }
