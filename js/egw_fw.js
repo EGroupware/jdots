@@ -234,6 +234,9 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 		app.tab = null;
 		app.browser = null;
 
+		if (app.sidemenuEntry)
+			app.sidemenuEntry.hideAjaxLoader();
+
 		//Set the active application to the application of the currently active tab
 		app.parentFw.setActiveApp(tabsUi.activeTab.tag);
 	}
@@ -836,7 +839,9 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 			//Perform an AJAX request loading application output
 			if (this.app.sidemenuEntry)
 				this.app.sidemenuEntry.showAjaxLoader();
-			var req = new egw_json_request(this.app.appName + '.jdots_framework.ajax_exec',[_url]);
+			var req = new egw_json_request(
+				this.app.appName + '.jdots_framework.ajax_exec',
+				[_url], this.contentDiv);
 			req.sendRequest(true, this.browse_callback, this);
 		}
 	}
