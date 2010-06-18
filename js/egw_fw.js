@@ -351,7 +351,7 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 		return _app;
 	}
 
-	//Check the url for a scheme of "/app.php" and check this one for a valid app
+	//Check the url for a scheme of "/app/something.php" and check this one for a valid app
 	//name
 	var matches = _url.match(/\/([^\/]+)\/[^\/]+\.php/i);
 	if (matches && (_app = this.getApplicationByName(matches[1])))
