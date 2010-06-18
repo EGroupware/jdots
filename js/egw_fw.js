@@ -327,7 +327,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 	{
 		//Create a new browser ui and set it as application tab callback
 		var callback = new egw_fw_class_callback(this, this.getIFrameHeight);
-		_app.browser = new egw_fw_ui_content_browser(callback);
+		_app.browser = new egw_fw_content_browser(callback);
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
@@ -719,6 +719,146 @@ egw_fw.prototype.egw_appWindow = function(_app)
 	}
 	return result;
 }
+
+/**
+ * egw_fw_content_browser class
+ */
+
+EGW_BROWSER_TYPE_NONE = 0;
+EGW_BROWSER_TYPE_IFRAME = 1;
+EGW_BROWSER_TYPE_DIV = 2;
+
+/**
+ * Creates a new content browser ui, _heightCallback must either be a function
+ * or an egw_fw_class_callback object.
+ */
+function egw_fw_content_browser(_heightCallback)
+{
+	//Create a div which contains both, the legacy iframe and the contentDiv
+	this.baseDiv = document.createElement('div');
+	this.type = EGW_BROWSER_TYPE_NONE;
+	this.iframe = null;
+	this.contentDiv = null;
+	this.heightCallback = _heightCallback;
+}
+
+/**
+ * Resizes both, the contentDiv and the iframe to the size returned from the heightCallback
+ */
+egw_fw_content_browser.prototype.resize = function()
+{
+	var height = this.heightCallback.call() + 'px';
+
+	//Set the height of the content div or the iframe
+	if (this.contentDiv)
+	{
+		this.contentDiv.style.height = height;
+	}
+	if (this.iframe)
+	{
+		this.iframe.style.height = height;
+	}
+}
+
+egw_fw_content_browser.prototype.setBrowserType = function(_type)
+{
+	//Only do anything if the browser type has changed
+	if (_type != this.type)
+	{
+		//Destroy the iframe and/or the contentDiv
+		$(this.baseDiv).empty();
+		this.iframe = null;
+		this.contentDiv = null;
+		
+		switch (_type)
+		{
+			//Create the div for displaying the content
+			case EGW_BROWSER_TYPE_DIV:
+				this.contentDiv = document.createElement('div');
+				$(this.contentDiv).addClass('egw_fw_content_browser_div');
+				$(this.baseDiv).append(this.contentDiv);
+				
+				break;
+			
+			case EGW_BROWSER_TYPE_IFRAME:
+				//Create the iframe
+				this.iframe = document.createElement('iframe');
+				this.iframe.style.width = "100%";
+				this.iframe.style.borderWidth = 0;
+				this.iframe.frameBorder = 0;
+				$(this.iframe).addClass('egw_fw_content_browser_iframe');
+				$(this.baseDiv).append(this.iframe);
+
+				break;
+		}
+
+		this.resize();
+		this.type = _type;
+	}
+}
+
+egw_fw_content_browser.prototype.browse = function(_url, _useIframe, _app)
+{
+	//Set the browser type
+	if (_useIframe)
+	{
+		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
+
+		//Perform the actual "navigation"
+		this.iframe.src = _url;
+
+		//Set the "_legacy_iframe" flag to allow link handlers to easily determine
+		//the type of the link source
+		this.iframe.contentWindow._legacy_iframe = true;		
+	}
+	else
+	{
+		this.setBrowserType(EGW_BROWSER_TYPE_DIV)
+
+		//Special treatement of "about:blank"
+		if (_url == "about:blank")
+		{
+			$(this.contentDiv).empty();
+		}
+		else
+		{
+			//TODO: Check whether application prerquisites have been loaded -> if not, load them in a first step
+			//Perform an AJAX request loading application output
+			var req = new egw_json_request(_app.appName + '.jdots_framework.ajax_exec',[_url]);
+			req.sendRequest(true, this.browse_callback, this);
+		}
+	}
+}
+
+egw_fw_content_browser.prototype.browse_callback = function(_data)
+{
+	$(this.contentDiv).empty();
+	$(this.contentDiv).append(_data);
+}
+
+egw_fw_content_browser.prototype.reload = function()
+{
+	switch (_type)
+	{
+		case EGW_BROWSER_TYPE_DIV:
+
+			break;
+
+		case EGW_BROWSER_TYPE_IFRAME:
+			//Do a simple reload in the iframe case
+			this.iframe.contentWindow.location.reload();
+			break;
+	}
+}
+
+egw_fw_content_browser.prototype.blank = function()
+{
+	this.browse('about:blank', this.type = EGW_BROWSER_TYPE_IFRAME);
+}
+
+/**
+ * Global funcitons
+ */
 
 window.egw_link_handler = function(_link, _app)
 {
