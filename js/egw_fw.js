@@ -343,7 +343,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
-	_app.browser.browse(_url, _useIframe);
+	_app.browser.browse(_url, true);//_useIframe);
 
 	this.setActiveApp(_app);
 }
@@ -655,7 +655,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 
 	if (app)
 	{
-		this.applicationTabNavigate(app, _link, false);
+		this.applicationTabNavigate(app, _link);
 	}
 	else
 	{

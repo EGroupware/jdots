@@ -55,7 +55,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 
 	//Create the entry name header
 	var entryH1 = document.createElement("h1");
-	$(entryH1).append(this.entryName);
+	$(entryH1).text(this.entryName);
 
 	//Append icon, name, and ajax loader
 	$(this.headerDiv).append(iconDiv);
@@ -84,7 +84,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	this.marker._parent = this;
 	this.marker.className = 'egw_fw_ui_sidemenu_marker';
 	var entryH1_ = document.createElement("h1");
-	$(entryH1_).append(this.entryName);
+	$(entryH1_).text(this.entryName);
 	$(this.marker).append(entryH1_);
 	$(this.marker).hide();
 
@@ -446,7 +446,7 @@ egw_fw_ui_tab.prototype.setTitle = function(_title)
 {
 	this.title = _title;
 	$(this.headerH1).empty();
-	$(this.headerH1).append(_title);
+	$(this.headerH1).text(_title);
 }
 
 /**
@@ -693,7 +693,7 @@ function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _anima
 	
 	//Add the text	
 	var entryH1 = document.createElement('h1');
-	$(entryH1).append(_title);
+	$(entryH1).text(_title);
 	$(this.headerDiv).append(entryH1);
 
 	//Add the content
@@ -917,7 +917,7 @@ egw_fw_ui_scrollarea.prototype.update = function()
 {
 	//Get the height of the content and the outer box
 	this.contHeight = $(this.scrollDiv).outerHeight();
-	this.boxHeight = $(this.outerDiv).height();
+	this.boxHeight = $(this.contDiv).height();
 
 	this.toggleButtons(this.contHeight > this.boxHeight);
 	this.setScrollPos(this.scrollPos);
