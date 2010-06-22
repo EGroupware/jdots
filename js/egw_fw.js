@@ -30,7 +30,7 @@ EGW_LINK_SOURCE_POPUP = 2;
  * @param string _webserverUrl specifies the egroupware root url
  */
 function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCallback,
-	_sideboxStartSize)
+	_sideboxStartSize, _sideboxMinSize)
 {
 	/* Get the base div */
 	this.sidemenuDiv = document.getElementById(_sidemenuId);
@@ -62,7 +62,7 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 			[
 				{
 					"size": _sideboxStartSize,
-					"minsize": 225,
+					"minsize": _sideboxMinSize,
 					"maxsize": 0
 				},
 			], this);
