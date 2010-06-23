@@ -756,6 +756,8 @@ class jdots_framework extends egw_framework
 		{
 			throw new egw_exception_no_permission_app($app);
 		}
+		$GLOBALS['egw_info']['flags']['currentapp'] = $app;
+
 		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
 		
 		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
@@ -774,21 +776,8 @@ class jdots_framework extends egw_framework
 		$output .= ob_get_contents();
 		ob_end_clean();
 		
-		// add app specific css file
-		self::includeCSS($app,'app');
-		// add all css files from egw_framework::includeCSS()
-		foreach(self::$css_include_files as $path)
-		{
-			$this->response->includeCSS($GLOBALS['egw_info']['server']['webserver_url'].$path);
-		}
-		
-		// add app specific js file
-		self::validate_file('.', 'app', $app);
-		// add all js files from egw_framework::validate_file()
-		foreach(self::$js_include_files as $path)
-		{
-			$this->response->includeScript($GLOBALS['egw_info']['server']['webserver_url'].$path);
-		}
+		// add registered css and javascript to the response
+		self::include_css_js_response();
 		
 		// add output if present
 		if ($output)
