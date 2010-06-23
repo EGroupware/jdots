@@ -275,7 +275,7 @@ class jdots_framework extends egw_framework
 			$content .= '<script type="text/javascript">
 	window.callManual = function(_url)
 	{
-		framework.activeApp.iframe.contentWindow.callManual();		
+		framework.callManual();		
 	}
 </script>';
 		}

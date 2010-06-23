@@ -94,6 +94,17 @@ egw_fw.prototype.alertHandler = function(_message, _details)
 	alert('Error:\n ' + _message + '\n\nDetails:\n ' + _details);
 }
 
+egw_fw.prototype.callManual = function()
+{
+	if (this.activeApp)
+	{
+		if (this.activeApp.browser.iframe)
+		{
+			this.activeApp.browser.iframe.contentWindow.callManual();
+		}
+	}
+}
+
 /**
  * Function called whenever F1 is pressed inside the framework
  * @returns boolean true if the call manual function could be called, false if the manual is not available
