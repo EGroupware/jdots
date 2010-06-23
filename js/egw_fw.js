@@ -566,6 +566,20 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				}
 			}
 
+			//Rewrite all form actions if they contain some javascript
+			var forms = $('form', contDiv).toArray();
+			console.log(forms);
+			for (var i = 0; i < forms.length; ++i)
+			{
+				var form = forms[i];
+				if (form.action.indexOf('javascript:') == 0)
+				{
+					var action = form.action.match(/\('([^']*)/)[0].substr(2);
+					form.action = action;
+					form.target = this.parseAppFromUrl(action).appName;
+				}
+			}
+
 			_app.sidemenuEntry.setContent(contDiv);
 			_app.sidebox_md5 = _md5;
 
@@ -770,6 +784,7 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 				this.iframe.style.width = "100%";
 				this.iframe.style.borderWidth = 0;
 				this.iframe.frameBorder = 0;
+				this.iframe.name = this.app.appName;
 				$(this.iframe).addClass('egw_fw_content_browser_iframe');
 				$(this.baseDiv).append(this.iframe);
 
