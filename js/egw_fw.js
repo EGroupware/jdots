@@ -111,6 +111,7 @@ egw_fw.prototype.print = function()
 	{
 		if (this.activeApp.browser.iframe)
 		{
+			this.activeApp.browser.iframe.contentWindow.focus();
 			this.activeApp.browser.iframe.contentWindow.print();
 		}
 	}
