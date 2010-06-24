@@ -771,7 +771,6 @@ class jdots_framework extends egw_framework
 		self::$header_done = self::$footer_done = true;
 
 		$this->response = egw_json_response::get();
-		self::$js_include_files = array();	// no need to load the "standard" files, they are already loaded
 
 		// call application menuaction
 		ob_start();
