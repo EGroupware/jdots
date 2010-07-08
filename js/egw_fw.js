@@ -915,7 +915,7 @@ window.egw_link_handler = function(_link, _app)
 		_useIframe = true;
 	}
 
-	var frmwrk = getFramework();
+	var frmwrk = egw_getFramework();
 	if (frmwrk != null)
 	{
 		frmwrk.linkHandler(_link, _app, link_source)
@@ -923,22 +923,6 @@ window.egw_link_handler = function(_link, _app)
 	else
 	{
 		window.location = _link;
-	}
-}
-
-window.getFramework = function()
-{
-	if (typeof window.framework != 'undefined')
-	{
-		return framework;
-	}
-	else if (typeof window.parent.getFramework != "undefined")
-	{
-		return window.parent.getFramework();
-	}
-	else
-	{
-		return null;
 	}
 }
 
