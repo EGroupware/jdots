@@ -49,8 +49,8 @@ egw_fw_class_callback.prototype.call = function()
 	return this.proc.apply(this.context, arguments);
 }
 
-Array.prototype.remove = function(index)
+array_remove = function(array, index)
 {
-	this.splice(index, 1);
+	array.splice(index, 1);
 }
 

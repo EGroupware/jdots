@@ -366,7 +366,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe)
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
-	_app.browser.browse(_url, true);//_useIframe);
+	_app.browser.browse(_url, _useIframe);
 
 	this.setActiveApp(_app);
 }
@@ -422,9 +422,9 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		var app = apps[i];
 
 		//Check for the "legacyApp" flag - if it is not set, default it to true
-		var legacyApp = true;
-		if (typeof app.legacyApp != 'undefined')
-			legacyApp = app.legacyApp;
+		var legacyApp = app.name != 'etemplate';
+/*		if (typeof app.legacyApp != 'undefined')
+			legacyApp = app.legacyApp;*/
 
 		appData = new egw_fw_class_application(this, 
 			app.name, app.title, app.icon, app.url, app.sideboxwidth, legacyApp);
@@ -860,7 +860,7 @@ egw_fw_content_browser.prototype.browse_callback = function(_data)
 		this.app.sidemenuEntry.hideAjaxLoader();
 	$(this.contentDiv).empty();
 	$(this.contentDiv).append(_data);
-//	console.log(_data);
+	$('div.etw').parseWidget(null, this.app.appName);
 }
 
 egw_fw_content_browser.prototype.reload = function()

@@ -548,7 +548,9 @@ egw_fw_ui_tabs.prototype.cleanHistory = function()
 	for (var i = this.tabHistory.length - 1; i >= 0; i--)
 	{
 		if (this.tabHistory[i] == this.tabHistory[i - 1])
-			this.tabHistory.remove(i);
+		{
+			array_remove(this.tabHistory.remove, i);
+		}
 	}
 }
 
@@ -583,7 +585,7 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 	for (var i = this.tabHistory.length - 1; i >= 0; i--)
 	{
 		if (this.tabHistory[i] == _tab)
-			this.tabHistory.remove(i);
+			array_remove(this.tabHistory.remove, i);
 	}
 	
 	//Delete entries in the histroy which might be double
@@ -612,7 +614,7 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 	for (var i = this.tabs.length - 1; i >= 0; i--)
 	{
 		if (this.tabs[i] == _tab)
-			this.tabs.remove(i);
+			array_remove(this.tabs.remove, i);
 	}
 }
 
@@ -642,7 +644,7 @@ egw_fw_ui_tabs.prototype.showTab = function(_tab)
 		//Limit the tabHistory size in order to save memory			
 		if (this.tabHistory.length > 50)
 		{
-			this.tabHistory.remove(0);
+			array_remove(this.tabHistory.remove, 0);
 		}
 	}
 }
