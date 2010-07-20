@@ -850,15 +850,21 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 				this.app.appName + '.jdots_framework.ajax_exec',
 				[_url], this.contentDiv);
 			req.sendRequest(true, this.browse_callback, this);
+			req.onLoadFinish = this.browse_finished;
 		}
 	}
 }
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
+	this.data = _data;
+}
+
+egw_fw_content_browser.prototype.browse_finished = function()
+{
 	if (this.app.sidemenuEntry)
 		this.app.sidemenuEntry.hideAjaxLoader();
-	egw_widgetReplace(this.app.appName, this.contentDiv, _data);
+	egw_widgetReplace(this.app.appName, this.contentDiv, this.data);
 }
 
 egw_fw_content_browser.prototype.reload = function()
