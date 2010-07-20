@@ -858,9 +858,7 @@ egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
 	if (this.app.sidemenuEntry)
 		this.app.sidemenuEntry.hideAjaxLoader();
-	$(this.contentDiv).empty();
-	$(this.contentDiv).append(_data);
-	$('div.etw').parseWidget(null, this.app.appName);
+	egw_widgetReplace(this.app.appName, this.contentDiv, _data);
 }
 
 egw_fw_content_browser.prototype.reload = function()
