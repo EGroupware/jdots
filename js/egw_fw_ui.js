@@ -585,7 +585,7 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 	for (var i = this.tabHistory.length - 1; i >= 0; i--)
 	{
 		if (this.tabHistory[i] == _tab)
-			array_remove(this.tabHistory.remove, i);
+			array_remove(this.tabHistory, i);
 	}
 	
 	//Delete entries in the histroy which might be double
@@ -614,7 +614,7 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 	for (var i = this.tabs.length - 1; i >= 0; i--)
 	{
 		if (this.tabs[i] == _tab)
-			array_remove(this.tabs.remove, i);
+			array_remove(this.tabs, i);
 	}
 }
 
