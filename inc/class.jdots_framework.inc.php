@@ -188,7 +188,7 @@ class jdots_framework extends egw_framework
 		
 		// should we draw the framework, or just a header
 		$do_framework = isset($_GET['cd']) && $_GET['cd'] === 'yes';
-		
+
 		if ($do_framework)
 		{
 			// framework javascript classes only need for framework

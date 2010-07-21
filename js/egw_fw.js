@@ -253,6 +253,10 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 	//At least one tab must stay open
 	if (tabsUi.tabs.length > 1)
 	{
+		//Tell the browser object to browse to an empty page, which will trigger the
+		//unload handler
+		app.browser.blank();
+
 		tabsUi.removeTab(this);
 		app.tab = null;
 		app.browser = null;
@@ -839,7 +843,10 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 		//Special treatement of "about:blank"
 		if (_url == "about:blank")
 		{
-			$(this.contentDiv).empty();
+			if (this.app.sidemenuEntry)
+				this.app.sidemenuEntry.hideAjaxLoader();
+
+			egw_widgetReplace(this.app.appName, this.contentDiv, '');
 		}
 		else
 		{
@@ -850,6 +857,9 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 				this.app.appName + '.jdots_framework.ajax_exec',
 				[_url], this.contentDiv);
 			req.sendRequest(true, this.browse_callback, this);
+
+			//The onloadfinish function gets called after all JS depencies have
+			//been loaded
 			req.onLoadFinish = this.browse_finished;
 		}
 	}
@@ -884,7 +894,7 @@ egw_fw_content_browser.prototype.reload = function()
 
 egw_fw_content_browser.prototype.blank = function()
 {
-	this.browse('about:blank', this.type = EGW_BROWSER_TYPE_IFRAME);
+	this.browse('about:blank', this.type == EGW_BROWSER_TYPE_IFRAME);
 }
 
 /**
