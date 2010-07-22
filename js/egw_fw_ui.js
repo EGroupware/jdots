@@ -549,7 +549,7 @@ egw_fw_ui_tabs.prototype.cleanHistory = function()
 	{
 		if (this.tabHistory[i] == this.tabHistory[i - 1])
 		{
-			array_remove(this.tabHistory.remove, i);
+			array_remove(this.tabHistory, i);
 		}
 	}
 }
@@ -644,7 +644,7 @@ egw_fw_ui_tabs.prototype.showTab = function(_tab)
 		//Limit the tabHistory size in order to save memory			
 		if (this.tabHistory.length > 50)
 		{
-			array_remove(this.tabHistory.remove, 0);
+			array_remove(this.tabHistory, 0);
 		}
 	}
 }
@@ -669,7 +669,7 @@ egw_fw_ui_tabs.prototype.clean = function()
 	//Remove all tabs, clean the tabs array
 	for (i = 0; i < this.tabs.length; i++)
 	{
-		this.tabs[i].remove();
+		array_remove(this.tabs, i);
 	}
 
 	//Reset all arrays and references
