@@ -426,7 +426,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		var app = apps[i];
 
 		//Check for the "legacyApp" flag - if it is not set, default it to true
-		var legacyApp = app.name != 'etemplate';
+		var legacyApp = typeof egw_widgetReplace == 'undefined' || app.name != 'etemplate';
 /*		if (typeof app.legacyApp != 'undefined')
 			legacyApp = app.legacyApp;*/
 
