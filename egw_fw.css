@@ -110,6 +110,7 @@ body {
 	background-position: left center;	
 	padding-left: 12px;
 	padding-right: 10px;
+	font-weight:bold;
 }
 
 #egw_fw_topmenu_info_items select {
@@ -143,6 +144,18 @@ body {
 	background-repeat: no-repeat;
 	background-position: center bottom;
 	cursor: pointer;
+}
+#egw_fw_logout {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    float: right;
+    margin-right: 5px;
+    margin-top: 15px;
+    background-image:url(images/logout.png);
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    cursor: pointer;
 }
 
 .egw_fw_ui_sidemenu_entry_header {
