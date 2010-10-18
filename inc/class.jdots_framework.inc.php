@@ -442,7 +442,7 @@ class jdots_framework extends egw_framework
 		// --> that way we always stay in the app, and NOT open admin sidebox for an app tab!!! 
 		if ($app == 'admin' && substr($_SERVER['PHP_SELF'],-16) != '/admin/index.php')
 		{
-			return '';
+			return $this->header();
 		}
 		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
 
@@ -450,14 +450,16 @@ class jdots_framework extends egw_framework
 		$sidebox = json_encode($this->get_sidebox($app));
 		$md5 = md5($sidebox);
 		
+		$header = $this->header();	// in case it's not yet called (call it now AFTER get_sidebox())
+		
 		if ($md5_session[$app] === $md5)
 		{
 			//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
-			return '';	// no need to send to client
+			return $header;	// no need to send to client
 		}
 		$md5_session[$app] = $md5;	// update md5 in session
 
-		return '<script type="text/javascript">
+		return $header.'<script type="text/javascript">
 	if (typeof window.parent.framework != "undefined")
 	{
 		var napp = window.parent.framework.getApplicationByName("'.$app.'");
