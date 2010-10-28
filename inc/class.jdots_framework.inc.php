@@ -20,7 +20,7 @@ class jdots_framework extends egw_framework
 	/**
 	 * Whether javascript:egw_link_handler calls (including given app) should be returned by the "link" function
 	 * or just the link
-	 * 
+	 *
 	 * @var string
 	 */
 	private static $link_app;
@@ -36,6 +36,30 @@ class jdots_framework extends egw_framework
 		parent::__construct($template);		// call the constructor of the extended class
 
 		$this->template_dir = '/jdots';		// we are packaged as an application
+	}
+
+	/**
+	 * Check if current user agent is supported
+	 *
+	 * Currently we do NOT support:
+	 * - iPhone, iPad, Android, SymbianOS due to iframe scrolling problems of Webkit
+	 * - IE < 7
+	 *
+	 * @return boolean
+	 */
+	public static function is_supported_user_agent()
+	{
+		$agent = $_SERVER['HTTP_USER_AGENT'];
+
+		foreach(array('iPhone','iPad','Android','SymbianOS') as $pattern)
+		{
+			if (stripos($agent,$pattern) !== false) return false;
+		}
+		if (html::$user_agent == 'msie' && html::$ua_version < 7)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -105,10 +129,10 @@ class jdots_framework extends egw_framework
 		}
 		$GLOBALS['egw']->preferences->save_repository(True);
 	}
-	
+
 	/**
 	 * Extract applicaton name from given url (incl. GET parameters)
-	 * 
+	 *
 	 * @param string $url
 	 * @return string appname or NULL if it could not be detected (eg. constructing javascript urls)
 	 */
@@ -138,7 +162,7 @@ class jdots_framework extends egw_framework
 	{
 		if (is_null($link_app)) $link_app = self::$link_app;
 		$link = parent::link($url,$extravars);
-		
+
 		// $link_app === true --> detect application, otherwise use given application
 		if ($link_app && (is_string($link_app) || ($link_app = self::app_from_url($link))))
 		{
@@ -147,7 +171,7 @@ class jdots_framework extends egw_framework
 
 			$link = "javascript:egw_link_handler('$link','$link_app');";
 		}
-		return $link;		
+		return $link;
 	}
 
 	/**
@@ -155,7 +179,7 @@ class jdots_framework extends egw_framework
 	 *
 	 * If a session could not be verified or during login time, jDots is NOT used!
 	 * It's only used if user preferences are loaded AND user select it in his prefs
-	 * 
+	 *
 	 * @param string	$string	The url the link is for
 	 * @param string|array	$extravars	Extra params to be passed to the url
 	 */
@@ -189,7 +213,7 @@ class jdots_framework extends egw_framework
 		$this->tpl->set_file(array('_head' => 'head.tpl'));
 		$this->tpl->set_block('_head','head');
 		$this->tpl->set_block('_head','framework');
-		
+
 		// should we draw the framework, or just a header
 		$do_framework = isset($_GET['cd']) && $_GET['cd'] === 'yes';
 
@@ -241,7 +265,7 @@ class jdots_framework extends egw_framework
 		$this->tpl->set_var('app_header',(string)$app_header);
 		$this->tpl->set_var($vars = $this->_get_header());
 		$content .= $this->tpl->fp('out','head').$content;
-		
+
 		if (!$do_framework)
 		{
 			// set app_header
@@ -291,14 +315,14 @@ class jdots_framework extends egw_framework
 			$content .= '<script type="text/javascript">
 	window.callManual = function(_url)
 	{
-		framework.callManual();		
+		framework.callManual();
 	}
 </script>';
 		}
 		// topmenu
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
 		$this->tpl->set_var($this->topmenu($vars,$apps));
-		
+
 		// hook after_navbar (eg. notifications)
 		$this->tpl->set_var('hook_after_navbar',$this->_get_after_navbar());
 
@@ -317,11 +341,11 @@ class jdots_framework extends egw_framework
 		$this->tpl->set_var($this->_get_footer());
 		$content .= $this->tpl->fp('out','framework');
 		$content .= self::footer(false);
-		
+
 		echo $content;
 		common::egw_exit();
 	}
-	
+
 	private $topmenu_items;
 	private $topmenu_info_items;
 
@@ -342,7 +366,7 @@ class jdots_framework extends egw_framework
 		$vars['topmenu_items'] = "<ul>\n<li>".implode("</li>\n<li>",$this->topmenu_items)."</li>\n</ul>";
 		$vars['topmenu_info_items'] = '<div class="topmenu_info_item">'.
 			implode("</div>\n".'<div class="topmenu_info_item">',$this->topmenu_info_items)."</div>\n";
-		
+
 		$this->topmenu_items = $this->topmenu_info_items = null;
 
 		return $vars;
@@ -382,7 +406,7 @@ class jdots_framework extends egw_framework
 		elseif (strpos($app_data['url'],'logout.php') === false)
 		{
 			$app_data['url'] = "javascript:egw_link_handler('".$app_data['url']."','".
-				(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ? 
+				(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ?
 					$app_data['name'] : 'about')."')";
 		}
 		$this->topmenu_items[] = '<a href="'.htmlspecialchars($app_data['url']).'">'.
@@ -408,25 +432,25 @@ class jdots_framework extends egw_framework
 		}
 		$this->topmenu_info_items[] = $content;
 	}
-	
+
 	/**
 	 * Change timezone
-	 * 
+	 *
 	 * @param string $tz
 	 */
 	function ajax_tz_selection($tz)
 	{
 		egw_time::setUserPrefs($tz);	// throws exception, if tz is invalid
-	
+
 		$GLOBALS['egw']->preferences->add('common','tz',$tz);
 		$GLOBALS['egw']->preferences->save_repository();
 	}
 
 	/**
 	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
-	 * 
+	 *
 	 * jDots does NOT use a navbar, but we use this to send the sidebox content!
-	 * 
+	 *
 	 * We store in the session the md5 of each sidebox menu already send to client.
 	 * If the framework get reloaded, that list gets cleared in header();
 	 * Most apps never change sidebox, so we not even need to generate it more then once.
@@ -436,10 +460,10 @@ class jdots_framework extends egw_framework
 	function navbar()
 	{
 		$app = $GLOBALS['egw_info']['flags']['currentapp'];
-		
+
 		// only send admin sidebox, for admin index url (when clicked on admin),
 		// not for other admin pages, called eg. from sidebox menu of other apps
-		// --> that way we always stay in the app, and NOT open admin sidebox for an app tab!!! 
+		// --> that way we always stay in the app, and NOT open admin sidebox for an app tab!!!
 		if ($app == 'admin' && substr($_SERVER['PHP_SELF'],-16) != '/admin/index.php')
 		{
 			return $this->header();
@@ -449,9 +473,9 @@ class jdots_framework extends egw_framework
 		//Set the sidebox content
 		$sidebox = json_encode($this->get_sidebox($app));
 		$md5 = md5($sidebox);
-		
+
 		$header = $this->header();	// in case it's not yet called (call it now AFTER get_sidebox())
-		
+
 		if ($md5_session[$app] === $md5)
 		{
 			//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
@@ -470,7 +494,7 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * displays a login screen
-	 * 
+	 *
 	 * Currently not used for jDots, as it's no login template set!
 	 *
 	 * @param string $extra_vars for login url
@@ -482,7 +506,7 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * displays a login denied message
-	 * 
+	 *
 	 * Currently not used for jDots, as it's no login template set!
 	 */
 	function denylogin_screen()
@@ -492,14 +516,14 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * Array containing sidebox menus by applications and menu-name
-	 * 
+	 *
 	 * @var array
 	 */
 	private $sideboxes;
 
 	/**
 	 * Should calls the first call to self::sidebox create an opened menu
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $sidebox_menu_opened = true;
@@ -521,7 +545,7 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * Return sidebox data for an application
-	 * 
+	 *
 	 * @param $appname
 	 * @return array of array(
 	 * 		'menu_name' => (string),	// menu name, currently md5(title)
@@ -532,7 +556,7 @@ class jdots_framework extends egw_framework
 	 *				'lang_item' => translated menu item or html, i item_link === false
 	 * 				'icon_or_star' => url of bullet images, or false for none
 	 *  			'item_link' => url or false (lang_item contains complete html)
-	 *  			'target' => target attribute fragment, ' target="..."' 
+	 *  			'target' => target attribute fragment, ' target="..."'
 	 *			),
 	 *			// more entries
 	 *		),
@@ -549,7 +573,7 @@ class jdots_framework extends egw_framework
 			// allow other apps to hook into sidebox menu of an app, hook-name: sidebox_$appname
 			$this->sidebox_menu_opened = true;
 			$GLOBALS['egw']->hooks->process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
-			
+
 			// calling the old hook
 			$this->sidebox_menu_opened = true;
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
@@ -581,7 +605,7 @@ class jdots_framework extends egw_framework
 				{
 					continue;
 				}
-		
+
 				$var = array();
 				$var['icon_or_star'] = $GLOBALS['egw_info']['server']['webserver_url'] . $this->template_dir.'/images/bullet.png';
 				$var['target'] = '';
@@ -615,10 +639,10 @@ class jdots_framework extends egw_framework
 		}
 		return $data;
 	}
-	
+
 	/**
 	 * Ajax callback to store opened/closed status of menu's within one apps sidebox
-	 * 
+	 *
 	 * @param string $app
 	 * @param string $menu_name
 	 * @param boolean $opened true = user opened menu, false = user closed it
@@ -628,12 +652,12 @@ class jdots_framework extends egw_framework
 	{
 		//error_log(__METHOD__."('$app','$menu_name',$opened)");
 	}
-	
+
 	/**
 	 * Return sidebox data for an application
-	 * 
+	 *
 	 * Format see get_sidebox()
-	 * 
+	 *
 	 * @param $appname
 	 */
 	public function ajax_sidebox($appname)
@@ -684,7 +708,7 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * Prepare an array with apps used to render the navbar
-	 * 
+	 *
 	 * @return array of array(
 	 *  'name'  => app / directory name
 	 * 	'title' => translated application title
@@ -727,14 +751,14 @@ class jdots_framework extends egw_framework
 		$response = egw_json_response::get();
 		$response->data(array_values($apps));
 	}
-	
+
 	/**
 	 * Have we output the footer
-	 * 
+	 *
 	 * @var boolean
 	 */
 	static private $footer_done;
-	
+
 	/**
 	 * Returns the html from the closing div of the main application area to the closing html-tag
 	 *
@@ -753,13 +777,13 @@ class jdots_framework extends egw_framework
 			$vars = $this->_get_footer();
 		}
 		return "\n".$vars['page_generation_time']."\n".
-			$GLOBALS['egw_info']['flags']['need_footer']."\n".	// eg. javascript, which need to be at the end of the page 
+			$GLOBALS['egw_info']['flags']['need_footer']."\n".	// eg. javascript, which need to be at the end of the page
 			"</body>\n</html>\n";
 	}
-	
+
 	/**
 	 * Return javascript (eg. for onClick) to open manual with given url
-	 * 
+	 *
 	 * @param string $url
 	 * @return string
 	 */
@@ -770,7 +794,7 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * JSON reponse object
-	 * 
+	 *
 	 * If set output is requested for an ajax response --> no header, navbar or footer
 	 *
 	 * @var egw_json_response
@@ -779,9 +803,9 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * Run a link via ajax, returning content via egw_json_response->data()
-	 * 
+	 *
 	 * This behavies like /index.php, but returns the content via json.
-	 * 
+	 *
 	 * @param string $link
 	 */
 	function ajax_exec($link)
@@ -799,7 +823,7 @@ class jdots_framework extends egw_framework
 			throw new egw_exception_wrong_parameter(__METHOD__."('$link') no menuaction set!");
 		}
 		list($app,$class,$method) = explode('.',$_GET['menuaction']);
-		
+
 		if (!isset($GLOBALS['egw_info']['user']['apps'][$app]))
 		{
 			throw new egw_exception_no_permission_app($app);
@@ -807,7 +831,7 @@ class jdots_framework extends egw_framework
 		$GLOBALS['egw_info']['flags']['currentapp'] = $app;
 
 		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
-		
+
 		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
 		{
 			throw new egw_exception_no_permission("Bad menuaction {$_GET['menuaction']}, not listed in public_functions!");
@@ -822,10 +846,10 @@ class jdots_framework extends egw_framework
 		$obj->$method();
 		$output .= ob_get_contents();
 		ob_end_clean();
-		
+
 		// add registered css and javascript to the response
 		self::include_css_js_response();
-		
+
 		// add output if present
 		if ($output)
 		{
