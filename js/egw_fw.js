@@ -181,7 +181,6 @@ egw_fw.prototype.setActiveApp = function(_app)
 			{
 				//Probalby the sidemenu data just got lost along the way. This
 				//for example happens, when a user double clicks on a menu item
-				console.log(_app.sidebox_md5);
 				var req = new egw_json_request('home.jdots_framework.ajax_sidebox',
 					[_app.appName, _app.sidebox_md5]);
 				_app.sidemenuEntry.showAjaxLoader();
@@ -192,7 +191,6 @@ egw_fw.prototype.setActiveApp = function(_app)
 							this.fw.setSidebox(this.app, data.data,  data.md5);
 							this.app.sidemenuEntry.hideAjaxLoader();
 						}
-						console.log(data);
 				}, {'app' : _app, 'fw' : this});		
 			}
 		}
