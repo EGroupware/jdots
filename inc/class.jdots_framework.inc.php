@@ -641,6 +641,19 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
+	 * Ajax callback which is called whenever a previously opened tab is closed or
+	 * opened.
+	 *
+	 * @param $tablist is an array which contains each tab as an associative array
+	 *   with the keys 'appName' and 'active'
+	 */
+	public function ajax_tab_changed_state($tablist)
+	{
+		//TODO Restore Tabs
+		//error_log(print_r($tablist, true));
+	}
+
+	/**
 	 * Ajax callback to store opened/closed status of menu's within one apps sidebox
 	 *
 	 * @param string $app
@@ -748,6 +761,17 @@ class jdots_framework extends egw_framework
 		if (isset($apps['preferences'])) $apps['preferences']['noNavbar'] = true;
 		if (isset($apps['manual'])) $apps['manual']['noNavbar'] = true;
 		if (isset($apps['home'])) $apps['home']['noNavbar'] = true;
+
+
+		//TODO Restore Tabs
+
+		/*
+		//!Just in order to test, whether we're able to restore this app
+		$apps['about']['opened'] = 0;
+		$apps['preferences']['opened'] = 1;
+		$apps['preferences']['active'] = true;
+		$apps['manual']['opened'] = 2;
+		*/
 
 		// no need for website icon, if we have sitemgr
 		if (isset($apps['sitemgr']) && isset($apps['sitemgr-link']))
