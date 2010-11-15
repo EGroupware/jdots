@@ -284,6 +284,8 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 		//unload handler
 		app.browser.blank();
 
+		this.tag.parentFw.notifyTabChangeEnabled = false;
+
 		tabsUi.removeTab(this);
 		app.tab = null;
 		app.browser = null;
@@ -293,6 +295,10 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 
 		//Set the active application to the application of the currently active tab
 		app.parentFw.setActiveApp(tabsUi.activeTab.tag);
+
+		this.tag.parentFw.notifyTabChangeEnabled = true;
+
+		this.tag.parentFw.notifyTabChange();
 	}
 
 	tabsUi.setCloseable(tabsUi.tabs.length > 1);
