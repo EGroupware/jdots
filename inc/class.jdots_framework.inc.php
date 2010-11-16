@@ -442,6 +442,7 @@ class jdots_framework extends egw_framework
 	{
 		egw_time::setUserPrefs($tz);	// throws exception, if tz is invalid
 
+		$GLOBALS['egw']->preferences->read_repository();
 		$GLOBALS['egw']->preferences->add('common','tz',$tz);
 		$GLOBALS['egw']->preferences->save_repository();
 	}
@@ -649,8 +650,23 @@ class jdots_framework extends egw_framework
 	 */
 	public function ajax_tab_changed_state($tablist)
 	{
-		//TODO Restore Tabs
-		//error_log(print_r($tablist, true));
+		$tabs = array();
+		foreach($tablist as $data)
+		{
+			$tabs[] = $data['appName'];
+			if ($data['active']) $active = $data['appName'];
+		}
+		$tabs = implode(',',$tabs);
+
+		if ($tabs != $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'] ||
+			$active != $GLOBALS['egw_info']['user']['preferences']['common']['active_tab'])
+		{
+			error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
+			$GLOBALS['egw']->preferences->read_repository();
+			$GLOBALS['egw']->preferences->change('common', 'open_tabs', $tabs);
+			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active);
+			$GLOBALS['egw']->preferences->save_repository(true);
+		}
 	}
 
 	/**
@@ -762,22 +778,25 @@ class jdots_framework extends egw_framework
 		if (isset($apps['manual'])) $apps['manual']['noNavbar'] = true;
 		if (isset($apps['home'])) $apps['home']['noNavbar'] = true;
 
-
-		//TODO Restore Tabs
-
-		/*
-		//!Just in order to test, whether we're able to restore this app
-		$apps['about']['opened'] = 0;
-		$apps['preferences']['opened'] = 1;
-		$apps['preferences']['active'] = true;
-		$apps['manual']['opened'] = 2;
-		*/
-
 		// no need for website icon, if we have sitemgr
 		if (isset($apps['sitemgr']) && isset($apps['sitemgr-link']))
 		{
 			unset($apps['sitemgr-link']);
 		}
+
+		// Restore Tabs
+		foreach(explode(',',$GLOBALS['egw_info']['user']['preferences']['common']['open_tabs']) as $n => $app)
+		{
+			if (isset($apps[$app]))		// user might no longer have app rights
+			{
+				$apps[$app]['opened'] = $n;
+				if ($GLOBALS['egw_info']['user']['preferences']['common']['active_tab'] == $app)
+				{
+					$apps[$app]['active'] = true;
+				}
+			}
+		}
+
 		if (!($default_app = $GLOBALS['egw_info']['user']['preferences']['common']['default_app']))
 		{
 			$default_app = 'home';
