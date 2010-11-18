@@ -622,10 +622,38 @@ function egw_fw_ui_tabs(_contDiv)
 	$(this.contHeaderDiv).addClass("egw_fw_ui_tabs_header");
 	$(this.contDiv).append(this.contHeaderDiv);
 
+	this.appHeaderContainer = document.createElement("div");
+	$(this.appHeaderContainer).addClass("egw_fw_ui_app_header_container");
+	$(this.contDiv).append(this.appHeaderContainer);
+
+	this.appHeader = document.createElement("div");
+	$(this.appHeader).addClass("egw_fw_ui_app_header");
+	$(this.appHeader).hide();
+	$(this.appHeaderContainer).append(this.appHeader);
+
 	this.tabs = Array();
 	
 	this.activeTab = null;
 	this.tabHistory = Array();
+}
+
+/**
+ * Sets the "appHeader" text below the tabs list.
+ *
+ * @param string _text is the text which will be seen in the appHeader.
+ */
+egw_fw_ui_tabs.prototype.setAppHeader = function(_text)
+{
+	if (_text != "")
+	{
+		$(this.appHeader).empty();
+		$(this.appHeader).append("<span style=\"color:gray \">&raquo;</span> " + _text);
+		$(this.appHeader).show();
+	}
+	else
+	{
+		$(this.appHeader).hide();
+	}
 }
 
 /**

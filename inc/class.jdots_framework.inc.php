@@ -274,7 +274,7 @@ class jdots_framework extends egw_framework
 	if (typeof window.parent.framework != "undefined")
 	{
 		var app = window.parent.framework.getApplicationByName("'.$app.'");
-		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($vars['website_title']).'");
+		window.parent.framework.setWebsiteTitle(app,"'.htmlspecialchars($vars['website_title']).'","'.$app_header.'");
 	}';
 
 			//Register the global key press handler

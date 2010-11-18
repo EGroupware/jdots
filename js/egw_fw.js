@@ -203,10 +203,7 @@ egw_fw.prototype.setActiveApp = function(_app)
 		}
 
 		//Set the website title
-		if (_app.website_title)
-		{
-			document.title = _app.website_title;
-		}
+		this.refreshAppTitle();
 
 		//Show the application tab
 		if (_app.tab)
@@ -773,10 +770,24 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
  * @param object _app the application whose title should be set.
  * @param string _title title to set
  */
-egw_fw.prototype.setWebsiteTitle = function(_app,_title)
+egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 {
-	document.title = _title;
-	if (_app) _app.website_title = _title;
+	if (_app) {
+		_app.website_title = _title;
+		_app.app_header = _header;
+
+		if (_app == this.activeApp)
+			this.refreshAppTitle();
+	}
+}
+
+egw_fw.prototype.refreshAppTitle = function()
+{
+	if (this.activeApp)
+	{
+		this.tabsUi.setAppHeader(this.activeApp.app_header);
+		document.title = this.activeApp.website_title;
+	}
 }
 
 /**
