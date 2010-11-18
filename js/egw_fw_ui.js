@@ -424,9 +424,10 @@ egw_fw_ui_sidemenu.prototype.clean = function()
  * @param function(_sender) _callback specifies the function which should be called when the tab title is clicked. The _sender parameter passed is a reference to this egw_fw_ui_tab element.
  * @param function(_sender) _closeCallback specifies the function which should be called when the tab close button is clicked. The _sender parameter passed is a reference to this egw_fw_ui_tab element.
  * @param object _tag can be used to attach any user data to the object. Inside egw_fw _tag is used to attach an egw_fw_class_application to each sidemenu entry.
+ * @param int _pos is the position where the tab will be inserted
  */
 function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
-	_closeCallback,	_tag)
+	_closeCallback,	_tag, _pos)
 {
 	this.parent = _parent;
 	this.contHeaderDiv = _contHeaderDiv;
@@ -439,6 +440,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	
 	//Create the header div and set its "click" function and "hover" event
 	this.headerDiv = document.createElement("span");
+	this.headerDiv._position = _pos;
 	$(this.headerDiv).addClass("egw_fw_ui_tab_header");
 
 	//Create a new callback object and attach it to the header div	
@@ -505,7 +507,31 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	$(this.contentDiv).addClass("egw_fw_ui_tab_content");
 	$(this.contentDiv).hide();
 	
-	$(this.contHeaderDiv).append(this.headerDiv);
+	//Sort the element in at the given position
+	var _this = this;
+	var $_children = $(this.contHeaderDiv).children();
+	var _cnt = $_children.size();
+
+	if (_cnt > 0 && _pos > -1)
+	{
+		$_children.each(function(i) {
+			if (_pos <= this._position)
+			{
+				$(this).before(_this.headerDiv);
+				return false;
+			}
+			else if (i == (_cnt - 1))
+			{
+				$(this).after(_this.headerDiv);
+				return false;
+			}
+		});
+	}
+	else
+	{
+		$(this.contHeaderDiv).append(this.headerDiv);
+	}
+
 	$(this.contDiv).append(this.contentDiv);	
 }
 
@@ -625,13 +651,27 @@ egw_fw_ui_tabs.prototype.cleanHistory = function()
  * @param function _callback(_sender) function which should be called whenever the tab header is clicked. The _sender parameter passed is a reference to this egw_fw_ui_tab element.
  * @param function _closeCallback(_sender) function which should be called whenever the close button of the tab is clicked. The _sender parameter passed is a reference to this egw_fw_ui_tab element.
  * @param object _tag can be used to attach any user data to the object. Inside egw_fw _tag is used to attach an egw_fw_class_application to each sidemenu entry.
+ * @param int _pos specifies the position in the tab list. If _pos is -1, the tab will be added to the end of the tab list
  */
-egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _tag)
+egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _tag, _pos)
 {
+	var pos = -1;
+	if (typeof _pos != 'undefined')
+		pos = _pos;
+
 	var tab = new egw_fw_ui_tab(this, this.contHeaderDiv, this.contDiv, _icon, _callback, 
-		_closeCallback, _tag);
-	this.tabs[this.tabs.length] = tab;
-	
+		_closeCallback, _tag, pos);
+
+	//Insert the tab into the tab list.
+	if (_pos > -1)
+	{
+		this.tabs.splice(_pos, 0, tab);
+	}
+	else
+	{
+		this.tabs[this.tabs.length] = tab;
+	}
+
 	if (this.activeTab == null)
 		this.showTab(tab);
 	

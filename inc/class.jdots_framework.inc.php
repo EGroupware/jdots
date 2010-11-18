@@ -752,6 +752,10 @@ class jdots_framework extends egw_framework
 	/**
 	 * Prepare an array with apps used to render the navbar
 	 *
+	 * @param url contains the current url on the client side. It is used to
+	 *  determine whether the default app/home should be opened on the client
+	 *  or whether a specific application-url has been given.
+	 *
 	 * @return array of array(
 	 *  'name'  => app / directory name
 	 * 	'title' => translated application title
@@ -762,7 +766,7 @@ class jdots_framework extends egw_framework
 	 *  'target'=> ' target="..."' attribute fragment to open url in target, popup or ''
 	 * )
 	 */
-	public function ajax_navbar_apps()
+	public function ajax_navbar_apps($url)
 	{
 		$apps = parent::_get_navbar_apps();
 
