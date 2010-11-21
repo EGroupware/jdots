@@ -494,7 +494,7 @@ body {
 	border-width: 0px 1px 0px 1px;
 	border-style: solid;
 	border-color: #D5DDE6;
-	padding-bottom: 3px;
+	padding-bottom: 5px;
 }
 
 .egw_fw_ui_app_header {
@@ -502,7 +502,7 @@ body {
 	border-width: 0px 0px 1px 0px;
 	border-style: solid;
 	border-color: #D5DDE6;
-	padding: 4px 2px 2px 15px;
+	padding: 5px 2px 4px 15px;
 	font-size: 9pt;
 	font-weight: bold;
 }
