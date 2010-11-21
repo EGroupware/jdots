@@ -548,8 +548,13 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		if ((typeof app.opened != 'undefined') && (app.opened !== false))
 		{			
 			defaultApp = null;
+
+			var url = null;
+			if (typeof app.openOnce != 'undefined' && app.openOnce)
+				url = app.openOnce;
+
 			restore[appData.appName] = mkRestoreEntry(appData, app.opened,
-				null, app.active ? 1 : 0);
+				url, app.active ? 1 : 0);
 			restore_count += 1;
 		}
 

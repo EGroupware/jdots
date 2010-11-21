@@ -764,6 +764,9 @@ class jdots_framework extends egw_framework
 	 *  'icon_app' => application of icon
 	 *  'icon_hover' => hover-icon, if used by template
 	 *  'target'=> ' target="..."' attribute fragment to open url in target, popup or ''
+	 *  'opened' => unset or false if the tab should not be opened, otherwise the numeric position in the tab list
+	 *	'active' => true if this tab should be the active one when it is restored, otherwise unset or false
+	 *  'openOnce' => unset or the url which will be opened when the tab is restored
 	 * )
 	 */
 	public function ajax_navbar_apps($url)
