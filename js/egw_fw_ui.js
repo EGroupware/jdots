@@ -691,9 +691,9 @@ egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _ta
 		_closeCallback, _tag, pos);
 
 	//Insert the tab into the tab list.
-	if (_pos > -1)
+	if (pos > -1)
 	{
-		this.tabs.splice(_pos, 0, tab);
+		this.tabs.splice(pos, 0, tab);
 	}
 	else
 	{
