@@ -666,7 +666,7 @@ class jdots_framework extends egw_framework
 		if ($tabs != $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'] ||
 			$active != $GLOBALS['egw_info']['user']['preferences']['common']['active_tab'])
 		{
-			error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
+			//error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
 			$GLOBALS['egw']->preferences->read_repository();
 			$GLOBALS['egw']->preferences->change('common', 'open_tabs', $tabs);
 			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active);
@@ -827,7 +827,7 @@ class jdots_framework extends egw_framework
 			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active_tab);
 			$GLOBALS['egw']->preferences->save_repository(true);
 		}
-		error_log(__METHOD__."('$url') url_tab='$url_tab', active_tab=$active_tab, open_tabs=".array2string($open_tabs));
+		//error_log(__METHOD__."('$url') url_tab='$url_tab', active_tab=$active_tab, open_tabs=".array2string($open_tabs));
 		// Restore Tabs
 		foreach($open_tabs as $n => $app)
 		{
