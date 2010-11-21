@@ -437,6 +437,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	this.closeable = true;
 	this.callback = _callback;
 	this.closeCallback = _closeCallback;
+	this.position = _pos;
 	
 	//Create the header div and set its "click" function and "hover" event
 	this.headerDiv = document.createElement("span");
@@ -691,11 +692,21 @@ egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _ta
 		_closeCallback, _tag, pos);
 
 	//Insert the tab into the tab list.
+	var inserted = false;
 	if (pos > -1)
 	{
-		this.tabs.splice(pos, 0, tab);
+		for (var i in this.tabs)
+		{
+			if (this.tabs[i].position > pos)
+			{
+				this.tabs.splice(i, 0, tab)
+				inserted = true;
+				break;
+			}
+		}
 	}
-	else
+
+	if (pos == -1 || !inserted)
 	{
 		this.tabs[this.tabs.length] = tab;
 	}
