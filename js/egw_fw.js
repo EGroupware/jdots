@@ -321,8 +321,9 @@ egw_fw.prototype.resizeHandler = function()
 
 egw_fw.prototype.getIFrameHeight = function()
 {
-	var height = $(window).height() - (this.tabsUi.contHeaderDiv.offsetTop +
-		this.tabsUi.contHeaderDiv.offsetHeight + 30); /* 30 is the height of the footer */
+	var height = $(window).height() - (
+		this.tabsUi.appHeaderContainer.offsetTop +
+		this.tabsUi.appHeaderContainer.offsetHeight + 30); /* 30 is the height of the footer */
 	return height;
 }
 
@@ -793,6 +794,8 @@ egw_fw.prototype.refreshAppTitle = function()
 		this.tabsUi.setAppHeader(this.activeApp.app_header);
 		document.title = this.activeApp.website_title;
 	}
+
+	this.resizeHandler();
 }
 
 /**
