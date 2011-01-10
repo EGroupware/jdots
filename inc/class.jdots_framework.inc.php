@@ -203,13 +203,13 @@ class jdots_framework extends egw_framework
 		// make sure header is output only once
 		if (self::$header_done) return '';
 		self::$header_done = true;
-
 		// add a content-type header to overwrite an existing default charset in apache (AddDefaultCharset directiv)
 		header('Content-type: text/html; charset='.translation::charset());
 
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
 		ob_end_clean();
+		//echo __METHOD__.__LINE__.' loading ...<br> called from:'.function_backtrace().'<br>';
 
 		// the instanciation of the template has to be here and not in the constructor,
 		// as the old Template class has problems if restored from the session (php-restore)
@@ -224,6 +224,7 @@ class jdots_framework extends egw_framework
 
 		if ($do_framework)
 		{
+			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
 			self::validate_file('jquery','jquery-ui');
 			self::validate_file('.','widgets','etemplate');
@@ -269,7 +270,7 @@ class jdots_framework extends egw_framework
 		}
 		$this->tpl->set_var('app_header',(string)$app_header);
 		$this->tpl->set_var($vars = $this->_get_header());
-		$content .= $this->tpl->fp('out','head').$content;
+		$content .= $this->tpl->fp('out','head');
 
 		if (!$do_framework)
 		{
