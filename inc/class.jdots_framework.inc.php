@@ -825,7 +825,7 @@ class jdots_framework extends egw_framework
 		//whether the $active_tab really exists in the $apps array.
 		if ($active_tab && array_key_exists($active_tab, $apps))
 		{
-			$apps[$active_tab]['openOnce'] = str_replace('&cd=yes','',$url);
+			$apps[$active_tab]['openOnce'] = preg_replace('/[&?]cd=yes/','',$url);
 			$store_prefs = true;
 		}
 		else
