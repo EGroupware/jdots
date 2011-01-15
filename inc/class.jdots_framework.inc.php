@@ -493,7 +493,16 @@ class jdots_framework extends egw_framework
 		return $header.'<script type="text/javascript">
 	if (typeof window.parent.framework != "undefined")
 	{
-		var napp = window.parent.framework.getApplicationByName("'.$app.'");
+		var napp = null;
+		if (typeof window.egw_app != "undefined")
+		{
+			napp = window.egw_app;
+		}
+		else
+		{
+			napp = window.parent.framework.getApplicationByName("'.$app.'");
+		}
+		
 		window.parent.framework.setSidebox(napp,'.$sidebox.',"'.$md5.'");
 	}
 </script>';
@@ -574,9 +583,6 @@ class jdots_framework extends egw_framework
 	 */
 	public function get_sidebox($appname)
 	{
-		//Add the requested application to the translation table
-		if ($appname <> 'felamimail') translation::add_app($appname);
-
 		if (!isset($this->sideboxes[$appname]))
 		{
 			self::$link_app = $appname;
@@ -761,6 +767,35 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
+	 * Reads all available remote applications (currently there may only be one)
+	 * and returns them as an array.
+	 */
+	public function jdots_remote_apps()
+	{
+		$result = array();
+
+		if ($GLOBALS['egw_info']['user']['preferences']['common']['remote_application_enabled'])
+		{
+			$name = $GLOBALS['egw_info']['user']['preferences']['common']['remote_application_name'];
+			$title = $GLOBALS['egw_info']['user']['preferences']['common']['remote_application_title'];
+			$url = $GLOBALS['egw_info']['user']['preferences']['common']['remote_application_url'];
+
+			$result[] = array(
+				'name' => $name.'_remote',
+				'sideboxwidth' => false,
+				'target' => false,
+				'title' => $title,
+				'icon' => "/egroupware/trunk/egroupware/".$name."/templates/default/images/navbar.png", //TODO: Check whether icon exists
+				'baseUrl' => $url,
+				'url' => $url.$name.'/index.php',
+				'internalName' => $name,
+			);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Prepare an array with apps used to render the navbar
 	 *
 	 * @param string $url contains the current url on the client side. It is used to
@@ -783,6 +818,7 @@ class jdots_framework extends egw_framework
 	public function ajax_navbar_apps($url)
 	{
 		$apps = parent::_get_navbar_apps();
+		$apps += $this->jdots_remote_apps();
 
 		//Add its sidebox width to each app
 		foreach ($apps as $key => $value)

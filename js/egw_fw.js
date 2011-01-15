@@ -184,8 +184,8 @@ egw_fw.prototype.setActiveApp = function(_app)
 			{
 				//Probalby the sidemenu data just got lost along the way. This
 				//for example happens, when a user double clicks on a menu item
-				var req = new egw_json_request('home.jdots_framework.ajax_sidebox',
-					[_app.appName, _app.sidebox_md5]);
+				var req = new egw_json_request(_app.getMenuaction('ajax_sidebox'),
+					[_app.internalName, _app.sidebox_md5]);
 				_app.sidemenuEntry.showAjaxLoader();
 				req.sendRequest(false, function(data) {
 						if ((typeof data.md5 != 'undefined') &&
@@ -247,9 +247,9 @@ egw_fw.prototype.splitterResize = function(_width)
 {
 	if (this.tag.activeApp)
 	{
-		app_name = this.tag.activeApp.appName;
-		var req = new egw_json_request(app_name + '.jdots_framework.ajax_sideboxwidth',
-			[app_name, _width]);
+		app = this.tag.activeApp;
+		var req = new egw_json_request(app.getMenuaction('ajax_sideboxwidth'),
+			[app.internalName, _width]);
 		req.sendRequest(true);
 
 		//If there are no global application width values, set the sidebox width of
@@ -484,6 +484,7 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 	{
 		return _app;
 	}
+
 	return null;
 }
 
@@ -523,13 +524,28 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	{
 		var app = apps[i];
 
-		//Check for the "legacyApp" flag - if it is not set, default it to true
+		// Check for the "legacyApp" flag - if it is not set, default it to true
 		var legacyApp = typeof egw_widgetReplace == 'undefined' || app.name != 'etemplate';
 /*		if (typeof app.legacyApp != 'undefined')
 			legacyApp = app.legacyApp;*/
 
+		// Retrieve the application base url
+		var baseUrl = false;
+		if (typeof app.baseUrl == 'string')
+		{
+			baseUrl = app.baseUrl;
+		}
+
+		// Compute the instance internal name
+		var internalName = app.name;
+		if (typeof app.internalName == 'string')
+		{
+			internalName = app.internalName;
+		}
+
 		appData = new egw_fw_class_application(this, 
-			app.name, app.title, app.icon, app.url, app.sideboxwidth, legacyApp);
+			app.name, app.title, app.icon, app.url, app.sideboxwidth, legacyApp,
+			baseUrl, internalName);
 
 		//Create a sidebox menu entry for each application
 		if (!app.noNavbar)
@@ -705,8 +721,17 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 						catContent += html.html;
 					}
 					else
-					{					
-						catContent += '<a href="' + _data[i].entries[j].item_link + 
+					{
+						//Parse the given href and replace the given application name
+						//(which might be wrong because this is an application from another
+						//instance)
+						var link = _data[i].entries[j].item_link;
+						var matches = link.match(/javascript:egw_link_handler\('([^']*)'/);
+						if (matches)
+						{
+							link = "javascript:egw_link_handler('" + matches[1] + "', '" + _app.appName + "');";
+						}
+						catContent += '<a href="' + link + 
 							(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
 							'">' + html.html + '</a>';
 					}
@@ -1001,7 +1026,8 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 
 		//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 		//the type of the link source
-		this.iframe.contentWindow._legacy_iframe = true;		
+		this.iframe.contentWindow._legacy_iframe = true;
+		this.iframe.contentWindow.egw_app = this.app;
 	}
 	else
 	{
@@ -1021,7 +1047,7 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 			if (this.app.sidemenuEntry)
 				this.app.sidemenuEntry.showAjaxLoader();
 			var req = new egw_json_request(
-				this.app.appName + '.jdots_framework.ajax_exec',
+				this.app.getMenuaction('ajax_exec'),
 				[_url], this.contentDiv);
 			req.sendRequest(true, this.browse_callback, this);
 

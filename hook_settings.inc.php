@@ -39,5 +39,50 @@ $GLOBALS['settings'] = array(
 		'admin'  => false,
 		'default'=> '0',
 	),
+	'remote_application_enabled' => array(
+		'type'	=> 'check',
+		'name' => 'remote_application_enabled',
+		'label' => 'Remote application enabled (ALPHA, authentification not working yet!)',
+		'help' => 'If you wish to include an application from another egw instance inside the Stylite template set, set this option.',
+		'no_lang' => true,
+		'xmlrpc' => false,
+		'admin' => true,
+		'forced' => true,
+		'default' => 0
+	),
+	'remote_application_name' => array(
+		'type'	=> 'input',
+		'name' => 'remote_application_name',
+		'label' => 'Remote application name',
+		'help' => 'The identifier of the application that should be included. Specifiy the internal lowercase name here, not the translated. E.g. "calendar" or "tracker"',
+		'no_lang' => true,
+		'xmlrpc' => false,
+		'admin' => true,
+		'forced' => true,
+		'default' => ' '
+	),
+	'remote_application_title' => array(
+		'type'	=> 'input',
+		'name' => 'remote_application_title',
+		'label' => 'Remote application title',
+		'help' => 'How the remote application should be called on your instance. E.g. "Remote Tracker"',
+		'no_lang' => true,
+		'xmlrpc' => false,
+		'admin' => true,
+		'forced' => true,
+		'default' => ' '
+	),
+	'remote_application_url' => array(
+		'type'	=> 'input',
+		'name' => 'remote_application_url',
+		'label' => 'Remote instance url',
+		'help' => 'The base url of the remote egroupware instance. E.g. "http://egw.myegw.org/egw/" ',
+		'no_lang' => true,
+		'xmlrpc' => false,
+		'admin' => true,
+		'forced' => true,
+		'default' => ' '
+	),
+
 	'navbar_format' => false,	// not used in JDots (defined in common prefs)
 );
