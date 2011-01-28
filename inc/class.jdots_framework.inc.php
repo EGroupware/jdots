@@ -583,6 +583,36 @@ class jdots_framework extends egw_framework
 			$this->sidebox_menu_opened = true;
 			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
 			self::$link_app = null;
+
+			// Add in import / export, if available
+			if($GLOBALS['egw_info']['user']['apps']['importexport']) {
+				$file = array();
+				if(importexport_helper_functions::has_definitions($appname, 'import'))
+				{
+					$file['Import'] = array('link' => "javascript:egw_openWindowCentered2('".
+						egw::link('/index.php',array(
+							'menuaction' => 'importexport.importexport_import_ui.import_dialog',
+							'appname'=>$appname
+						),false)."','_blank',500,220,'yes')",
+						'icon' => 'import',
+						'app' => 'importexport',
+						'text' => 'import'
+					);
+				}
+				if(importexport_helper_functions::has_definitions($appname, 'export'))
+				{
+					$file['Export'] = array('link' => "javascript:egw_openWindowCentered2('".
+						egw::link('/index.php',array(
+							'menuaction' => 'importexport.importexport_export_ui.export_dialog',
+							'appname'=>$appname
+						),false)."','_blank',850,440,'yes')",
+						'icon' => 'export',
+						'app' => 'importexport',
+						'text' => 'export'
+					);
+				}
+				if($file) display_sidebox($appname,lang('importexport'),$file);
+			}
 		}
 		//If there still is no sidebox content, return null here
 		if (!isset($this->sideboxes[$appname]))
