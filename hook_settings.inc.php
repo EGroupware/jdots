@@ -39,7 +39,7 @@ $GLOBALS['settings'] = array(
 		'admin'  => false,
 		'default'=> '0',
 	),
-	'remote_application_enabled' => array(
+	/*'remote_application_enabled' => array(
 		'type'	=> 'check',
 		'name' => 'remote_application_enabled',
 		'label' => 'Remote application enabled',
@@ -82,7 +82,7 @@ $GLOBALS['settings'] = array(
 		'admin' => true,
 		'forced' => true,
 		'default' => ' '
-	),
+	),*/
 
 	'navbar_format' => false,	// not used in JDots (defined in common prefs)
 );

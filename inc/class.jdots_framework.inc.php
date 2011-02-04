@@ -766,7 +766,7 @@ class jdots_framework extends egw_framework
 	{
 		$result = array();
 
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['remote_application_enabled'])
+		/*if ($GLOBALS['egw_info']['user']['preferences']['common']['remote_application_enabled'])
 		{
 			$name = $GLOBALS['egw_info']['user']['preferences']['common']['remote_application_name'];
 			$title = $GLOBALS['egw_info']['user']['preferences']['common']['remote_application_title'];
@@ -782,7 +782,7 @@ class jdots_framework extends egw_framework
 				'url' => $url.$name.'/index.php',
 				'internalName' => $name,
 			);
-		}
+		}*/
 
 		return $result;
 	}

@@ -95,11 +95,6 @@ egw_fw_class_application.prototype.getBaseUrl = function(_force)
 	}
 }
 
-egw_fw_class_application.prototype.isRemote = function()
-{
-	return (this.internalName != this.appName);
-}
-
 function egw_fw_getMenuaction(_fun)
 {
 	return egw_fw_class_application.prototype.getMenuaction.call(null, _fun);

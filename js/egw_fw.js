@@ -182,22 +182,19 @@ egw_fw.prototype.setActiveApp = function(_app)
 			}
 			else
 			{
-				if (!_app.isRemote())
-				{
-					//Probalby the sidemenu data just got lost along the way. This
-					//for example happens, when a user double clicks on a menu item
-					var req = new egw_json_request(_app.getMenuaction('ajax_sidebox'),
-						[_app.internalName, _app.sidebox_md5]);
-					_app.sidemenuEntry.showAjaxLoader();
-					req.sendRequest(false, function(data) {
-							if ((typeof data.md5 != 'undefined') &&
-								(typeof data.data != 'undefined'))
-							{
-								this.fw.setSidebox(this.app, data.data,  data.md5);
-								this.app.sidemenuEntry.hideAjaxLoader();
-							}
-					}, {'app' : _app, 'fw' : this});
-				}
+				//Probalby the sidemenu data just got lost along the way. This
+				//for example happens, when a user double clicks on a menu item
+				var req = new egw_json_request(_app.getMenuaction('ajax_sidebox'),
+					[_app.internalName, _app.sidebox_md5]);
+				_app.sidemenuEntry.showAjaxLoader();
+				req.sendRequest(false, function(data) {
+						if ((typeof data.md5 != 'undefined') &&
+							(typeof data.data != 'undefined'))
+						{
+							this.fw.setSidebox(this.app, data.data,  data.md5);
+							this.app.sidemenuEntry.hideAjaxLoader();
+						}
+				}, {'app' : _app, 'fw' : this});
 			}
 		}
 		else
@@ -1030,7 +1027,6 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 		//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 		//the type of the link source
 		this.iframe.contentWindow._legacy_iframe = true;
-		this.iframe.egw_app = this.app;
 	}
 	else
 	{
