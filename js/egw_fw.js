@@ -371,6 +371,16 @@ egw_fw.prototype.assembleTabList = function()
 
 egw_fw.prototype.notifyTabChange = function()
 {
+	// Call the "resize" function of the currently active app
+	if (this.activeApp)
+	{
+		var browser = this.activeApp.browser;
+		if (browser)
+		{
+			window.setTimeout(browser.callResizeHandler, 100);
+		}
+	}
+
 	if (this.notifyTabChangeEnabled)
 	{
 		//Send the current tab list to the server
@@ -780,7 +790,8 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 
 			_app.sidemenuEntry.setContent(contDiv);
 			_app.sidebox_md5 = _md5;
-
+			
+			//console.log(contJS);
 			$(contDiv).append(contJS);
 		}
 
@@ -955,6 +966,21 @@ function egw_fw_content_browser(_app, _heightCallback)
 	this.contentDiv = null;
 	this.heightCallback = _heightCallback;
 	this.app = _app;
+}
+
+egw_fw_content_browser.prototype.callResizeHandler = function()
+{
+	var wnd = window;
+	if (this.iframe)
+	{
+		wnd = this.iframe.contentWindow;
+	}
+
+	// Call the resize handler
+	if (wnd)
+	{
+		$(window).resize();
+	}
 }
 
 /**
