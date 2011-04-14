@@ -431,7 +431,7 @@ class jdots_framework extends egw_framework
 		{
 			$content = preg_replace('/onchange="[^"]+"/','onchange="framework.tzSelection(this.value); return false;"',$content);
 		}
-		elseif(strpos($content,'menuaction=admin.uicurrentsessions.list_sessions') !== false)
+		elseif(strpos($content,'menuaction=admin.admin_accesslog.sessions') !== false)
 		{
 			$content = preg_replace('/href="([^"]+)"/',"href=\"javascript:egw_link_handler('\\1','admin')\"",$content);
 		}
