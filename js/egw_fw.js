@@ -1047,12 +1047,17 @@ egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
 	{
 		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
 
-		//Perform the actual "navigation"
-		this.iframe.src = _url;
-
-		//Set the "_legacy_iframe" flag to allow link handlers to easily determine
-		//the type of the link source
-		this.iframe.contentWindow._legacy_iframe = true;
+		//Postpone the actual "navigation" - gives some speedup with internet explorer
+		//as it does no longer blocks the complete page until all frames have loaded.
+		var self = this;
+		window.setTimeout(function() {
+			//Load the iframe content
+			self.iframe.src = _url;
+			
+			//Set the "_legacy_iframe" flag to allow link handlers to easily determine
+			//the type of the link source
+			self.iframe.contentWindow._legacy_iframe = true;
+		}, 1);
 	}
 	else
 	{
