@@ -377,7 +377,9 @@ egw_fw.prototype.notifyTabChange = function()
 		var browser = this.activeApp.browser;
 		if (browser)
 		{
-			window.setTimeout(browser.callResizeHandler, 100);
+			window.setTimeout(function() {
+				browser.callResizeHandler()
+			}, 100);
 		}
 	}
 
@@ -976,10 +978,10 @@ egw_fw_content_browser.prototype.callResizeHandler = function()
 		wnd = this.iframe.contentWindow;
 	}
 
-	// Call the resize handler
-	if (wnd)
+	// Call the resize handler (we have to use the jquery object of the iframe!)
+	if (wnd && typeof wnd.$ != "undefined")
 	{
-		$(window).resize();
+		wnd.$(wnd).trigger("resize");
 	}
 }
 
