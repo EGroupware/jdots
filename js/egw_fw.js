@@ -430,7 +430,7 @@ egw_fw.prototype.createApplicationTab = function(_app, _pos)
  * @param bool _hidden specifies, whether the application should be set active
  *   after opening the tab
  */
-egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe, _hidden, _pos)
+egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 {
 	//Default the post parameter to -1
 	if (typeof _pos == 'undefined')
@@ -442,18 +442,6 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe, _hidd
 	if (typeof _url == 'undefined' || _url == null)
 		_url = _app.indexUrl;
 
-	if (typeof _useIframe == 'undefined' || _useIframe == null)
-	{
-		if (!_url.match(/menuaction=/))
-		{
-			_useIframe = true;
-		}
-		else
-		{
-			_useIframe = _app.legacyApp;
-		}
-	}
-
 	if (_app.browser == null)
 	{
 		//Create a new browser ui and set it as application tab callback
@@ -462,7 +450,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _useIframe, _hidd
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
 
-	_app.browser.browse(_url, _useIframe, _hidden);
+	_app.browser.browse(_url, _hidden);
 
 	if (typeof _hidden == 'undefined' || !_hidden)
 	{
@@ -536,11 +524,6 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	{
 		var app = apps[i];
 
-		// Check for the "legacyApp" flag - if it is not set, default it to true
-		var legacyApp = typeof egw_widgetReplace == 'undefined' || app.name != 'etemplate';
-/*		if (typeof app.legacyApp != 'undefined')
-			legacyApp = app.legacyApp;*/
-
 		// Retrieve the application base url
 		var baseUrl = false;
 		if (typeof app.baseUrl == 'string')
@@ -556,7 +539,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		}
 
 		appData = new egw_fw_class_application(this, 
-			app.name, app.title, app.icon, app.url, app.sideboxwidth, legacyApp,
+			app.name, app.title, app.icon, app.url, app.sideboxwidth,
 			baseUrl, internalName);
 
 		//Create a sidebox menu entry for each application
@@ -865,7 +848,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 	{
 		//The app parameter was false or not a string or the application specified did not exists.
 		//Determine the target application from the link that had been passed to this function 
-		app = this.parseAppFromUrl(_link);		
+		app = this.parseAppFromUrl(_link);
 	}
 
 	if (app)
@@ -906,7 +889,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 		if (appEntry && appEntry.browser == null)
 		{
 			navigate = true;
-			framework.applicationTabNavigate(appEntry, 'about:blank', appEntry.legacyApp);
+			framework.applicationTabNavigate(appEntry, 'about:blank');
 		}
 	}
 	else
@@ -939,7 +922,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 egw_fw.prototype.egw_appWindow = function(_app)
 {
 	var app = framework.getApplicationByName(_app);
-	var result = null;
+	var result = window;
 	if (app != null && app.browser != null && app.browser.iframe != null)
 	{
 		result = app.browser.iframe.contentWindow;
@@ -1042,10 +1025,27 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 	}
 }
 
-egw_fw_content_browser.prototype.browse = function(_url, _useIframe)
+egw_fw_content_browser.prototype.browse = function(_url)
 {
+	var useIframe = true;
+
+//	_url = _url + "&ajax=true";
+
+	// Check whether the given url is a pseudo url which should be executed
+	// by calling the ajax_exec function
+	var matches = _url.match(/\/index.php\?menuaction=([A-Za-z0-9\.]*).*&ajax=true$/);
+	if (matches) {
+		useIframe = false;
+
+		// Matches[1] contains the menuaction which should be executed - replace
+		// the given url with the following line. This will be evaluated by the
+		// jdots_framework ajax_exec function which will be called by the code
+		// below as we set useIframe to false.
+		_url = "index.php?menuaction=" + matches[1];
+	}
+
 	//Set the browser type
-	if (_useIframe)
+	if (useIframe)
 	{
 		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
 
@@ -1099,7 +1099,20 @@ egw_fw_content_browser.prototype.browse_finished = function()
 {
 	if (this.app.sidemenuEntry)
 		this.app.sidemenuEntry.hideAjaxLoader();
-	egw_widgetReplace(this.app.appName, this.contentDiv, this.data);
+//	egw_widgetReplace(this.app.appName, this.contentDiv, this.data);
+	content = {
+		html: this.data,
+		js: ''
+	};
+
+	egw_seperateJavaScript(content);
+
+	// Insert the content
+	$(this.contentDiv).html(content.html);
+
+	// Run the javascript code
+	console.log(content.js);
+	$(this.contentDiv).append(content.js);
 }
 
 egw_fw_content_browser.prototype.reload = function()

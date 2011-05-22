@@ -490,10 +490,12 @@ class jdots_framework extends egw_framework
 		$md5_session[$app] = $md5;	// update md5 in session
 
 		return $header.'<script type="text/javascript">
-	if (typeof window.parent.framework != "undefined")
-	{
-		window.parent.framework.setSidebox(egw_getApp("'.$app.'"),'.$sidebox.',"'.$md5.'");
-	}
+	$(document).ready(function() {
+		if (typeof window.parent.framework != "undefined")
+		{
+			window.parent.framework.setSidebox(egw_getApp("'.$app.'"),'.$sidebox.',"'.$md5.'");
+		}
+	});
 </script>';
 	}
 
