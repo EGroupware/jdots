@@ -356,7 +356,7 @@ egw_fw.prototype.applicationClickCallback = function(_sender)
  */
 egw_fw.prototype.assembleTabList = function()
 {
-	var result = new Array;
+	var result = [];
 	for (var i = 0; i < this.tabsUi.tabs.length; i++)
 	{
 		var tab = this.tabsUi.tabs[i];
@@ -614,7 +614,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	//in the tab list.
 	for (var i = 0; i < sorted_restore.length; i++)
 		this.applicationTabNavigate(
-			sorted_restore[i].app, sorted_restore[i].url, null, i != 0,
+			sorted_restore[i].app, sorted_restore[i].url, i != 0,
 			sorted_restore[i].position);
 
 	this.scrollAreaUi.update();
@@ -1058,7 +1058,9 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			
 			//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 			//the type of the link source
-			self.iframe.contentWindow._legacy_iframe = true;
+			if (self.iframe && self.contentWindow) {
+				self.iframe.contentWindow._legacy_iframe = true;
+			}
 		}, 1);
 	}
 	else
@@ -1111,7 +1113,7 @@ egw_fw_content_browser.prototype.browse_finished = function()
 	$(this.contentDiv).html(content.html);
 
 	// Run the javascript code
-	console.log(content.js);
+	//console.log(content.js);
 	$(this.contentDiv).append(content.js);
 }
 
