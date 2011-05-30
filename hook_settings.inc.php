@@ -113,5 +113,6 @@ $GLOBALS['settings'] = array(
 	),*/
 
 	'navbar_format' => false,	// not used in JDots (defined in common prefs)
+	'default_app' => false,		// not used in JDots, as we can have multiple tabs open ...
 );
 unset($apps);
