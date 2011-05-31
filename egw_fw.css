@@ -139,7 +139,7 @@ body {
 	float: right;
 	margin-right: 5px;
 	margin-top: 15px;
-	background-image:url(images/print.png);
+	background-image:url(../phpgwapi/templates/default/images/print.png);
 	background-repeat: no-repeat;
 	background-position: center bottom;
 	cursor: pointer;
