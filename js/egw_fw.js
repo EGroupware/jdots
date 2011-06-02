@@ -90,6 +90,9 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 
 	//Override the app_window function
 	window.egw_appWindow = this.egw_appWindow;
+
+	// Override the egw_appWindowOpen function
+	window.egw_appWindowOpen = this.egw_appWindowOpen;
 }
 
 egw_fw.prototype.alertHandler = function(_message, _details)
@@ -936,6 +939,19 @@ egw_fw.prototype.egw_appWindow = function(_app)
 	}
 	return result;
 }
+
+egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
+{
+	if (typeof _url == "undefined") {
+		_url = "about:blank";
+	}
+
+	var app = framework.getApplicationByName(_app);
+	if (app != null) {
+		framework.applicationTabNavigate(app, _url);
+	}
+}
+
 
 /**
  * egw_fw_content_browser class
