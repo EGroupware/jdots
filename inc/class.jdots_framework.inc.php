@@ -222,6 +222,9 @@ class jdots_framework extends egw_framework
 		// should we draw the framework, or just a header
 		$do_framework = isset($_GET['cd']) && $_GET['cd'] === 'yes';
 
+		// load clientside link registry to framework only
+		$GLOBALS['egw_info']['flags']['js_link_registry'] = $do_framework;
+
 		if ($do_framework)
 		{
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
