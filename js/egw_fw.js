@@ -974,6 +974,7 @@ function egw_fw_content_browser(_app, _heightCallback)
 	this.contentDiv = null;
 	this.heightCallback = _heightCallback;
 	this.app = _app;
+	this.currentLocation = '';
 }
 
 egw_fw_content_browser.prototype.callResizeHandler = function()
@@ -1089,6 +1090,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	else
 	{
 		this.setBrowserType(EGW_BROWSER_TYPE_DIV)
+		this.currentLocation = _url;
 
 		//Special treatement of "about:blank"
 		if (_url == "about:blank")
@@ -1142,10 +1144,10 @@ egw_fw_content_browser.prototype.browse_finished = function()
 
 egw_fw_content_browser.prototype.reload = function()
 {
-	switch (_type)
+	switch (this.type)
 	{
 		case EGW_BROWSER_TYPE_DIV:
-
+			this.browse(this.currentLocation);
 			break;
 
 		case EGW_BROWSER_TYPE_IFRAME:
