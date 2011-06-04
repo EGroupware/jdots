@@ -50,7 +50,7 @@ $GLOBALS['settings'] = array(
 	),
 	'app_specific_sidebar_width' => array(
 		'type'   => 'check',
-		'label'  => 'Sidebar width stored for each application',
+		'label'  => 'Store sidebar width for each application',
 		'name'   => 'app_specific_sidebar_width',
 		'help'   => 'When set, the width of the sidebar menu is not stored globaly but independently for each application',
 		'xmlrpc' => false,
@@ -66,6 +66,15 @@ $GLOBALS['settings'] = array(
 		'xmlrpc' => True,
 		'admin'  => False,
 		'default' => 'addressbook,calendar',
+	),
+	'template_color' => array(
+		'type' => 'color',
+		'label' => lang('Template color eg. %1 or %2','#FF0000','orange'),
+		'no_lang' => true,
+		'name' => 'template_color',
+		'help' => 'Color used in template for active user interface elements.',
+		'xmlrpc' => True,
+		'admin'  => False,
 	),
 	/*'remote_application_enabled' => array(
 		'type'	=> 'check',

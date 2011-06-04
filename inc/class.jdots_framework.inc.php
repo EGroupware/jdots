@@ -188,6 +188,46 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
+	 * Overwrite to add our customizable colors
+	 *
+	 * @see egw_framework::_get_css()
+	 * @return array
+	 */
+	public function _get_css()
+	{
+		$ret = parent::_get_css();
+		if (($color=$GLOBALS['egw_info']['user']['preferences']['common']['template_color']) && $color != 'none' &&
+			preg_match('/^(#[0-9A-F]+|[A-Z]+)$/i',$color))	// a little xss check
+		{
+			$ret['app_css'] .= "
+/**
+ * theme changes to color jdots for color: $color
+ */
+.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_content, .egw_fw_ui_sidemenu_entry_header:hover, .egw_fw_ui_tab_header_active {
+	background-color: $color;
+}
+.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_content, .egw_fw_ui_sidemenu_entry_header:hover {
+	border-color: $color;
+}
+.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_header:hover, .egw_fw_ui_tab_header_active {
+	background-image: url(jdots/images/gradient30transparent.png);
+}
+.egw_fw_ui_sidemenu_entry_content {
+	background-image: url(jdots/images/gradient10transparent.png);
+}
+div .egw_fw_ui_sidemenu_entry_content > div {
+	background-color: #ffffff;
+}";/* not yet working: gradient22transparent.png need to be filled up with white on top
+.egw_fw_ui_tabs_header {
+        background-image: url(jdots/images/gradient22transparent.png);
+        background-color: $color;
+}
+";*/
+		}
+		return $ret;
+	}
+
+	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
 	 * @return string with html
