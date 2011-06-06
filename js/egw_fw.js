@@ -1205,3 +1205,18 @@ window.egw_link_handler = function(_link, _app)
 	}
 }
 
+/**
+ * Refresh given application _targetapp display of entry _app _id, incl. outputting _msg
+ * 
+ * Current implementation ignores all refresh requests for now
+ * 
+ * @param string _msg message (already translated) to show, eg. 'Entry deleted'
+ * @param string _app application name
+ * @param string|int _id=null id of entry to refresh
+ * @param string _type=null either 'edit', 'delete', 'add' or null
+ * @param string _targetapp which app's window should be refreshed, default current
+ */
+window.egw_refresh = function(_msg, _app, _id, _type, _target)
+{
+	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
+}
