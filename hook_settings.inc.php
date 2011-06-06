@@ -28,6 +28,29 @@ if (!$hook_data['setup'])	// does not work on setup time
 	unset($app); unset($data);
 }
 
+$colors = array(
+	'#4b89d8' => lang('dark blue'),
+	'#010101' => lang('black'),
+	'#a3620a' => lang('brown'),
+	'#469609' => lang('dark green'),
+	'#bbde62' => lang('light green'),
+	'#9541d6' => lang('lila'),
+	'#f7b21e' => lang('orange'),
+	'#fe6a07' => lang('dark orange'),
+	'#fedf9e' => lang('light orange'),
+	'#f06eaa' => lang('pink'),
+	'#ed1c24' => lang('red'),
+	'#fef322' => lang('yellow'),
+);
+asort($colors);
+$colors['custom'] = lang('Custom color');	// custom allways last
+$template_colors = array();
+foreach($colors as $color => $label)
+{
+	$template_colors[$color] = $label.' ('.$color.') '.lang('Sidebox and header');
+	$template_colors['@'.$color] = $label.' ('.$color.') '.lang('Sidebox and active tab');
+}
+
 /**
  * Stylite jdots template
  */
@@ -68,11 +91,21 @@ $GLOBALS['settings'] = array(
 		'default' => 'addressbook,calendar',
 	),
 	'template_color' => array(
-		'type' => 'color',
-		'label' => lang('Template color eg. %1 or %2','#FF0000','orange'),
+		'type' => 'select',
+		'label' => 'Template color',
 		'no_lang' => true,
 		'name' => 'template_color',
-		'help' => 'Color used in template for active user interface elements.',
+		'values' => $template_colors,
+		'help' => 'Color used in template for active user interface elements. You need to reload (F5) after storing the preferences.',
+		'xmlrpc' => True,
+		'admin'  => False,
+	),
+	'template_custom_color' => array(
+		'type' => 'color',
+		'label' => 'Custom color',
+		'no_lang' => true,
+		'name' => 'template_custom_color',
+		'help' => lang('Use eg. %1 or %2','#FF0000','orange'),
 		'xmlrpc' => True,
 		'admin'  => False,
 	),

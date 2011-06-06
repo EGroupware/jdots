@@ -196,20 +196,24 @@ class jdots_framework extends egw_framework
 	public function _get_css()
 	{
 		$ret = parent::_get_css();
-		if (($color=$GLOBALS['egw_info']['user']['preferences']['common']['template_color']) && $color != 'none' &&
-			preg_match('/^(#[0-9A-F]+|[A-Z]+)$/i',$color))	// a little xss check
+
+		// color to use
+		$color = str_replace('custom',$GLOBALS['egw_info']['user']['preferences']['common']['template_custom_color'],
+			$GLOBALS['egw_info']['user']['preferences']['common']['template_color']);
+		// use active tab or header, beside sidebox
+		if (($use_active_tab = $color[0] == '@')) $color = substr($color,1);
+
+		if (preg_match('/^(#[0-9A-F]+|[A-Z]+)$/i',$color))	// a little xss check
 		{
 			$ret['app_css'] .= "
 /**
  * theme changes to color jdots for color: $color
  */
-.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_content, .egw_fw_ui_sidemenu_entry_header:hover, .egw_fw_ui_tab_header_active {
-	background-color: $color;
-}
 .egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_content, .egw_fw_ui_sidemenu_entry_header:hover {
+	background-color: $color;
 	border-color: $color;
 }
-.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_header:hover, .egw_fw_ui_tab_header_active {
+.egw_fw_ui_sidemenu_entry_header_active, .egw_fw_ui_sidemenu_entry_header:hover {
 	background-image: url(jdots/images/gradient30transparent.png);
 }
 .egw_fw_ui_sidemenu_entry_content {
@@ -217,12 +221,16 @@ class jdots_framework extends egw_framework
 }
 div .egw_fw_ui_sidemenu_entry_content > div {
 	background-color: #ffffff;
-}";/* not yet working: gradient22transparent.png need to be filled up with white on top
-.egw_fw_ui_tabs_header {
-        background-image: url(jdots/images/gradient22transparent.png);
-        background-color: $color;
+}".($use_active_tab ? "
+.egw_fw_ui_tab_header_active {
+	background-image: url(jdots/images/gradient30transparent.png);
+	background-color: $color;
 }
-";*/
+" : "
+.egw_fw_ui_tabs_header {
+	background-image: url(jdots/images/gradient22transparent.png);
+	background-color: $color;
+}");
 		}
 		return $ret;
 	}
