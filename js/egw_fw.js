@@ -945,8 +945,20 @@ egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
 	if (typeof _url == "undefined") {
 		_url = "about:blank";
 	}
-
-	var app = framework.getApplicationByName(_app);
+	
+	// Do a global location change if the given application name is null (as this function
+	// is called by egw_json.js redirect handler, where the _app parameter defaults to null)
+	if (_app == null) {
+		window.location = _url;
+	}
+	
+	var app = null;
+	if (typeof _app == "string") {	
+		app = framework.getApplicationByName(_app);
+	} else {
+		app = _app;
+	}
+	
 	if (app != null) {
 		framework.applicationTabNavigate(app, _url);
 	}
@@ -1108,6 +1120,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			var req = new egw_json_request(
 				this.app.getMenuaction('ajax_exec'),
 				[_url], this.contentDiv);
+			req.setAppObject(this.app);
 			req.sendRequest(true, this.browse_callback, this);
 
 			//The onloadfinish function gets called after all JS depencies have
