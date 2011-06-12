@@ -136,36 +136,6 @@ egw_fw.prototype.redirect = function(_url)
 }
 
 /**
- * Function called whenever F1 is pressed inside the framework
- * @returns boolean true if the call manual function could be called, false if the manual is not available
- */
-egw_fw.prototype.f1Handler = function()
-{
-	if (typeof window.callManual != 'undefined')
-	{
-		window.callManual();
-		return true;
-	}
-	return false;
-}
-
-/**
- * Function called whenever a key is pressed
- * @param object event describes the key press event
- */
-egw_fw.prototype.keyPressHandler = function(event)
-{
-	switch (event.keyCode)
-	{
-		case 112: //F1
-		{
-			event.preventDefault();
-			framework.f1Handler();
-		}
-	}
-}
-
-/**
  * Sets the active framework application to the application specified by _app
  */
 egw_fw.prototype.setActiveApp = function(_app)
@@ -390,6 +360,16 @@ egw_fw.prototype.notifyTabChange = function()
 			window.setTimeout(function() {
 				browser.callResizeHandler()
 			}, 100);
+		}
+
+		// Unfocus the elements in the object manager of that application
+		if (typeof egw_getObjectManager != "undefined")
+		{
+			var appObjMgr = egw_getObjectManager(this.activeApp.appName);
+			if (appObjMgr)
+			{
+				appObjMgr.setFocused(false);
+			}
 		}
 	}
 
