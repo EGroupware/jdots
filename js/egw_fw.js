@@ -93,6 +93,9 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 
 	// Override the egw_appWindowOpen function
 	window.egw_appWindowOpen = this.egw_appWindowOpen;
+
+	// Override the egw_getAppName function
+	window.egw_getAppName = this.egw_getAppName;
 }
 
 egw_fw.prototype.alertHandler = function(_message, _details)
@@ -359,17 +362,20 @@ egw_fw.prototype.notifyTabChange = function()
 		{
 			window.setTimeout(function() {
 				browser.callResizeHandler()
-			}, 100);
-		}
 
-		// Unfocus the elements in the object manager of that application
-		if (typeof egw_getObjectManager != "undefined")
-		{
-			var appObjMgr = egw_getObjectManager(this.activeApp.appName);
-			if (appObjMgr)
-			{
-				appObjMgr.setFocused(false);
-			}
+				// Focus the current window so that keyboard input is forwarderd
+				// to it. The timeout is needed, as this is function is often
+				// called by the click on a jdots-tab. And that click immediately
+				// focuses the outer window again.
+				if (browser.iframe && browser.iframe.contentWindow)
+				{
+					browser.iframe.contentWindow.focus();
+				}
+				else
+				{
+					window.focus();
+				}
+			}, 100);
 		}
 	}
 
@@ -944,6 +950,12 @@ egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
 	}
 }
 
+egw_fw.prototype.egw_getAppName = function()
+{
+	return framework.activeApp.appName;
+}
+
+
 
 /**
  * egw_fw_content_browser class
@@ -1074,8 +1086,14 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			
 			//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 			//the type of the link source
-			if (self.iframe && self.contentWindow) {
+			if (self.iframe && self.iframe.contentWindow) {
 				self.iframe.contentWindow._legacy_iframe = true;
+
+				// Focus the iframe of the current application
+				if (self.app == framework.activeApp)
+				{
+					self.iframe.contentWindow.focus();
+				}
 			}
 		}, 1);
 	}
@@ -1124,6 +1142,11 @@ egw_fw_content_browser.prototype.browse_finished = function()
 		html: this.data,
 		js: ''
 	};
+
+	if (this.app == framework.activeApp)
+	{
+		window.focus();
+	}
 
 	egw_seperateJavaScript(content);
 
