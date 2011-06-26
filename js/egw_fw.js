@@ -717,14 +717,17 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 						//(which might be wrong because this is an application from another
 						//instance)
 						var link = _data[i].entries[j].item_link;
-						var matches = link.match(/javascript:egw_link_handler\('([^']*)'/);
-						if (matches)
+						if (link)
 						{
-							link = "javascript:egw_link_handler('" + matches[1] + "', '" + _app.appName + "');";
+							var matches = link.match(/javascript:egw_link_handler\('([^']*)'/);
+							if (matches)
+							{
+								link = "javascript:egw_link_handler('" + matches[1] + "', '" + _app.appName + "');";
+							}
+							catContent += '<a href="' + link + 
+								(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
+								'">' + html.html + '</a>';
 						}
-						catContent += '<a href="' + link + 
-							(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
-							'">' + html.html + '</a>';
 					}
 					if (_data[i].entries[j].icon_or_star)
 					{
