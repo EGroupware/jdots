@@ -168,7 +168,7 @@ class jdots_framework extends egw_framework
 			// Link gets handled in JS, so quotes need slashes as well as url-encoded
 			$link = str_replace('%27', '\%27', $link);
 
-			$link = "javascript:egw_link_handler('$link','$link_app');";
+			$link = "javascript:window.egw_link_handler?egw_link_handler('$link','$link_app'):parent.egw_link_handler('$link','$link_app');";
 		}
 		return $link;
 	}
