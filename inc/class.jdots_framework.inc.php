@@ -305,7 +305,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	{
 		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
 	}
-	window.egw_appName = "'.$GLOBALS['egw_info']['flags']['currentapp'].'";
 </script>';
 			}
 			// app header for print (different from website_title, which also contains app header)
