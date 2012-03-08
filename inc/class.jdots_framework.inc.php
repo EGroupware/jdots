@@ -272,6 +272,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
 			self::validate_file('jquery','jquery-ui');
+			self::validate_file('jsapi', 'egw', 'phpgwapi');
+			self::validate_file('.', 'etemplate2', 'etemplate');
 			self::validate_file('.','egw_fw','jdots');
 			self::validate_file('.','egw_fw_ui','jdots');
 			self::validate_file('.','egw_fw_classes','jdots');
@@ -296,6 +298,16 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// - we are the (remote) manual
 		if(!$do_framework)
 		{
+			// load translations
+			translation::add_app('etemplate');
+			foreach(translation::$loaded_apps as $app => $lang)
+			{
+				self::validate_file('/phpgwapi/lang.php', array(
+					'app' => $app,
+					'lang' => $lang,
+				));
+			}
+
 			// for remote manual never check/create framework
 			if ($GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
 			{
