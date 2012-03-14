@@ -298,16 +298,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// - we are the (remote) manual
 		if(!$do_framework)
 		{
-			// load translations
-			translation::add_app('etemplate');
-			foreach(translation::$loaded_apps as $app => $lang)
-			{
-				self::validate_file('/phpgwapi/lang.php', array(
-					'app' => $app,
-					'lang' => $lang,
-				));
-			}
-
 			// for remote manual never check/create framework
 			if ($GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
 			{
