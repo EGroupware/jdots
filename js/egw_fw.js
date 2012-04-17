@@ -1234,8 +1234,27 @@ window.egw_link_handler = function(_link, _app)
  * @param string|int _id=null id of entry to refresh
  * @param string _type=null either 'edit', 'delete', 'add' or null
  * @param string _targetapp which app's window should be refreshed, default current
+ * @param string|RegExp _replace regular expression to replace in url
+ * @param string _with
  */
-window.egw_refresh = function(_msg, _app, _id, _type, _target)
+window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with)
 {
 	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
+	var win = typeof _targetapp != 'undefined' ? egw_appWindow(_targetapp) : window;
+
+	// if window defines an app_refresh method, just call it
+	if (typeof win.app_refresh != 'undefined')
+	{
+		win.app_refresh(_msg, _app, _id, _type);
+		return;
+	}
+	if (win == window || typeof win.egw_refresh == 'undefined')
+	{
+		// ignore refresh method for main window / jdots framework
+	}
+	else
+	{
+		// if target given, dispatch to that window
+		win.egw_refresh(_msg, _app, _id, _type, null, _replace, _with);
+	}
 }
