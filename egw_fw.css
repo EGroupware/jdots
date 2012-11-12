@@ -93,7 +93,7 @@ body {
 	border-bottom-left-radius: 10px;
 }
 
-#egw_fw_topmenu ul, #egw_fw_topmenu li, .topmenu_info_item, #egw_fw_topmenu_items, #egw_fw_topmenu_info_items {
+#egw_fw_topmenu ul, #egw_fw_topmenu > * > ul > li, .topmenu_info_item, #egw_fw_topmenu_items, #egw_fw_topmenu_info_items {
 	display: inline;
 }
 #egw_fw_topmenu_items ul {
@@ -104,7 +104,7 @@ body {
 	padding-top: 2px;
 }
 
-#egw_fw_topmenu li {
+#egw_fw_topmenu > * > ul > li {
 	background-image: url(images/bullet.png);
 	background-repeat: no-repeat;
 	background-position: left center;	
