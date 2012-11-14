@@ -99,6 +99,7 @@ $GLOBALS['settings'] = array(
 		'help' => 'Color used in template for active user interface elements. You need to reload (F5) after storing the preferences.',
 		'xmlrpc' => True,
 		'admin'  => False,
+		'style' => 'width: 50%;'
 	),
 	'template_custom_color' => array(
 		'type' => 'color',
