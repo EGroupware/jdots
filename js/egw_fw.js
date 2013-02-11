@@ -1063,7 +1063,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 
 	// Check whether the given url is a pseudo url which should be executed
 	// by calling the ajax_exec function
-	var matches = _url.match(/\/index.php\?menuaction=([A-Za-z0-9\.]*).*&ajax=true$/);
+	var matches = _url.match(/\/index.php\?menuaction=([A-Za-z0-9_\.]*).*&ajax=true$/);
 	if (matches) {
 		// Matches[1] contains the menuaction which should be executed - replace
 		// the given url with the following line. This will be evaluated by the
