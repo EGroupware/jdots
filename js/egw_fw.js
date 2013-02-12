@@ -1240,21 +1240,117 @@ window.egw_link_handler = function(_link, _app)
 window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with)
 {
 	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
-	var win = typeof _targetapp != 'undefined' ? egw_appWindow(_targetapp) : window;
 
 	// if window defines an app_refresh method, just call it
-	if (typeof win.app_refresh != 'undefined')
+	var framework = egw_getFramework();
+	if(framework.app_refresh.registered(_app))
 	{
-		win.app_refresh(_msg, _app, _id, _type);
-		return;
+		framework.app_refresh(_msg, _app, _id, _type);
+
+		// Just this one app, already handled - safe to return here
+		if(!_targetapp || _app == _targetapp)
+		{
+			return;
+		}
 	}
+	// Check to see if target app needs to be refreshed too
+	if(_targetapp && _app != _targetapp)
+	{
+		if(framework.app_refresh.registered(_targetapp))
+		{
+			framework.app_refresh(_msg, _app, _id, _type, _targetapp);
+			return;
+		}
+	}
+
+	// Call appropriate default / fallback refresh
+	var win = egw_appWindow(_app);
 	if (win == window || typeof win.egw_refresh == 'undefined')
 	{
-		// ignore refresh method for main window / jdots framework
+		// jDots refresh on just the relevant entry
+		if(etemplate2 && etemplate2.getByApplication)
+		{
+			var et2 = etemplate2.getByApplication(_app);
+			for(var i = 0; i < et2.length; i++)
+			{
+				et2[i].refresh(_msg,_id,_type);
+			}
+		}
 	}
 	else
 	{
-		// if target given, dispatch to that window
-		win.egw_refresh(_msg, _app, _id, _type, null, _replace, _with);
+		// Refresh requested app
+		win.egw_refresh(_msg, _app, _id, _type, _app, _replace, _with);
+	}
+
+	if(_targetapp && _app != _targetapp)
+	{
+		win = egw_appWindow(_targetapp);
+		if (win == window || typeof win.egw_refresh == 'undefined')
+		{
+			// TODO: jDots refresh on just the relevant change (add,edit,delete)
+		}
+		else
+		{
+			// if target given, dispatch to that window
+			// _targetapp must be undefined to avoid getting the current window
+			win.egw_refresh(_msg, _app, _id, _type, undefined, _replace, _with);
+		}
 	}
 }
+
+/**
+ * Register a custom method to refresh an application in an intelligent way
+ *
+ * This function will be called any time the application needs to be refreshed.
+ * The default is to just reload, but with more detailed knowledge of the application
+ * internals, it should be possible to only refresh what is needed.
+ *
+ * The refresh function signature is:
+ * function (_msg, _app, _id, _type [,_targetapp]);
+ * returns void
+ * @see egw_refresh()
+ *
+ * @param appname String Name of the application
+ * @param refresh_func function to call when refreshing
+ */
+egw_fw.prototype.register_app_refresh = function(appname, refresh_func)
+{
+	this.applications[appname].app_refresh = refresh_func;
+};
+
+/**
+ * App refresh for this framework checks the internal application registry for a function and calls it.
+ *
+ * If the application has registered a refresh function with register_app_refresh(), it will be called.
+ * Otherwise the default egw_refresh() will continue.
+ * @see egw_refresh()
+ *
+ * @param _msg String Message to be displayed, such as "Saved" or "Entry deleted"
+ * @param _app String Application name for the record causing the refresh
+ * @param _id String|null Record ID, if refresh is for one particular record
+ * @param _type String|null either 'edit', 'delete', 'add' or null
+ * @param _targetapp String|null If refreshing an app other than what is given in _app, pass the desired app to be refreshed
+ */
+egw_fw.prototype.app_refresh = function(_msg, _app, _id, _type, _targetapp)
+{
+	if(typeof _targetapp == "undefined")
+	{
+		_targetapp = _app;
+	}
+	if(this.applications[_targetapp].app_refresh)
+	{
+		this.applications[_targetapp].app_refresh.call(this,_msg,_app,_id,_type);
+	}
+};
+/**
+ * A check to see if an application has registered a refresh function
+ *
+ * @param appname String Application name
+ *
+ * @return boolean
+ */
+egw_fw.prototype.app_refresh.registered = function(appname)
+{
+	return (typeof egw_getFramework().applications[appname].app_refresh == "function");
+};
