@@ -1105,6 +1105,17 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		// Save the actual url which has been passed as parameter
 		this.currentLocation = _url;
 
+		// Unload etemplate2, if there
+		var et2_list = []
+		if(typeof etemplate2 == "function")
+		{
+			et2_list = etemplate2.getByApplication(this.app.appName);
+			for(var i = 0; i < et2_list.length; i++)
+			{
+				et2_list[i].clear();
+			}
+		}
+
 		//Special treatement of "about:blank"
 		if (targetUrl == "about:blank")
 		{
