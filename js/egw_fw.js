@@ -1254,7 +1254,11 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
-	if(framework.app_refresh.registered(_app))
+	if(typeof framework.app_refresh == "function" && typeof framework.app_refresh.registered == undefined)
+	{
+		egw().log("error", "An application has overwritten app_refresh() instead of calling register_app_refresh()");
+	}
+	if( typeof framework.app_refresh != "undefined" && framework.app_refresh.registered(_app))
 	{
 		framework.app_refresh(_msg, _app, _id, _type);
 
@@ -1284,7 +1288,7 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 			var et2 = etemplate2.getByApplication(_app);
 			for(var i = 0; i < et2.length; i++)
 			{
-				et2[i].refresh(_msg,_id,_type);
+				et2[i].refresh(_msg,_app,_id,_type);
 			}
 		}
 	}
