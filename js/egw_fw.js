@@ -1078,6 +1078,17 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	{
 		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
 
+		// Unload etemplate2, if there
+		var et2_list = []
+		if(typeof this.iframe.contentWindow.etemplate2 == "function")
+		{
+			et2_list = this.iframe.contentWindow.etemplate2.getByApplication(this.app.appName);
+			for(var i = 0; i < et2_list.length; i++)
+			{
+				et2_list[i].clear();
+			}
+		}
+
 		//Postpone the actual "navigation" - gives some speedup with internet explorer
 		//as it does no longer blocks the complete page until all frames have loaded.
 		var self = this;
