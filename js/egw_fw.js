@@ -1294,7 +1294,7 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 	if (win == window || typeof win.egw_refresh == 'undefined')
 	{
 		// jDots refresh on just the relevant entry
-		if(etemplate2 && etemplate2.getByApplication)
+		if(typeof etemplate2 == "function" && etemplate2.getByApplication)
 		{
 			var et2 = etemplate2.getByApplication(_app);
 			for(var i = 0; i < et2.length; i++)
