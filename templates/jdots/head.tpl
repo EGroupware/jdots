@@ -45,20 +45,22 @@
 		<div id="egw_fw_footer">{powered_by}</div>
 
 		<script type="text/javascript">
-			var
-				framework = null;
+			var framework = null;
+			// Wait until all files are loaded
+			egw.LAB.wait(function() {
 
-			function egw_setSideboxSize(_size)
-			{
-				document.getElementById('egw_fw_main').style.marginLeft = _size + 'px';
-				document.getElementById('egw_fw_sidebar').style.width = _size + 'px';
-			}
+				function egw_setSideboxSize(_size)
+				{
+					document.getElementById('egw_fw_main').style.marginLeft = _size + 'px';
+					document.getElementById('egw_fw_sidebar').style.width = _size + 'px';
+				}
 
-			$j(document).ready(function() {
-				framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
-					"{webserver_url}", egw_setSideboxSize, {sidebox_width}, {sidebox_min_width});
-			}
-			);
+				$j(document).ready(function() {
+					window.framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
+						"{webserver_url}", egw_setSideboxSize, {sidebox_width}, {sidebox_min_width});
+					}
+				);
+			});
 		</script>
 
 <!-- END framework -->

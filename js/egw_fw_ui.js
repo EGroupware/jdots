@@ -485,6 +485,16 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			$j(this).removeClass("egw_fw_ui_tab_header_hover")
 		}
 	);
+
+	// If dragging something over the tab, activate that app
+	var tab = this.headerDiv;
+	$j(this.headerDiv).droppable({
+		tolerance:"pointer",
+		over: function() {
+			tab._callbackObject.call(tab);
+		}
+	});
+	
 		
 	//Create the close button and append it to the header div
 	this.closeButton = document.createElement("span");
