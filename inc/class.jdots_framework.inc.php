@@ -277,7 +277,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			self::validate_file('.','egw_fw','jdots');
 			self::validate_file('.','egw_fw_ui','jdots');
 			self::validate_file('.','egw_fw_classes','jdots');
-		
+
 			// Need to load this here to get enhanced selectboxes working
 			self::validate_file('/phpgwapi/js/jquery/chosen/chosen.jquery.js');
 
@@ -306,7 +306,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			{
 				if (empty($GLOBALS['egw_info']['flags']['java_script'])) $GLOBALS['egw_info']['flags']['java_script']='';
 				$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
-	if (typeof top.framework == "undefined" && !opener && !top.opener)
+	if (typeof top.framework == "undefined" && (!top.opener || typeof top.opener.top.framework == "undefined"))
 	{
 		window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
 	}
