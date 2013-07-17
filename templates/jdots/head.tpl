@@ -47,7 +47,7 @@
 		<script type="text/javascript">
 			var framework = null;
 			// Wait until all files are loaded
-			egw.LAB.wait(function() {
+			egw_LAB.wait(function() {
 
 				function egw_setSideboxSize(_size)
 				{

@@ -338,7 +338,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			// set app_header
 			$app = $GLOBALS['egw_info']['flags']['currentapp'];
 			$content .= '<script type="text/javascript">
-egw.LAB.wait(function() {
+egw_LAB.wait(function() {
 	if (typeof window.parent.framework != "undefined")
 	{
 		window.parent.framework.setWebsiteTitle(egw_getApp("'.$app.'"),"'.htmlspecialchars($vars['website_title']).'","'.$app_header.'");
@@ -558,7 +558,7 @@ egw.LAB.wait(function() {
 		$md5_session[$app] = $md5;	// update md5 in session
 
 		return $header.'<script type="text/javascript">
-egw.LAB.wait(function() {
+egw_LAB.wait(function() {
 	$j(document).ready(function() {
 		if (typeof window.parent.framework != "undefined")
 		{
