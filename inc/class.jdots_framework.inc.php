@@ -240,9 +240,10 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
+	 * @param array $extra=array() extra attributes passed as data-attribute to egw.js
 	 * @return string with html
 	 */
-	function header()
+	function header(array $extra=array())
 	{
 		// make sure header is output only once
 		if (self::$header_done) return '';
@@ -294,7 +295,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
 			}
 		}
-		$extra = array();
 		// for an url WITHOUT cd=yes --> load framework if not yet loaded:
 		// - if top has framework object, we are all right
 		// - if not we need to check if we have an opener (are a popup window)
