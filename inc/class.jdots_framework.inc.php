@@ -294,6 +294,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
 			}
 		}
+		$extra = array();
 		// for an url WITHOUT cd=yes --> load framework if not yet loaded:
 		// - if top has framework object, we are all right
 		// - if not we need to check if we have an opener (are a popup window)
@@ -305,17 +306,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			if ($GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
 			{
 				if (empty($GLOBALS['egw_info']['flags']['java_script'])) $GLOBALS['egw_info']['flags']['java_script']='';
-				$GLOBALS['egw_info']['flags']['java_script'] .= '<script type="text/javascript">
-	if (typeof top.framework == "undefined")
-	{
-		var top_opener = top.opener;
-		while (top_opener && top_opener.opener && !top_opener.top.framework) top_opener = top_opener.opener.top;
-		if (!top_opener || typeof top_opener.top.framework == "undefined")
-		{
-			window.location.search += window.location.search ? "&cd=yes" : "?cd=yes";
-		}
-	}
-</script>';
+				$extra['check-framework'] = true;
 			}
 			// app header for print (different from website_title, which also contains app header)
 			if ($GLOBALS['egw_info']['flags']['app_header'])
@@ -329,7 +320,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			}
 		}
 		$this->tpl->set_var('app_header',(string)$app_header);
-		$this->tpl->set_var($vars = $this->_get_header());
+		$this->tpl->set_var($vars = $this->_get_header($extra));
 		$content = $this->tpl->fp('out','head').$content;
 
 		// for remote manual, do NOT try to reach parent windows, as it's from a different domain (manual.egroupware.org)

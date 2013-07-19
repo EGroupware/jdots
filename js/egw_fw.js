@@ -902,6 +902,10 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	windowID = parentWindow.open(_url, _windowName, "width=" + _width + ",height=" + _height +
 		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
 		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
+	
+	// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
+	windowID.egw = window.egw;
+	windowID.framework = this;
 
 	if (navigate)
 	{
@@ -1079,7 +1083,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
 
 		// Unload etemplate2, if there
-		var et2_list = []
+		var et2_list = [];
 		if(typeof this.iframe.contentWindow.etemplate2 == "function")
 		{
 			et2_list = this.iframe.contentWindow.etemplate2.getByApplication(this.app.appName);
@@ -1100,7 +1104,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			//the type of the link source
 			if (self.iframe && self.iframe.contentWindow) {
 				self.iframe.contentWindow._legacy_iframe = true;
-
+				
 				// Focus the iframe of the current application
 				if (self.app == framework.activeApp)
 				{
