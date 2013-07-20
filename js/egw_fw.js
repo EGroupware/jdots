@@ -1144,6 +1144,14 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			//Perform an AJAX request loading application output
 			if (this.app.sidemenuEntry)
 				this.app.sidemenuEntry.showAjaxLoader();
+			var self_egw = egw(this.app.appName);
+			var req = self_egw.json(
+				this.app.getMenuaction('ajax_exec'), 
+				[targetUrl], this.browse_callback,this, true, this,self_egw
+			);
+			req.sendRequest();
+			
+			/*
 			var req = new egw_json_request(
 				this.app.getMenuaction('ajax_exec'),
 				[targetUrl], this.contentDiv);
@@ -1153,13 +1161,15 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			//The onloadfinish function gets called after all JS depencies have
 			//been loaded
 			req.onLoadFinish = this.browse_finished;
+			*/
 		}
 	}
 }
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
-	this.data = _data;
+	this.data = _data[0];
+	this.browse_finished();
 }
 
 egw_fw_content_browser.prototype.browse_finished = function()
