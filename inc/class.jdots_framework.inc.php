@@ -251,6 +251,11 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// add a content-type header to overwrite an existing default charset in apache (AddDefaultCharset directiv)
 		header('Content-type: text/html; charset='.translation::charset());
 
+		// content-security-policy header turned off by default:
+		// - "default-src * 'unsafe-inline'" allows inline style, which we need
+		// - "script-src 'self' 'unsafe-eval'" allows eval (eg. ckeditor), but forbids inline scripts, onchange, etc
+		//header("Content-Security-Policy: default-src * 'unsafe-inline'; script-src 'self' 'unsafe-eval'");
+
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
 		ob_end_clean();
@@ -374,12 +379,12 @@ egw_LAB.wait(function() {
 		// from here on, only framework
 		if ($GLOBALS['egw_info']['user']['apps']['manual'])
 		{
-			$content .= '<script type="text/javascript">
+/*			$content .= '<script type="text/javascript">
 	window.callManual = function(_url)
 	{
 		framework.callManual();
 	}
-</script>';
+</script>';*/
 		}
 		// topmenu
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());

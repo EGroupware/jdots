@@ -6,9 +6,9 @@
 		<meta name="keywords" content="EGroupware" />
 		<meta name="description" content="EGroupware" />
 		<meta name="keywords" content="EGroupware" />
-		<meta name="copyright" content="Stylite GmbH 2010, see http://www.stylite.de/EPL" />
+		<meta name="copyright" content="Stylite AG 2013, see http://www.stylite.de/EPL" />
 		<meta name="language" content="{lang_code}" />
-		<meta name="author" content="Stylite GmbH www.stylite.de" />
+		<meta name="author" content="Stylite AG www.stylite.de" />
 		{pngfix}
 		{meta_robots}
 		<link rel="icon" href="{img_icon}" type="image/x-ico" />
@@ -37,30 +37,10 @@
 					<div id="egw_fw_topmenu_info_items">{topmenu_info_items}</div>
 				</div>
 				<div id="egw_fw_tabs">
-					<div id="egw_fw_logout" title="{title_logout}" onclick="framework.redirect('{link_logout}');"></div>
-					<div id="egw_fw_print" title="{title_print}" onclick="framework.print();"></div>
+					<div id="egw_fw_logout" title="{title_logout}" data-logout-url="{link_logout}"></div>
+					<div id="egw_fw_print" title="{title_print}"></div>
 				</div>
 			</div>
 		</div>
 		<div id="egw_fw_footer">{powered_by}</div>
-
-		<script type="text/javascript">
-			var framework = null;
-			// Wait until all files are loaded
-			egw_LAB.wait(function() {
-
-				function egw_setSideboxSize(_size)
-				{
-					document.getElementById('egw_fw_main').style.marginLeft = _size + 'px';
-					document.getElementById('egw_fw_sidebar').style.width = _size + 'px';
-				}
-
-				$j(document).ready(function() {
-					window.framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
-						"{webserver_url}", egw_setSideboxSize, {sidebox_width}, {sidebox_min_width});
-					}
-				);
-			});
-		</script>
-
 <!-- END framework -->

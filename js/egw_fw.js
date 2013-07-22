@@ -1,5 +1,5 @@
 /**
- * eGroupware JavaScript Framework
+ * EGroupware JavaScript Framework
  *
  * @link http://www.egroupware.org
  * @author Andreas Stoeckel <as@stylite.de>
@@ -77,7 +77,7 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 	_sideboxSizeCallback(_sideboxStartSize);
 
 	//Register the resize handler
-	$j(window).resize(function(){window.framework.resizeHandler()});
+	$j(window).resize(function(){window.framework.resizeHandler();});
 
 	//Register the global alert handler
 	window.egw_alertHandler = this.alertHandler;
@@ -108,7 +108,7 @@ egw_fw.prototype.alertHandler = function(_message, _details)
 	{
 		alert(_message);
 	}
-}
+};
 
 egw_fw.prototype.callManual = function()
 {
@@ -119,7 +119,7 @@ egw_fw.prototype.callManual = function()
 			this.activeApp.browser.iframe.contentWindow.callManual();
 		}
 	}
-}
+};
 
 egw_fw.prototype.print = function()
 {
@@ -131,12 +131,12 @@ egw_fw.prototype.print = function()
 			this.activeApp.browser.iframe.contentWindow.print();
 		}
 	}
-}
+};
 
 egw_fw.prototype.redirect = function(_url)
 {
 	window.location = _url;
-}
+};
 
 /**
  * Sets the active framework application to the application specified by _app
@@ -203,7 +203,7 @@ egw_fw.prototype.setActiveApp = function(_app)
 		//...and scroll to the top
 		this.scrollAreaUi.setScrollPos(0);
 	}
-}
+};
 
 /**
  * Function called whenever the sidemenu entries are sorted
@@ -221,7 +221,7 @@ egw_fw.prototype.sortCallback = function(_entriesArray)
 	var req = new egw_json_request('home.jdots_framework.ajax_appsort',
 		[name_array]);
 	req.sendRequest(true);
-}
+};
 
 /**
  * Function called whenever the sidebox is resized
@@ -243,7 +243,7 @@ egw_fw.prototype.splitterResize = function(_width)
 		}
 	}
 	this.tag.sideboxSizeCallback(_width);
-}
+};
 
 /**
  * tabCloseClickCallback is used internally by egw_fw in order to handle clicks
@@ -285,7 +285,7 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 
 	//As a new tab might remove a row from the tab header, we have to resize all tab content browsers
 	this.tag.parentFw.resizeHandler();
-}
+};
 
 egw_fw.prototype.resizeHandler = function()
 {
@@ -300,7 +300,7 @@ egw_fw.prototype.resizeHandler = function()
 
 	//Update the scroll area
 	this.scrollAreaUi.update();
-}
+};
 
 egw_fw.prototype.getIFrameHeight = function()
 {
@@ -308,7 +308,7 @@ egw_fw.prototype.getIFrameHeight = function()
 		this.tabsUi.appHeaderContainer.offsetTop +
 		this.tabsUi.appHeaderContainer.offsetHeight + 30); /* 30 is the height of the footer */
 	return height;
-}
+};
 
 /**
  * tabClickCallback is used internally by egw_fw in order to handle clicks on
@@ -320,7 +320,7 @@ egw_fw.prototype.tabClickCallback = function(_sender)
 {
 	//Set the active application in the framework
 	this.tag.parentFw.setActiveApp(this.tag);
-}
+};
 
 /**
  * applicationClickCallback is used internally by egw_fw in order to handle clicks on
@@ -331,7 +331,7 @@ egw_fw.prototype.tabClickCallback = function(_sender)
 egw_fw.prototype.applicationClickCallback = function(_sender)
 {
 	this.tag.parentFw.applicationTabNavigate(this.tag, this.tag.indexUrl);
-}
+};
 
 
 /**
@@ -346,11 +346,11 @@ egw_fw.prototype.assembleTabList = function()
 		result[i] = {
 			'appName': tab.tag.appName,
 			'active': tab == this.tabsUi.activeTab
-		}
+		};
 	}
 
 	return result;
-}
+};
 
 egw_fw.prototype.notifyTabChange = function()
 {
@@ -361,7 +361,7 @@ egw_fw.prototype.notifyTabChange = function()
 		if (browser)
 		{
 			window.setTimeout(function() {
-				browser.callResizeHandler()
+				browser.callResizeHandler();
 
 				// Focus the current window so that keyboard input is forwarderd
 				// to it. The timeout is needed, as this is function is often
@@ -395,7 +395,7 @@ egw_fw.prototype.notifyTabChange = function()
 			request.sendRequest();
 		}
 	}
-}
+};
 
 /**
  * Checks whether the application already owns a tab and creates one if it doesn't exist
@@ -416,7 +416,7 @@ egw_fw.prototype.createApplicationTab = function(_app, _pos)
 		//Set the tab closeable if there's more than one tab
 		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
 	}
-}
+};
 
 /**
  * Navigate to the tab of an application (opening the tab if not yet open)
@@ -456,7 +456,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 	{
 		this.notifyTabChange();
 	}
-}
+};
 
 /**
  * Tries to obtain the application from a menuaction
@@ -482,7 +482,7 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 	}
 
 	return null;
-}
+};
 
 /**
  * loadApplicationsCallback is internally used by egw_fw in order to handle the
@@ -512,8 +512,8 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 			'position': _pos,
 			'url': _url,
 			'active': _active
-		}
-	}
+		};
+	};
 
 	//Iterate through the application array returned
 	for (var i = 0; i < apps.length; i++)
@@ -618,7 +618,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	//Set the current state of the tabs and activate TabChangeNotification.
 	this.serializedTabState = egw_json_encode(this.assembleTabList());
 	this.notifyTabChangeEnabled = true;
-}
+};
 
 /**
  * loadApplications refreshes the list of applications. Upon calling, all existing applications
@@ -634,9 +634,9 @@ egw_fw.prototype.loadApplications = function(_menuaction)
 	this.tabsUi.clean();
 
 	//Perform an AJAX request loading all available applications
-	var req = new egw_json_request(_menuaction, [window.location.href])
+	var req = new egw_json_request(_menuaction, [window.location.href]);
 	req.sendRequest(true, this.loadApplicationsCallback, this);
-}
+};
 
 /**
  * Goes through all applications and returns the application with the specified name.
@@ -651,7 +651,7 @@ egw_fw.prototype.getApplicationByName = function(_name)
 	}
 
 	return null;
-}
+};
 
 /**
  * Sends sidemenu entry category open/close information to the server using an AJAX request
@@ -666,12 +666,12 @@ egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 	/* Store the state of the category localy */	
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
 //	this.tag.parentFw.scrollAreaUi.update();
-}
+};
 
 egw_fw.prototype.categoryAnimationCallback = function()
 {
 	this.tag.parentFw.scrollAreaUi.update();
-}
+};
 
 /**
  * Sets the sidebox data of an application
@@ -789,7 +789,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 			_app.parentFw.scrollAreaUi.setScrollPos(0);
 		}
 	}
-}
+};
 
 /**
  * Sets the website title of an application
@@ -805,7 +805,7 @@ egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 		if (_app == this.activeApp)
 			this.refreshAppTitle();
 	}
-}
+};
 
 egw_fw.prototype.refreshAppTitle = function()
 {
@@ -816,7 +816,7 @@ egw_fw.prototype.refreshAppTitle = function()
 	}
 
 	this.resizeHandler();
-}
+};
 
 /**
  * Change timezone and refresh current app
@@ -832,7 +832,7 @@ egw_fw.prototype.tzSelection = function(_tz)
 	{
 		this.activeApp.browser.reload();
 	}
-}
+};
 
 egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 {
@@ -868,7 +868,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 				"Target link: " + _link);
 		}
 	}
-}
+};
 
 egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _height, _status, _app, _returnID)
 {
@@ -920,7 +920,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	{
 		return windowID;
 	}
-}
+};
 
 egw_fw.prototype.egw_appWindow = function(_app)
 {
@@ -931,7 +931,7 @@ egw_fw.prototype.egw_appWindow = function(_app)
 		result = app.browser.iframe.contentWindow;
 	}
 	return result;
-}
+};
 
 egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
 {
@@ -955,12 +955,12 @@ egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
 	if (app != null) {
 		framework.applicationTabNavigate(app, _url);
 	}
-}
+};
 
 egw_fw.prototype.egw_getAppName = function()
 {
 	return framework.activeApp.appName;
-}
+};
 
 
 
@@ -1001,7 +1001,7 @@ egw_fw_content_browser.prototype.callResizeHandler = function()
 	{
 		wnd.$j(wnd).trigger("resize");
 	}
-}
+};
 
 /**
  * Resizes both, the contentDiv and the iframe to the size returned from the heightCallback
@@ -1019,7 +1019,7 @@ egw_fw_content_browser.prototype.resize = function()
 	{
 		this.iframe.style.height = height;
 	}
-}
+};
 
 egw_fw_content_browser.prototype.setBrowserType = function(_type)
 {
@@ -1058,7 +1058,7 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 		this.resize();
 		this.type = _type;
 	}
-}
+};
 
 egw_fw_content_browser.prototype.browse = function(_url)
 {
@@ -1115,13 +1115,13 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	}
 	else
 	{
-		this.setBrowserType(EGW_BROWSER_TYPE_DIV)
+		this.setBrowserType(EGW_BROWSER_TYPE_DIV);
 
 		// Save the actual url which has been passed as parameter
 		this.currentLocation = _url;
 
 		// Unload etemplate2, if there
-		var et2_list = []
+		var et2_list = [];
 		if(typeof etemplate2 == "function")
 		{
 			et2_list = etemplate2.getByApplication(this.app.appName);
@@ -1164,13 +1164,13 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			*/
 		}
 	}
-}
+};
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
 	this.data = _data[0];
 	this.browse_finished();
-}
+};
 
 egw_fw_content_browser.prototype.browse_finished = function()
 {
@@ -1195,7 +1195,7 @@ egw_fw_content_browser.prototype.browse_finished = function()
 	// Run the javascript code
 	//console.log(content.js);
 	$j(this.contentDiv).append(content.js);
-}
+};
 
 egw_fw_content_browser.prototype.reload = function()
 {
@@ -1210,15 +1210,15 @@ egw_fw_content_browser.prototype.reload = function()
 			this.iframe.contentWindow.location.reload();
 			break;
 	}
-}
+};
 
 egw_fw_content_browser.prototype.blank = function()
 {
 	this.browse('about:blank', this.type == EGW_BROWSER_TYPE_IFRAME);
-}
+};
 
 /**
- * Global funcitons
+ * Global functions
  */
 
 window.egw_link_handler = function(_link, _app)
@@ -1258,7 +1258,7 @@ window.egw_link_handler = function(_link, _app)
 	{
 		window.location = _link;
 	}
-}
+};
 
 /**
  * Refresh given application _targetapp display of entry _app _id, incl. outputting _msg
@@ -1335,7 +1335,7 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 			win.egw_refresh(_msg, _app, _id, _type, undefined, _replace, _with);
 		}
 	}
-}
+};
 
 /**
  * Register a custom method to refresh an application in an intelligent way
@@ -1392,3 +1392,40 @@ egw_fw.prototype.app_refresh.registered = function(appname)
 {
 	return (typeof egw_getFramework().applications[appname].app_refresh == "function");
 };
+
+
+/**
+ * Initialise framework
+ */
+egw_LAB.wait(function() {
+	function egw_setSideboxSize(_size)
+	{
+		document.getElementById('egw_fw_main').style.marginLeft = _size + 'px';
+		document.getElementById('egw_fw_sidebar').style.width = _size + 'px';
+	}
+
+	$j(document).ready(function() {
+		window.framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
+			"/egroupware", egw_setSideboxSize, 225, 185);
+		window.callManual = window.framework.callManual;
+		jQuery('#egw_fw_print').click(window.framework.print);
+		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
+		window.egw.link_quick_add('quick_add');
+		var href_regexp = /^javascript:([^\(]+)\(([^)]+)?\)/;
+		jQuery('#egw_fw_topmenu_items a,#egw_fw_topmenu_info_items a').each(function(){
+			var matches = this.href.match(href_regexp);
+			if (matches && typeof window[matches[1]] == 'function') {
+				jQuery(this).click(function() {
+					var args = matches.length > 1 && matches[2] !== undefined ? matches[2].split(',') : [];
+					for(var i=0; i < args.length; ++i)
+					{
+						if (args[i][0] == "'" || args[i][0] == '"') args[i] = args[i].substr(1, args[i].length-2);
+					}
+					window[matches[1]].apply(this, args);
+				});
+				this.href = '#';
+			}
+		});
+	});
+});
+
