@@ -1406,7 +1406,7 @@ egw_LAB.wait(function() {
 
 	$j(document).ready(function() {
 		window.framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
-			"/egroupware", egw_setSideboxSize, 225, 185);
+			window.egw_webserverUrl, egw_setSideboxSize, 225, 185);
 		window.callManual = window.framework.callManual;
 		jQuery('#egw_fw_print').click(window.framework.print);
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
