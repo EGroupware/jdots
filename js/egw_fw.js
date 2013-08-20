@@ -110,14 +110,28 @@ egw_fw.prototype.alertHandler = function(_message, _details)
 	}
 };
 
-egw_fw.prototype.callManual = function()
+/**
+ * Call online manual
+ * 
+ * @param referer optional referer, default use activeApp
+ */
+egw_fw.prototype.callManual = function(referer)
 {
-	if (this.activeApp && this.activeApp.appName != 'manual')
+	if (typeof referer == 'undefined' && this.activeApp && this.activeApp.appName != 'manual')
 	{
-		if (this.activeApp.browser.iframe)
+		referer = this.activeApp.indexUrl;
+		if (this.activeApp.browser.iframe && this.activeApp.browser.iframe.contentWindow.location)
 		{
-			this.activeApp.browser.iframe.contentWindow.callManual();
+			//this.activeApp.browser.iframe.contentWindow.callManual();
+			referer = this.activeApp.browser.iframe.contentWindow.location.href;
 		}
+	}
+	if (typeof referer != 'undefined')
+	{
+		this.linkHandler(egw.link('/index.php', {
+			menuaction: 'manual.uimanual.view', 
+			referer: referer
+		}), 'manual', true);
 	}
 };
 
@@ -1421,7 +1435,7 @@ egw_LAB.wait(function() {
 					{
 						if (args[i][0] == "'" || args[i][0] == '"') args[i] = args[i].substr(1, args[i].length-2);
 					}
-					window[matches[1]].apply(this, args);
+					window[matches[1]].apply(window.framework, args);
 				});
 				this.href = '#';
 			}

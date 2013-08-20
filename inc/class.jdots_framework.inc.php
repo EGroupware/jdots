@@ -251,10 +251,16 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// add a content-type header to overwrite an existing default charset in apache (AddDefaultCharset directiv)
 		header('Content-type: text/html; charset='.translation::charset());
 
-		// content-security-policy header turned off by default:
-		// - "default-src * 'unsafe-inline'" allows inline style, which we need
-		// - "script-src 'self' 'unsafe-eval'" allows eval (eg. ckeditor), but forbids inline scripts, onchange, etc
-		//header("Content-Security-Policy: default-src * 'unsafe-inline'; script-src 'self' 'unsafe-eval'");
+		// content-security-policy header:
+		// - "script-src 'self' 'unsafe-eval'" allows only self and eval (eg. ckeditor), but forbids inline scripts, onchange, etc
+		// - "connect-src 'self'" allows ajax requests only to self
+		// - "style-src 'self' 'unsave-inline'" allows only self and inline style, which we need
+		// - "frame-src 'self' manual.egroupware.org" allows frame and iframe content only for self or manual.egroupware.org
+		$csp = "script-src 'self' 'unsafe-eval'; connect-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self' manual.egroupware.org";
+		$csp = "default-src * 'unsafe-eval' 'unsafe-inline'";	// allow everything
+		header("Content-Security-Policy: $csp");
+		header("X-Webkit-CSP: $csp");	// Chrome: <= 24, Safari incl. iOS
+		header("X-Content-Security-Policy: $csp");	// FF <= 22
 
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
@@ -325,67 +331,20 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				$app_header = isset($GLOBALS['egw_info']['apps'][$app]) ? $GLOBALS['egw_info']['apps'][$app]['title'] : lang($app);
 			}
 		}
+		// for remote manual, do NOT try to reach parent windows, as it's from a different domain (manual.egroupware.org)
+		if (!$do_framework && $GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
+		{
+			$extra['app-header'] = $app_header;
+		}
 		$this->tpl->set_var('app_header',(string)$app_header);
 		$this->tpl->set_var($vars = $this->_get_header($extra));
 		$content = $this->tpl->fp('out','head').$content;
 
-		// for remote manual, do NOT try to reach parent windows, as it's from a different domain (manual.egroupware.org)
-		if (!$do_framework && $GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
-		{
-			// set app_header
-			$app = $GLOBALS['egw_info']['flags']['currentapp'];
-			$content .= '<script type="text/javascript">
-egw_LAB.wait(function() {
-	if (typeof window.parent.framework != "undefined")
-	{
-		window.parent.framework.setWebsiteTitle(egw_getApp("'.$app.'"),"'.htmlspecialchars($vars['website_title']).'","'.$app_header.'");
-	}})';
-
-			//Register the global key press handler
-/*			$content .= "
-	window.keyPressHandler = function(event) {
-		if (event.keyCode == 112)
-		{
-			event.preventDefault();
-			window.callManual();
-		}
-	}
-	$j(document).keypress(keyPressHandler);\n";
-*/
-			// if manual is enabled, assamble manual url and define global callManual() function
-			if ($GLOBALS['egw_info']['user']['apps']['manual'])
-			{
-				$manual_url = egw::link('/index.php',array(
-						'menuaction' => 'manual.uimanual.view',
-					)+($GLOBALS['egw_info']['flags']['params']['manual'] ?
-					$GLOBALS['egw_info']['flags']['params']['manual'] : array(
-						'referer' => ($_SERVER['HTTPS'] ? 'https://' : 'http://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'],
-					)));
-				$content .= '
-	window.callManual = function(_url)
-	{
-		var _framework = window.opener ? window.opener.parent.framework :  window.parent.framework;
-		if (typeof _url == "undefined" || !_url) _url = "'.$manual_url.'";
-		_framework.linkHandler(_url,"manual");
-	}';
-			}
-			$content .= "\n</script>";
-		}
 		if (!$do_framework)
 		{
 			return $content;
 		}
 
-		// from here on, only framework
-		if ($GLOBALS['egw_info']['user']['apps']['manual'])
-		{
-/*			$content .= '<script type="text/javascript">
-	window.callManual = function(_url)
-	{
-		framework.callManual();
-	}
-</script>';*/
-		}
 		// topmenu
 		$vars = $this->_get_navbar($apps = $this->_get_navbar_apps());
 		$this->tpl->set_var($this->topmenu($vars,$apps));
