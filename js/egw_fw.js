@@ -821,10 +821,45 @@ egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 	}
 };
 
+/**
+ * Display an error or regular message
+ * 
+ * @param string _msg message to show
+ * @param string _type 'error', 'warning' or 'success' (default)
+ */
+egw_fw.prototype.setMessage = function(_msg, _type)
+{
+	if (typeof _type == 'undefined')
+		_type = _msg.match(/error/i) ? 'error' : 'success';
+	
+	if (this.messageTimer)
+	{
+		window.clearTimeout(this.messageTimer);
+		delete this.messageTimer;
+	}
+	
+	this.tabsUi.setAppHeader(_msg, _type+'_message');
+	this.resizeHandler();
+	
+	if (_type != 'error')	// clear message again after some time, if no error
+	{
+		var self = this;
+		this.messageTimer = window.setTimeout(function() {
+			self.refreshAppTitle.call(self);
+		}, 5000);
+	}
+};
+
 egw_fw.prototype.refreshAppTitle = function()
 {
 	if (this.activeApp)
 	{
+		if (this.messageTimer)
+		{
+			window.clearTimeout(this.messageTimer);
+			delete this.messageTimer;
+		}
+		
 		this.tabsUi.setAppHeader(this.activeApp.app_header);
 		document.title = this.activeApp.website_title;
 	}
@@ -1284,13 +1319,18 @@ window.egw_link_handler = function(_link, _app)
  * @param string _targetapp which app's window should be refreshed, default current
  * @param string|RegExp _replace regular expression to replace in url
  * @param string _with
+ * @param string _msg_type 'error', 'warning' or 'success' (default)
  */
-window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with)
+window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with, _msg_type)
 {
 	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
 
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
+	
+	// display message
+	framework.setMessage(_msg, _msg_type);
+
 	if(typeof framework.app_refresh == "function" && typeof framework.app_refresh.registered == undefined)
 	{
 		egw().log("error", "An application has overwritten app_refresh() instead of calling register_app_refresh()");

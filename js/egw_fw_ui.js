@@ -651,14 +651,14 @@ function egw_fw_ui_tabs(_contDiv)
 	$j(this.contHeaderDiv).addClass("egw_fw_ui_tabs_header");
 	$j(this.contDiv).append(this.contHeaderDiv);
 
-	this.appHeaderContainer = document.createElement("div");
-	$j(this.appHeaderContainer).addClass("egw_fw_ui_app_header_container");
+	this.appHeaderContainer = $j(document.createElement("div"));
+	this.appHeaderContainer.addClass("egw_fw_ui_app_header_container");
 	$j(this.contDiv).append(this.appHeaderContainer);
 
-	this.appHeader = document.createElement("div");
-	$j(this.appHeader).addClass("egw_fw_ui_app_header");
-	$j(this.appHeader).hide();
-	$j(this.appHeaderContainer).append(this.appHeader);
+	this.appHeader = $j(document.createElement("div"));
+	this.appHeader.addClass("egw_fw_ui_app_header");
+	this.appHeader.hide();
+	this.appHeaderContainer.append(this.appHeader);
 
 	this.tabs = Array();
 	
@@ -671,19 +671,22 @@ function egw_fw_ui_tabs(_contDiv)
  *
  * @param string _text is the text which will be seen in the appHeader.
  */
-egw_fw_ui_tabs.prototype.setAppHeader = function(_text)
+egw_fw_ui_tabs.prototype.setAppHeader = function(_text, _msg_class)
 {
 	if (_text != "")
 	{
-		$j(this.appHeader).empty();
-		$j(this.appHeader).append("<span style=\"color:gray \">&raquo;</span> " + _text);
-		$j(this.appHeader).show();
+		this.appHeader.text(_text);
+		this.appHeader.prop('class', "egw_fw_ui_app_header");
+		if (_msg_class) this.appHeader.addClass(_msg_class);
+//		this.appHeader.prepend("<span style=\"color:gray \">&raquo;</span> ");
+		this.appHeader.show();
 	}
 	else
 	{
-		$j(this.appHeader).hide();
+		this.appHeader.empty();
+		this.appHeader.hide();
 	}
-}
+};
 
 /**
  * Function internally used to remove double entries from the tab history. The tab
