@@ -320,21 +320,18 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				if (empty($GLOBALS['egw_info']['flags']['java_script'])) $GLOBALS['egw_info']['flags']['java_script']='';
 				$extra['check-framework'] = true;
 			}
+			$app_title = lang($GLOBALS['egw_info']['flags']['currentapp']);
 			// app header for print (different from website_title, which also contains app header)
-			if ($GLOBALS['egw_info']['flags']['app_header'])
+			if ($GLOBALS['egw_info']['flags']['app_header'] && $GLOBALS['egw_info']['flags']['app_header'] != $app_title &&
+				$GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
 			{
-				$app_header = $GLOBALS['egw_info']['flags']['app_header'];
+				$extra['app-header'] = $app_header = $GLOBALS['egw_info']['flags']['app_header'];
 			}
 			else
 			{
-				$app = $GLOBALS['egw_info']['flags']['currentapp'];
-				$app_header = isset($GLOBALS['egw_info']['apps'][$app]) ? $GLOBALS['egw_info']['apps'][$app]['title'] : lang($app);
+				$app_header = $app_title;
+				$extra['app-header'] = '';
 			}
-		}
-		// for remote manual, do NOT try to reach parent windows, as it's from a different domain (manual.egroupware.org)
-		if (!$do_framework && $GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
-		{
-			$extra['app-header'] = $app_header;
 		}
 		$this->tpl->set_var('app_header',(string)$app_header);
 		$this->tpl->set_var($vars = $this->_get_header($extra));
@@ -985,16 +982,19 @@ egw_LAB.wait(function() {
 	 */
 	function footer($no_framework=true)
 	{
+		//error_log(__METHOD__."($no_framework) footer_done=".array2string(self::$footer_done).' '.function_backtrace());
 		if (self::$footer_done) return;	// prevent (multiple) footers
 		self::$footer_done = true;
-		if (!(!isset($GLOBALS['egw_info']['flags']['nofooter']) || !$GLOBALS['egw_info']['flags']['nofooter'])) return;
-		//error_log(__METHOD__.array2string(function_backtrace()));
 
-		if($no_framework && $GLOBALS['egw_info']['user']['preferences']['common']['show_generation_time'])
+		if (!isset($GLOBALS['egw_info']['flags']['nofooter']) || !$GLOBALS['egw_info']['flags']['nofooter'])
 		{
-			$vars = $this->_get_footer();
+			if ($no_framework && $GLOBALS['egw_info']['user']['preferences']['common']['show_generation_time'])
+			{
+				$vars = $this->_get_footer();
+				$footer = "\n".$vars['page_generation_time']."\n";
+			}
 		}
-		return "\n".$vars['page_generation_time']."\n".
+		return $footer.
 			$GLOBALS['egw_info']['flags']['need_footer']."\n".	// eg. javascript, which need to be at the end of the page
 			"</body>\n</html>\n";
 	}
