@@ -318,11 +318,12 @@ egw_fw.prototype.resizeHandler = function()
 
 egw_fw.prototype.getIFrameHeight = function()
 {
-	var height = $j(window).height() - (
-		this.tabsUi.appHeaderContainer.offsetTop +
-		this.tabsUi.appHeaderContainer.offsetHeight + 30); /* 30 is the height of the footer */
-	return height;
-};
+	$header = $j(this.tabsUi.appHeaderContainer);
+ 	var height = $j(window).height() - (
+		$header.offset() ? $header.offset().top : 0 +
+		$header.outerHeight(true) + 30); /* 30 is the height of the footer */
+ 	return height;
+ };
 
 /**
  * tabClickCallback is used internally by egw_fw in order to handle clicks on
