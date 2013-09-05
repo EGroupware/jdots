@@ -320,20 +320,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				if (empty($GLOBALS['egw_info']['flags']['java_script'])) $GLOBALS['egw_info']['flags']['java_script']='';
 				$extra['check-framework'] = true;
 			}
-			$app_title = lang($GLOBALS['egw_info']['flags']['currentapp']);
-			// app header for print (different from website_title, which also contains app header)
-			if ($GLOBALS['egw_info']['flags']['app_header'] && $GLOBALS['egw_info']['flags']['app_header'] != $app_title &&
-				$GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
-			{
-				$extra['app-header'] = $app_header = $GLOBALS['egw_info']['flags']['app_header'];
-			}
-			else
-			{
-				$app_header = $app_title;
-				$extra['app-header'] = '';
-			}
 		}
-		$this->tpl->set_var('app_header',(string)$app_header);
 		$this->tpl->set_var($vars = $this->_get_header($extra));
 		$content = $this->tpl->fp('out','head').$content;
 
@@ -480,6 +467,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * Most apps never change sidebox, so we not even need to generate it more then once.
 	 *
 	 * @return string with javascript to set sidebox
+	 * @todo send sidebox via data-attribute in egw-script-tag
 	 */
 	function navbar()
 	{

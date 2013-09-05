@@ -812,10 +812,20 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
  */
 egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 {
+	if (typeof _app == 'string') _app = this.getApplicationByName(_app);
+
 	if (_app) {
 		_app.website_title = _title;
-		_app.app_header = _header;
-
+		
+		// only set app_header if different from app-name
+		if (_header && _header != egw.lang(_app.appName))
+		{
+			_app.app_header = _header;
+		}
+		else
+		{
+			_app.app_header = '';
+		}
 		if (_app == this.activeApp)
 			this.refreshAppTitle();
 	}
