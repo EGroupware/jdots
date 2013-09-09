@@ -179,10 +179,8 @@ egw_fw.prototype.setActiveApp = function(_app)
 			}
 			else
 			{
-				//Probalby the sidemenu data just got lost along the way. This
+				//Probably the sidemenu data just got lost along the way. This
 				//for example happens, when a user double clicks on a menu item
-				var req = new egw_json_request(_app.getMenuaction('ajax_sidebox'),
-					[_app.internalName, _app.sidebox_md5]);
 				_app.sidemenuEntry.showAjaxLoader();
 				var req = egw.json(
 					_app.getMenuaction('ajax_sidebox'),
@@ -652,8 +650,9 @@ egw_fw.prototype.loadApplications = function(_menuaction)
 	this.tabsUi.clean();
 
 	//Perform an AJAX request loading all available applications
-	var req = new egw_json_request(_menuaction, [window.location.href]);
-	req.sendRequest(true, this.loadApplicationsCallback, this);
+	var req = egw.json(_menuaction, [window.location.href], 
+		this.loadApplicationsCallback, this, false,this);
+	req.sendRequest();
 };
 
 /**
