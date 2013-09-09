@@ -184,14 +184,22 @@ egw_fw.prototype.setActiveApp = function(_app)
 				var req = new egw_json_request(_app.getMenuaction('ajax_sidebox'),
 					[_app.internalName, _app.sidebox_md5]);
 				_app.sidemenuEntry.showAjaxLoader();
-				req.sendRequest(false, function(data) {
-						if ((typeof data.md5 != 'undefined') &&
-							(typeof data.data != 'undefined'))
-						{
-							this.fw.setSidebox(this.app, data.data,  data.md5);
-							this.app.sidemenuEntry.hideAjaxLoader();
-						}
-				}, {'app' : _app, 'fw' : this});
+				var req = egw.json(
+					_app.getMenuaction('ajax_sidebox'),
+					[_app.internalName, _app.sidebox_md5],
+					function(data) {
+ 						if ((typeof data.md5 != 'undefined') &&
+ 							(typeof data.data != 'undefined'))
+ 						{
+ 							this.fw.setSidebox(this.app, data.data,  data.md5);
+ 							this.app.sidemenuEntry.hideAjaxLoader();
+ 						}
+					},
+					null,
+					false,
+					{'app' : _app, 'fw' : this}
+				);
+				req.sendRequest();
 			}
 		}
 		else
@@ -232,9 +240,7 @@ egw_fw.prototype.sortCallback = function(_entriesArray)
 	}
 	
 	//Send the sort order to the server via ajax
-	var req = new egw_json_request('home.jdots_framework.ajax_appsort',
-		[name_array]);
-	req.sendRequest(true);
+	var req = egw.jsonq('home.jdots_framework.ajax_appsort', [name_array]);
 };
 
 /**
@@ -245,9 +251,7 @@ egw_fw.prototype.splitterResize = function(_width)
 	if (this.tag.activeApp)
 	{
 		app = this.tag.activeApp;
-		var req = new egw_json_request(app.getMenuaction('ajax_sideboxwidth'),
-			[app.internalName, _width]);
-		req.sendRequest(true);
+		var req = egw.jsonq(app.getMenuaction('ajax_sideboxwidth'),[app.internalName, _width]);
 
 		//If there are no global application width values, set the sidebox width of
 		//the application every time the splitter is resized
@@ -406,8 +410,7 @@ egw_fw.prototype.notifyTabChange = function()
 		{
 			this.serializedTabState = serialized;
 
-			var request = new egw_json_request("home.jdots_framework.ajax_tab_changed_state", [data]);
-			request.sendRequest();
+			var request = egw.jsonq("home.jdots_framework.ajax_tab_changed_state", [data]);
 		}
 	}
 };
@@ -885,8 +888,8 @@ egw_fw.prototype.refreshAppTitle = function()
 egw_fw.prototype.tzSelection = function(_tz)
 {
 	//Perform an AJAX request to tell server
-	var req = new egw_json_request('home.jdots_framework.ajax_tz_selection.template',[_tz]);
-	req.sendRequest(false);		// false = synchron
+	var req = egw.json('home.jdots_framework.ajax_tz_selection.template',[_tz],null,null,false); // false = synchron
+	req.sendRequest();
 	
 	if (this.activeApp.browser)
 	{
