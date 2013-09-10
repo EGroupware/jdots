@@ -403,7 +403,7 @@ egw_fw.prototype.notifyTabChange = function()
 
 		//Serialize the tab list and check whether it really has changed since the last
 		//submit
-		var serialized = egw_json_encode(data);
+		var serialized = egw.jsonEncode(data);
 		if (serialized != this.serializedTabState)
 		{
 			this.serializedTabState = serialized;
@@ -632,7 +632,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	this.scrollAreaUi.update();
 
 	//Set the current state of the tabs and activate TabChangeNotification.
-	this.serializedTabState = egw_json_encode(this.assembleTabList());
+	this.serializedTabState = egw.jsonEncode(this.assembleTabList());
 	this.notifyTabChangeEnabled = true;
 };
 
@@ -676,9 +676,8 @@ egw_fw.prototype.getApplicationByName = function(_name)
 egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 {
 	// switched off, 'til we start using it
-	//var req = new egw_json_request("home.jdots_framework.ajax_sidebox_menu_opened",
-	//	[this.tag.appName, this.catName, _opened]);
-	//req.sendRequest(true);
+	//egw.json("home.jdots_framework.ajax_sidebox_menu_opened",
+	//	[this.tag.appName, this.catName, _opened],null,null,true).sendRequest();
 
 	/* Store the state of the category localy */	
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
@@ -1209,21 +1208,9 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			var self_egw = egw(this.app.appName);
 			var req = self_egw.json(
 				this.app.getMenuaction('ajax_exec'), 
-				[targetUrl], this.browse_callback,this, true, this,self_egw
+				[targetUrl], this.browse_callback,this, true, this
 			);
 			req.sendRequest();
-			
-			/*
-			var req = new egw_json_request(
-				this.app.getMenuaction('ajax_exec'),
-				[targetUrl], this.contentDiv);
-			req.setAppObject(this.app);
-			req.sendRequest(true, this.browse_callback, this);
-
-			//The onloadfinish function gets called after all JS depencies have
-			//been loaded
-			req.onLoadFinish = this.browse_finished;
-			*/
 		}
 	}
 };
