@@ -1463,16 +1463,13 @@ egw_LAB.wait(function() {
 		jQuery('#egw_fw_print').click(window.framework.print);
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
 		window.egw.link_quick_add('quick_add');
-		var href_regexp = /^javascript:([^\(]+)\(([^)]+)?\)/;
+		var href_regexp = /^javascript:([^\(]+)\((.*)?\);?$/;
 		jQuery('#egw_fw_topmenu_items a,#egw_fw_topmenu_info_items a').each(function(){
 			var matches = this.href.match(href_regexp);
 			if (matches && typeof window[matches[1]] == 'function') {
 				jQuery(this).click(function() {
-					var args = matches.length > 1 && matches[2] !== undefined ? matches[2].split(',') : [];
-					for(var i=0; i < args.length; ++i)
-					{
-						if (args[i][0] == "'" || args[i][0] == '"') args[i] = args[i].substr(1, args[i].length-2);
-					}
+					var args = [];
+					if (matches.length > 1 && matches[2] !== undefined) args = JSON.parse('['+matches[2].replace(/'/g,'"')+']');
 					window[matches[1]].apply(window.framework, args);
 				});
 				this.href = '#';

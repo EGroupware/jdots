@@ -409,15 +409,19 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	*/
 	function _add_topmenu_item(array $app_data,$alt_label=null)
 	{
-		if ($app_data['name'] == 'manual')
+		switch($app_data['name'])
 		{
-			$app_data['url'] = "javascript:callManual();";
-		}
-		elseif (strpos($app_data['url'],'logout.php') === false)
-		{
-			$app_data['url'] = "javascript:egw_link_handler('".$app_data['url']."','".
-				(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ?
-					$app_data['name'] : 'about')."')";
+			case 'manual':
+				$app_data['url'] = "javascript:callManual();";
+				break;
+
+			default:
+				if (strpos($app_data['url'],'logout.php') === false && substr($app_data['url'], 0, 11) != 'javascript:')
+				{
+					$app_data['url'] = "javascript:egw_link_handler('".$app_data['url']."','".
+						(isset($GLOBALS['egw_info']['user']['apps'][$app_data['name']]) ?
+							$app_data['name'] : 'about')."')";
+				}
 		}
 		$this->topmenu_items[] = '<a href="'.htmlspecialchars($app_data['url']).'">'.
 			htmlspecialchars($alt_label ? $alt_label : $app_data['title']).'</a>';
