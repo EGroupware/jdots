@@ -321,9 +321,7 @@ egw_fw.prototype.resizeHandler = function()
 egw_fw.prototype.getIFrameHeight = function()
 {
 	$header = $j(this.tabsUi.appHeaderContainer);
- 	var height = $j(window).height() - (
-		$header.offset() ? $header.offset().top : 0 +
-		$header.outerHeight(true) + 30); /* 30 is the height of the footer */
+ 	var height = $j(this.sidemenuDiv).height();
  	return height;
  };
 
