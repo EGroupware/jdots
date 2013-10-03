@@ -321,7 +321,7 @@ egw_fw.prototype.resizeHandler = function()
 egw_fw.prototype.getIFrameHeight = function()
 {
 	$header = $j(this.tabsUi.appHeaderContainer);
- 	var height = $j(this.sidemenuDiv).height();
+ 	var height = $j(this.sidemenuDiv).height()-this.tabsUi.appHeaderContainer.outerHeight();
  	return height;
  };
 
