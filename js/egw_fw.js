@@ -1143,14 +1143,17 @@ egw_fw_content_browser.prototype.browse = function(_url)
 
 		// Unload etemplate2, if there
 		var et2_list = [];
-		if(typeof this.iframe.contentWindow.etemplate2 == "function")
-		{
-			et2_list = this.iframe.contentWindow.etemplate2.getByApplication(this.app.appName);
-			for(var i = 0; i < et2_list.length; i++)
+		try {
+			if(typeof this.iframe.contentWindow.etemplate2 == "function")
 			{
-				et2_list[i].clear();
+				et2_list = this.iframe.contentWindow.etemplate2.getByApplication(this.app.appName);
+				for(var i = 0; i < et2_list.length; i++)
+				{
+					et2_list[i].clear();
+				}
 			}
 		}
+		catch(e) {}	// catch error if eg. SiteMgr runs a different origin, otherwise tab cant be closed
 
 		//Postpone the actual "navigation" - gives some speedup with internet explorer
 		//as it does no longer blocks the complete page until all frames have loaded.
@@ -1267,45 +1270,6 @@ egw_fw_content_browser.prototype.blank = function()
 /**
  * Global functions
  */
-
-window.egw_link_handler = function(_link, _app)
-{
-	//Determine where the link came from
-	var link_source = EGW_LINK_SOURCE_FRAMEWORK;
-	if (window.framework == 'undefined')
-	{
-		if (typeof window._legacy_iframe != 'undefined')
-		{
-			var link_source = EGW_LINK_SOURCE_LEGACY_IFRAME //1, iframe ==> legacy application
-		}
-		else
-		{
-			var link_source = EGW_LINK_SOURCE_POPUP; //2, popup
-		}
-	}
-
-	//Default the application parameter to false
-	if (typeof _app == 'undefined')
-	{
-		_app = false;
-	}
-
-	//Default the _useIframe parameter to true
-	if (typeof _useIframe == 'undefined')
-	{
-		_useIframe = true;
-	}
-
-	var frmwrk = egw_getFramework();
-	if (frmwrk != null)
-	{
-		frmwrk.linkHandler(_link, _app, link_source)
-	}
-	else
-	{
-		window.location = _link;
-	}
-};
 
 /**
  * Refresh given application _targetapp display of entry _app _id, incl. outputting _msg
@@ -1463,17 +1427,22 @@ egw_LAB.wait(function() {
 		jQuery('#egw_fw_print').click(window.framework.print);
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
 		window.egw.link_quick_add('quick_add');
+		
+		// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
 		var href_regexp = /^javascript:([^\(]+)\((.*)?\);?$/;
-		jQuery('#egw_fw_topmenu_items a,#egw_fw_topmenu_info_items a').each(function(){
+		jQuery('#egw_fw_topmenu_items,#egw_fw_topmenu_info_items,#egw_fw_sidemenu').on('click','a[href^="javascript:"]',function(){
 			var matches = this.href.match(href_regexp);
 			if (matches && typeof window[matches[1]] == 'function') {
-				jQuery(this).click(function() {
-					var args = [];
-					if (matches.length > 1 && matches[2] !== undefined) args = JSON.parse('['+matches[2].replace(/'/g,'"')+']');
-					window[matches[1]].apply(window.framework, args);
-				});
-				this.href = '#';
+				var args = [];
+				if (matches.length > 1 && matches[2] !== undefined) args = JSON.parse('['+matches[2].replace(/'/g,'"')+']');
+				window[matches[1]].apply(window.framework, args);
 			}
+			else
+			{
+				alert('Do NOT know how to execute '+this.href);
+			}
+			// return false to not execute link itself, which would violate CSP
+			return false;
 		});
 	});
 });

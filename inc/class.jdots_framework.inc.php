@@ -170,7 +170,8 @@ class jdots_framework extends egw_framework
 			// so they are still encoded when assigned to window.location
 			$link = str_replace(array('%27','%26'), array('\%27','%2526'), $link);
 
-			$link = "javascript:window.egw_link_handler?egw_link_handler('$link','$link_app'):parent.egw_link_handler('$link','$link_app');";
+			//$link = "javascript:window.egw_link_handler?egw_link_handler('$link','$link_app'):parent.egw_link_handler('$link','$link_app');";
+			$link = "javascript:egw_link_handler('$link','$link_app')";
 		}
 		return $link;
 	}
@@ -248,19 +249,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// make sure header is output only once
 		if (self::$header_done) return '';
 		self::$header_done = true;
-		// add a content-type header to overwrite an existing default charset in apache (AddDefaultCharset directiv)
-		header('Content-type: text/html; charset='.translation::charset());
 
-		// content-security-policy header:
-		// - "script-src 'self' 'unsafe-eval'" allows only self and eval (eg. ckeditor), but forbids inline scripts, onchange, etc
-		// - "connect-src 'self'" allows ajax requests only to self
-		// - "style-src 'self' 'unsave-inline'" allows only self and inline style, which we need
-		// - "frame-src 'self' manual.egroupware.org" allows frame and iframe content only for self or manual.egroupware.org
-		$csp = "script-src 'self' 'unsafe-eval'; connect-src 'self'; style-src 'self' 'unsafe-inline'; frame-src 'self' manual.egroupware.org";
-		$csp = "default-src * 'unsafe-eval' 'unsafe-inline'";	// allow everything
-		header("Content-Security-Policy: $csp");
-		header("X-Webkit-CSP: $csp");	// Chrome: <= 24, Safari incl. iOS
-		header("X-Content-Security-Policy: $csp");	// FF <= 22
+		self::_send_headers();
 
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
@@ -490,27 +480,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		$sidebox = json_encode($this->get_sidebox($app));
 		$md5 = md5($sidebox);
 
-		$header = $this->header();	// in case it's not yet called (call it now AFTER get_sidebox())
-
-		// for apps not in navbar, update admin menu with their sidebox data
-		if ($GLOBALS['egw_info']['apps'][$app]['status'] != 1) $app = 'admin';
-
-		if ($md5_session[$app] === $md5)
+		if ($md5_session[$app] !== $md5)
 		{
-			//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
-			return $header;	// no need to send to client
+			//error_log(__METHOD__."() header changed md5_session[$app]!=='$md5' --> setting it on egw_framework::\$extra[setSidebox]");
+			$md5_session[$app] = $md5;	// update md5 in session
+			egw_framework::$extra['setSidebox'] = array($app, $sidebox, $md5);
 		}
-		$md5_session[$app] = $md5;	// update md5 in session
-
-		return $header.'<script type="text/javascript">
-egw_LAB.wait(function() {
-	$j(document).ready(function() {
-		if (typeof window.parent.framework != "undefined")
-		{
-			window.parent.framework.setSidebox(egw_getApp("'.$app.'"),'.$sidebox.',"'.$md5.'");
-		}
-	})});
-</script>';
+		//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
+		return $this->header();	// in case it's not yet called (call it now AFTER get_sidebox())
 	}
 
 	/**
