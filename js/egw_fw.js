@@ -727,17 +727,9 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					}
 					else
 					{
-						//Parse the given href and replace the given application name
-						//(which might be wrong because this is an application from another
-						//instance)
 						var link = _data[i].entries[j].item_link;
 						if (link)
 						{
-							var matches = link.match(/javascript:egw_link_handler\('([^']*)'/);
-							if (matches)
-							{
-								link = "javascript:egw_link_handler('" + matches[1] + "', '" + _app.appName + "');";
-							}
 							catContent += '<a href="' + link + 
 								(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
 								'">' + html.html + '</a>';
@@ -1179,6 +1171,13 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	}
 	else
 	{
+		// check if app has its own linkHandler and it accepts the link (returns true)
+		if (typeof window.app == 'object' && typeof window.app[this.app.appName] == 'object' && 
+				typeof window.app[this.app.appName].linkHandler == 'function' &&
+				window.app[this.app.appName].linkHandler.call(window.app[this.app.appName], _url) === true)
+		{
+			return;
+		}
 		this.setBrowserType(EGW_BROWSER_TYPE_DIV);
 
 		// Save the actual url which has been passed as parameter

@@ -160,7 +160,7 @@ class jdots_framework extends egw_framework
 	static function link($url = '', $extravars = '', $link_app=null)
 	{
 		if (is_null($link_app)) $link_app = self::$link_app;
-		$link = parent::link($url,$extravars);
+		$link = parent::link($url, $extravars);
 
 		// $link_app === true --> detect application, otherwise use given application
 		if ($link_app && (is_string($link_app) || ($link_app = self::app_from_url($link))))
@@ -545,11 +545,19 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * @param string $appname
 	 * @param string $menu_title
 	 * @param array $file
+	 * @param string $type=null 'admin', 'preferences', 'favorites', ...
 	 */
-	public function sidebox($appname,$menu_title,$file)
+	public function sidebox($appname,$menu_title,$file,$type=null)
 	{
 		if (!isset($file['menuOpened'])) $file['menuOpened'] = (boolean)$this->sidebox_menu_opened;
 		$this->sidebox_menu_opened = false;
+
+		// fix app admin menus to use admin.admin_ui.index loader
+		if (($type == 'admin' || $menu_title == lang('Admin')) && $appname != 'admin')
+		{
+			$file = preg_replace("/^(javascript:egw_link_handler\(')(.*)menuaction=([^&]+)(.*)(','[^']+'\))$/",
+				'$1$2menuaction=admin.admin_ui.index&load=$3$4&ajax=true\',\'admin\')', $file_was=$file);
+		}
 
 		$this->sideboxes[$appname][$menu_title] = $file;
 	}
