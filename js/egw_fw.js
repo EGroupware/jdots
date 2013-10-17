@@ -1129,6 +1129,12 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		targetUrl = "index.php?menuaction=" + matches[1];
 		useIframe = false;
 	}
+	
+	// Destroy application js
+	if(window.app[this.app.appName] && window.app[this.app.appName].destroy)
+	{
+		window.app[this.app.appName].destroy();
+	}
 
 	//Set the browser type
 	if (useIframe)
