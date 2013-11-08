@@ -61,7 +61,7 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 			this.sortCallback);
 		this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 		this.splitterUi = new egw_fw_ui_splitter(this.splitterDiv,
-			EGW_SPLITTER_VERTICAL, this.splitterResize, 
+			EGW_SPLITTER_VERTICAL, this.splitterResize,
 			[
 				{
 					"size": _sideboxStartSize,
@@ -69,7 +69,7 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 					"maxsize": 0
 				},
 			], this);
-		
+
 
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
@@ -112,7 +112,7 @@ egw_fw.prototype.alertHandler = function(_message, _details)
 
 /**
  * Call online manual
- * 
+ *
  * @param referer optional referer, default use activeApp
  */
 egw_fw.prototype.callManual = function(referer)
@@ -129,7 +129,7 @@ egw_fw.prototype.callManual = function(referer)
 	if (typeof referer != 'undefined')
 	{
 		this.linkHandler(egw.link('/index.php', {
-			menuaction: 'manual.uimanual.view', 
+			menuaction: 'manual.uimanual.view',
 			referer: referer
 		}), 'manual', true);
 	}
@@ -230,13 +230,13 @@ egw_fw.prototype.setActiveApp = function(_app)
  */
 egw_fw.prototype.sortCallback = function(_entriesArray)
 {
-	//Create an array with the names of the applications in their sort order	
+	//Create an array with the names of the applications in their sort order
 	var name_array = new Array();
 	for (var i = 0; i < _entriesArray.length; i++)
 	{
 		name_array.push(_entriesArray[i].tag.appName);
 	}
-	
+
 	//Send the sort order to the server via ajax
 	var req = egw.jsonq('home.jdots_framework.ajax_appsort', [name_array]);
 };
@@ -434,7 +434,7 @@ egw_fw.prototype.createApplicationTab = function(_app, _pos)
 
 /**
  * Navigate to the tab of an application (opening the tab if not yet open)
- * 
+ *
  * @param egw_fw_class_application _app
  * @param string _url optional url, default index page of app
  * @param bool _hidden specifies, whether the application should be set active
@@ -480,7 +480,7 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 	var _app = null;
 
 	//Read the menuaction parts from the url and check whether the first part
-	//of the url contains a valid app name	
+	//of the url contains a valid app name
 	var matches = _url.match(/menuaction=([a-z0-9_-]+)\./i);
 	if (matches && (_app = this.getApplicationByName(matches[1])))
 	{
@@ -548,7 +548,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 			internalName = app.internalName;
 		}
 
-		appData = new egw_fw_class_application(this, 
+		appData = new egw_fw_class_application(this,
 			app.name, app.title, app.icon, app.url, app.sideboxwidth,
 			baseUrl, internalName);
 
@@ -568,7 +568,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 
 		//If the opened field is set, add the application to the restore array.
 		if ((typeof app.opened != 'undefined') && (app.opened !== false))
-		{			
+		{
 			defaultApp = null;
 
 			var url = null;
@@ -583,7 +583,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		this.applications[appData.appName] = appData;
 	}
 
-	//Processing of the url or the defaultApp is now deactivated. 
+	//Processing of the url or the defaultApp is now deactivated.
 
 /*	// check if a menuaction or app is specified in the url --> display that
 	var _app = this.parseAppFromUrl(window.location.href);
@@ -594,7 +594,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		var appPos = restore_count;
 		if (typeof restore[_app.appName] != 'undefined')
 			appPos = restore[_app.appName].position;
-		
+
 		restore[_app.appName] = mkRestoreEntry(_app, appPos,
 			window.location.href.replace(/&?cd=yes/,''), 2);
 	}*/
@@ -648,7 +648,7 @@ egw_fw.prototype.loadApplications = function(_menuaction)
 	this.tabsUi.clean();
 
 	//Perform an AJAX request loading all available applications
-	var req = egw.json(_menuaction, [window.location.href], 
+	var req = egw.json(_menuaction, [window.location.href],
 		this.loadApplicationsCallback, this, false,this);
 	req.sendRequest();
 };
@@ -677,7 +677,7 @@ egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 	//egw.json("home.jdots_framework.ajax_sidebox_menu_opened",
 	//	[this.tag.appName, this.catName, _opened],null,null,true).sendRequest();
 
-	/* Store the state of the category localy */	
+	/* Store the state of the category localy */
 	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
 //	this.tag.parentFw.scrollAreaUi.update();
 };
@@ -730,7 +730,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 						var link = _data[i].entries[j].item_link;
 						if (link)
 						{
-							catContent += '<a href="' + link + 
+							catContent += '<a href="' + link +
 								(_data[i].entries[j].target ? '" target="'+_data[i].entries[j].target : '') +
 								'">' + html.html + '</a>';
 						}
@@ -738,14 +738,14 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					if (_data[i].entries[j].icon_or_star)
 					{
 						catContent += '</div>';
-					}										
+					}
 				}
 
 				/* Append the category content */
 				if (catContent != '')
 				{
 					var categoryUi = new egw_fw_ui_category(contDiv,_data[i].menu_name,
-						_data[i].title, catContent, this.categoryOpenCloseCallback, 
+						_data[i].title, catContent, this.categoryOpenCloseCallback,
 						this.categoryAnimationCallback, _app);
 
 					//Lookup whether this entry was opened before. If no data is
@@ -780,7 +780,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 
 			_app.sidemenuEntry.setContent(contDiv);
 			_app.sidebox_md5 = _md5;
-			
+
 			//console.log(contJS);
 			$j(contDiv).append(contJS);
 		}
@@ -808,7 +808,7 @@ egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 
 	if (_app) {
 		_app.website_title = _title;
-		
+
 		// only set app_header if different from app-name
 		if (_header && _header != egw.lang(_app.appName))
 		{
@@ -825,7 +825,7 @@ egw_fw.prototype.setWebsiteTitle = function(_app, _title, _header)
 
 /**
  * Display an error or regular message
- * 
+ *
  * @param string _msg message to show
  * @param string _type 'error', 'warning' or 'success' (default)
  */
@@ -833,16 +833,16 @@ egw_fw.prototype.setMessage = function(_msg, _type)
 {
 	if (typeof _type == 'undefined')
 		_type = _msg.match(/error/i) ? 'error' : 'success';
-	
+
 	if (this.messageTimer)
 	{
 		window.clearTimeout(this.messageTimer);
 		delete this.messageTimer;
 	}
-	
+
 	this.tabsUi.setAppHeader(_msg, _type+'_message');
 	this.resizeHandler();
-	
+
 	if (_type != 'error')	// clear message again after some time, if no error
 	{
 		var self = this;
@@ -861,7 +861,7 @@ egw_fw.prototype.refreshAppTitle = function()
 			window.clearTimeout(this.messageTimer);
 			delete this.messageTimer;
 		}
-		
+
 		this.tabsUi.setAppHeader(this.activeApp.app_header);
 		document.title = this.activeApp.website_title;
 	}
@@ -878,7 +878,7 @@ egw_fw.prototype.tzSelection = function(_tz)
 	//Perform an AJAX request to tell server
 	var req = egw.json('home.jdots_framework.ajax_tz_selection.template',[_tz],null,null,false); // false = synchron
 	req.sendRequest();
-	
+
 	if (this.activeApp.browser)
 	{
 		this.activeApp.browser.reload();
@@ -897,7 +897,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 	if (!app)
 	{
 		//The app parameter was false or not a string or the application specified did not exists.
-		//Determine the target application from the link that had been passed to this function 
+		//Determine the target application from the link that had been passed to this function
 		app = this.parseAppFromUrl(_link);
 	}
 
@@ -915,7 +915,7 @@ egw_fw.prototype.linkHandler = function(_link, _app, _useIframe, _linkSource)
 		}
 		else
 		{
-			egw_alertHandler("No appropriate target application has been found.", 
+			egw_alertHandler("No appropriate target application has been found.",
 				"Target link: " + _link);
 		}
 	}
@@ -930,7 +930,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	positionLeft = (windowWidth/2)-(_width/2)+egw_getWindowLeft();
 	positionTop  = (windowHeight/2)-(_height/2)+egw_getWindowTop();
 
-	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application	
+	//Determine the window the popup should be opened in - normally this is the iframe of the currently active application
 	var parentWindow = window;
 	var navigate = false;
 	if (typeof _app != 'undefined' && _app !== false)
@@ -953,7 +953,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 	windowID = parentWindow.open(_url, _windowName, "width=" + _width + ",height=" + _height +
 		",screenX=" + positionLeft + ",left=" + positionLeft + ",screenY=" + positionTop + ",top=" + positionTop +
 		",location=no,menubar=no,directories=no,toolbar=no,scrollbars=yes,resizable=yes,status="+_status);
-	
+
 	// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 	windowID.egw = window.egw;
 	windowID.framework = this;
@@ -989,20 +989,20 @@ egw_fw.prototype.egw_appWindowOpen = function(_app, _url)
 	if (typeof _url == "undefined") {
 		_url = "about:blank";
 	}
-	
+
 	// Do a global location change if the given application name is null (as this function
 	// is called by egw_json.js redirect handler, where the _app parameter defaults to null)
 	if (_app == null) {
 		window.location = _url;
 	}
-	
+
 	var app = null;
-	if (typeof _app == "string") {	
+	if (typeof _app == "string") {
 		app = framework.getApplicationByName(_app);
 	} else {
 		app = _app;
 	}
-	
+
 	if (app != null) {
 		framework.applicationTabNavigate(app, _url);
 	}
@@ -1082,7 +1082,7 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 		this.iframe = null;
 		this.contentDiv = null;
 		this.ajaxLoaderDiv = null;
-		
+
 		switch (_type)
 		{
 			//Create the div for displaying the content
@@ -1090,9 +1090,9 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 				this.contentDiv = document.createElement('div');
 				$j(this.contentDiv).addClass('egw_fw_content_browser_div');
 				$j(this.baseDiv).append(this.contentDiv);
-				
+
 				break;
-			
+
 			case EGW_BROWSER_TYPE_IFRAME:
 				//Create the iframe
 				this.iframe = document.createElement('iframe');
@@ -1118,7 +1118,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 
 	// Check whether the given url is a pseudo url which should be executed
 	// by calling the ajax_exec function
-	// we now send whole url back to server, so apps can use $_GET['ajax']==='true' 
+	// we now send whole url back to server, so apps can use $_GET['ajax']==='true'
 	// to detect app-icon was clicked and eg. further reset filters
 	var matches = _url.match(/\/index.php\?menuaction=([A-Za-z0-9_\.]*.*&ajax=true)$/);
 	if (matches) {
@@ -1129,7 +1129,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		targetUrl = "index.php?menuaction=" + matches[1];
 		useIframe = false;
 	}
-	
+
 	// Destroy application js
 	if(window.app[this.app.appName] && window.app[this.app.appName].destroy)
 	{
@@ -1161,12 +1161,12 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		window.setTimeout(function() {
 			//Load the iframe content
 			self.iframe.src = _url;
-			
+
 			//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 			//the type of the link source
 			if (self.iframe && self.iframe.contentWindow) {
 				self.iframe.contentWindow._legacy_iframe = true;
-				
+
 				// Focus the iframe of the current application
 				if (self.app == framework.activeApp)
 				{
@@ -1178,7 +1178,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	else
 	{
 		// check if app has its own linkHandler and it accepts the link (returns true)
-		if (typeof window.app == 'object' && typeof window.app[this.app.appName] == 'object' && 
+		if (typeof window.app == 'object' && typeof window.app[this.app.appName] == 'object' &&
 				typeof window.app[this.app.appName].linkHandler == 'function' &&
 				window.app[this.app.appName].linkHandler.call(window.app[this.app.appName], _url) === true)
 		{
@@ -1215,7 +1215,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 				this.app.sidemenuEntry.showAjaxLoader();
 			var self_egw = egw(this.app.appName);
 			var req = self_egw.json(
-				this.app.getMenuaction('ajax_exec'), 
+				this.app.getMenuaction('ajax_exec'),
 				[targetUrl], this.browse_callback,this, true, this
 			);
 			req.sendRequest();
@@ -1280,7 +1280,7 @@ egw_fw_content_browser.prototype.blank = function()
 
 /**
  * Refresh given application _targetapp display of entry _app _id, incl. outputting _msg
- * 
+ *
  * @param string _msg message (already translated) to show, eg. 'Entry deleted'
  * @param string _app application name
  * @param string|int _id=null id of entry to refresh
@@ -1296,7 +1296,7 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
-	
+
 	// display message
 	framework.setMessage(_msg, _msg_type);
 
@@ -1399,7 +1399,8 @@ egw_fw.prototype.app_refresh = function(_msg, _app, _id, _type, _targetapp)
 	{
 		_targetapp = _app;
 	}
-	if(this.applications[_targetapp].app_refresh)
+	if (typeof this.applications[_targetapp] != 'undefined' &&
+		typeof this.applications[_targetapp].app_refresh == 'function')
 	{
 		this.applications[_targetapp].app_refresh.call(this,_msg,_app,_id,_type);
 	}
@@ -1413,7 +1414,11 @@ egw_fw.prototype.app_refresh = function(_msg, _app, _id, _type, _targetapp)
  */
 egw_fw.prototype.app_refresh.registered = function(appname)
 {
-	return (typeof egw_getFramework().applications[appname].app_refresh == "function");
+	var framework = egw_getFramework();
+
+	return framework && framework.applications &&
+		typeof framework.applications[appname] != 'undefined' &&
+		typeof framework.applications[appname].app_refresh == 'function';
 };
 
 
@@ -1434,7 +1439,7 @@ egw_LAB.wait(function() {
 		jQuery('#egw_fw_print').click(window.framework.print);
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
 		window.egw.link_quick_add('quick_add');
-		
+
 		// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
 		var href_regexp = /^javascript:([^\(]+)\((.*)?\);?$/;
 		jQuery('#egw_fw_topmenu_items,#egw_fw_topmenu_info_items,#egw_fw_sidemenu').on('click','a[href^="javascript:"]',function(){
