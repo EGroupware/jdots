@@ -15,6 +15,15 @@
 */
 class jdots_framework extends egw_framework
 {
+	/**
+	 * Appname used to include javascript code
+	 */
+	const JS_INCLUDE_APP = 'jdots';
+	/**
+	 * Appname used for everything else
+	 */
+	const APP = 'jdots';
+
 	const MIN_SIDEBAR_WIDTH = 185;
 	const DEFAULT_SIDEBAR_WIDTH = 225;
 	/**
@@ -260,7 +269,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// the instanciation of the template has to be here and not in the constructor,
 		// as the old Template class has problems if restored from the session (php-restore)
 		// todo: check if this is still true
-		$this->tpl = new Template(common::get_tpl_dir('jdots'),'keep');
+		$this->tpl = new Template(common::get_tpl_dir(static::APP),'keep');
 		$this->tpl->set_file(array('_head' => 'head.tpl'));
 		$this->tpl->set_block('_head','head');
 		$this->tpl->set_block('_head','framework');
@@ -276,9 +285,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
 			self::validate_file('jquery','jquery-ui');
-			self::validate_file('.','egw_fw','jdots');
-			self::validate_file('.','egw_fw_ui','jdots');
-			self::validate_file('.','egw_fw_classes','jdots');
+			self::validate_file('.', 'egw_fw', self::JS_INCLUDE_APP);
+			self::validate_file('.', 'egw_fw_ui', self::JS_INCLUDE_APP);
+			self::validate_file('.', 'egw_fw_classes', self::JS_INCLUDE_APP);
 			self::validate_file('.','etemplate2','etemplate');
 
 			// Need to load this here to get enhanced selectboxes working
