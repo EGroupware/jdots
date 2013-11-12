@@ -35,16 +35,15 @@ class jdots_framework extends egw_framework
 	private static $link_app;
 
 	/**
-	* Constructor
-	*
-	* @param string $template='idots' name of the template
-	* @return idots_framework
-	*/
-	function __construct($template='jdots')
+	 * Constructor
+	 *
+	 * @param string $template='idots' name of the template
+	 */
+	function __construct($template=self::APP)
 	{
 		parent::__construct($template);		// call the constructor of the extended class
 
-		$this->template_dir = '/jdots';		// we are packaged as an application
+		$this->template_dir = '/'.$template;		// we are packaged as an application
 	}
 
 	/**
