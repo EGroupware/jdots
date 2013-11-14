@@ -313,7 +313,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		if(!$do_framework)
 		{
 			// for remote manual never check/create framework
-			if ($GLOBALS['egw_info']['flags']['currentapp'] != 'manual')
+			if (!in_array($GLOBALS['egw_info']['flags']['currentapp'], array('manual', 'login', 'logout')))
 			{
 				if (empty($GLOBALS['egw_info']['flags']['java_script'])) $GLOBALS['egw_info']['flags']['java_script']='';
 				$extra['check-framework'] = true;
@@ -509,28 +509,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	public function isTop($consider_navbar_not_yet_called_as_true=true)
 	{
 		return isset($_GET['cd']) && $_GET['cd'] === 'yes';
-	}
-
-	/**
-	 * displays a login screen
-	 *
-	 * Currently not used for jDots, as it's no login template set!
-	 *
-	 * @param string $extra_vars for login url
-	 */
-	function login_screen($extra_vars)
-	{
-
-	}
-
-	/**
-	 * displays a login denied message
-	 *
-	 * Currently not used for jDots, as it's no login template set!
-	 */
-	function denylogin_screen()
-	{
-
 	}
 
 	/**
