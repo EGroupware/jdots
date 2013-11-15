@@ -989,7 +989,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 *
 	 * @param string $link
 	 */
-	function ajax_exec($link)
+	public static function ajax_exec($link)
 	{
 		$parts = parse_url($link);
 		$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] = $parts['path'];
@@ -1020,7 +1020,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// dont send header and footer
 		self::$header_done = self::$footer_done = true;
 
-		$this->response = egw_json_response::get();
+		$GLOBALS['egw']->framework->response = egw_json_response::get();
 
 		// call application menuaction
 		ob_start();
@@ -1034,7 +1034,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// add output if present
 		if ($output)
 		{
-			$this->response->data($output);
+			$GLOBALS['egw']->framework->response->data($output);
 		}
 	}
 }

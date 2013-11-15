@@ -66,7 +66,8 @@ egw_fw_class_application.prototype.getMenuaction = function(_fun)
 		baseUrl = baseUrl + 'json.php?menuaction=';
 	}
 
-	return baseUrl + appName + '.jdots_framework.' + _fun;
+	// use template handler to call current framework, eg. pixelegg
+	return baseUrl + appName + '.jdots_framework.' + _fun + '.template';
 }
 
 /**
