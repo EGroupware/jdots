@@ -1136,13 +1136,18 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		window.app[this.app.appName].destroy();
 	}
 
-	//Set the browser type
-	if (useIframe)
+	// Unload etemplate2, if there
+	var et2_list = [];
+	if(typeof etemplate2 == "function")
 	{
-		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
-
-		// Unload etemplate2, if there
-		var et2_list = [];
+		et2_list = etemplate2.getByApplication(this.app.appName);
+		for(var i = 0; i < et2_list.length; i++)
+		{
+			et2_list[i].clear();
+		}
+	}
+	else if(this.iframe && typeof this.iframe.contentWindow.etemplate2 == "function")
+	{
 		try {
 			if(typeof this.iframe.contentWindow.etemplate2 == "function")
 			{
@@ -1154,6 +1159,12 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			}
 		}
 		catch(e) {}	// catch error if eg. SiteMgr runs a different origin, otherwise tab cant be closed
+	}
+
+	//Set the browser type
+	if (useIframe)
+	{
+		this.setBrowserType(EGW_BROWSER_TYPE_IFRAME);
 
 		//Postpone the actual "navigation" - gives some speedup with internet explorer
 		//as it does no longer blocks the complete page until all frames have loaded.
@@ -1188,17 +1199,6 @@ egw_fw_content_browser.prototype.browse = function(_url)
 
 		// Save the actual url which has been passed as parameter
 		this.currentLocation = _url;
-
-		// Unload etemplate2, if there
-		var et2_list = [];
-		if(typeof etemplate2 == "function")
-		{
-			et2_list = etemplate2.getByApplication(this.app.appName);
-			for(var i = 0; i < et2_list.length; i++)
-			{
-				et2_list[i].clear();
-			}
-		}
 
 		//Special treatement of "about:blank"
 		if (targetUrl == "about:blank")
