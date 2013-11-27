@@ -1143,7 +1143,11 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		et2_list = etemplate2.getByApplication(this.app.appName);
 		for(var i = 0; i < et2_list.length; i++)
 		{
-			et2_list[i].clear();
+			// Make sure to only clear etemplates in this tab
+			if($j(this.contentDiv).has(et2_list[i]).length > 0)
+			{
+				et2_list[i].clear();
+			}
 		}
 	}
 	else if(this.iframe && typeof this.iframe.contentWindow.etemplate2 == "function")
@@ -1213,6 +1217,8 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			//Perform an AJAX request loading application output
 			if (this.app.sidemenuEntry)
 				this.app.sidemenuEntry.showAjaxLoader();
+			this.data = "";
+			$j(this.contentDiv).empty();
 			var self_egw = egw(this.app.appName);
 			var req = self_egw.json(
 				this.app.getMenuaction('ajax_exec'),
@@ -1247,7 +1253,7 @@ egw_fw_content_browser.prototype.browse_finished = function()
 	egw_seperateJavaScript(content);
 
 	// Insert the content
-	$j(this.contentDiv).html(content.html);
+	$j(this.contentDiv).append(content.html);
 
 	// Run the javascript code
 	//console.log(content.js);
