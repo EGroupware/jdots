@@ -695,6 +695,8 @@ egw_fw.prototype.categoryAnimationCallback = function()
  */
 egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 {
+	if (typeof _app == 'string') _app = this.getApplicationByName(_app);
+
 	if ((_app != null) && (_app.sidebox_md5 != _md5) && (_app.sidemenuEntry != null))
 	{
 		//Parse the sidebox data
