@@ -1143,8 +1143,9 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		et2_list = etemplate2.getByApplication(this.app.appName);
 		for(var i = 0; i < et2_list.length; i++)
 		{
-			// Make sure to only clear etemplates in this tab
-			if($j(this.contentDiv).has(et2_list[i].DOMContainer).length > 0)
+			// Make sure to only clear etemplates in this tab, or orphans which
+			// can come from navigating while a "page" is loading
+			if($j(this.contentDiv).has(et2_list[i].DOMContainer).length > 0 || et2_list[i].DOMContainer.parentNode == null)
 			{
 				et2_list[i].clear();
 			}
