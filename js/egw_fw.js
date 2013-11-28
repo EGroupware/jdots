@@ -1144,7 +1144,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 		for(var i = 0; i < et2_list.length; i++)
 		{
 			// Make sure to only clear etemplates in this tab
-			if($j(this.contentDiv).has(et2_list[i]).length > 0)
+			if($j(this.contentDiv).has(et2_list[i].DOMContainer).length > 0)
 			{
 				et2_list[i].clear();
 			}
