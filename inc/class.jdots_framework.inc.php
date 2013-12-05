@@ -263,12 +263,12 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
 		ob_end_clean();
-		//echo __METHOD__.__LINE__.' loading ...<br> called from:'.function_backtrace().'<br>';
+		//error_log(__METHOD__.'('.array2string($extra).') called from:'.function_backtrace());
 
 		// the instanciation of the template has to be here and not in the constructor,
 		// as the old Template class has problems if restored from the session (php-restore)
 		// todo: check if this is still true
-		$this->tpl = new Template(common::get_tpl_dir(static::APP),'keep');
+		$this->tpl = new Template(common::get_tpl_dir(static::APP));
 		$this->tpl->set_file(array('_head' => 'head.tpl'));
 		$this->tpl->set_block('_head','head');
 		$this->tpl->set_block('_head','framework');
@@ -312,6 +312,11 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// - only if we cant find a framework in all openers, we redirect to create a new framework
 		if(!$do_framework)
 		{
+			// fetch sidebox from application and set it in extra data, if we are no popup
+			if (!$GLOBALS['egw_info']['flags']['nonavbar'])
+			{
+				$this->do_sidebox();
+			}
 			// for remote manual never check/create framework
 			if (!in_array($GLOBALS['egw_info']['flags']['currentapp'], array('manual', 'login', 'logout')))
 			{
@@ -462,16 +467,25 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
 	 *
-	 * jDots does NOT use a navbar, but we use this to send the sidebox content!
+	 * jDots does NOT use a navbar.
+	 *
+	 * @return string
+	 */
+	function navbar()
+	{
+		$GLOBALS['egw_info']['flags']['nonavbar'] = false;
+
+		return '';
+	}
+
+	/**
+	 * Set sidebox content in egw_framework::$data['setSidebox']
 	 *
 	 * We store in the session the md5 of each sidebox menu already send to client.
 	 * If the framework get reloaded, that list gets cleared in header();
 	 * Most apps never change sidebox, so we not even need to generate it more then once.
-	 *
-	 * @return string with javascript to set sidebox
-	 * @todo send sidebox via data-attribute in egw-script-tag
 	 */
-	function navbar()
+	function do_sidebox()
 	{
 		$app = $GLOBALS['egw_info']['flags']['currentapp'];
 
@@ -480,13 +494,13 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// --> that way we always stay in the app, and NOT open admin sidebox for an app tab!!!
 		if ($app == 'admin' && substr($_SERVER['PHP_SELF'],-16) != '/admin/index.php')
 		{
-			return $this->header();
+			return;
 		}
 		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
 
 		//Set the sidebox content
-		$sidebox = json_encode($this->get_sidebox($app));
-		$md5 = md5($sidebox);
+		$sidebox = $this->get_sidebox($app);
+		$md5 = md5(json_encode($sidebox));
 
 		if ($md5_session[$app] !== $md5)
 		{
@@ -494,8 +508,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			$md5_session[$app] = $md5;	// update md5 in session
 			egw_framework::$extra['setSidebox'] = array($app, $sidebox, $md5);
 		}
-		//error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
-		return $this->header();	// in case it's not yet called (call it now AFTER get_sidebox())
+		//else error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
 	}
 
 	/**
