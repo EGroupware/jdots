@@ -1033,6 +1033,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// dont send header and footer
 		self::$header_done = self::$footer_done = true;
 
+		// need to call do_sidebox, as header() with $header_done does NOT!
+		$GLOBALS['egw']->framework->do_sidebox();
+
 		$GLOBALS['egw']->framework->response = egw_json_response::get();
 
 		// call application menuaction
