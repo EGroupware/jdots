@@ -557,7 +557,7 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 		{
 			appData.sidemenuEntry = this.sidemenuUi.addEntry(
 				appData.displayName, appData.icon,
-				this.applicationClickCallback, appData);
+				this.applicationClickCallback, appData, app.name);
 		}
 
 		//If this entry is the default entry, show it using the click callback

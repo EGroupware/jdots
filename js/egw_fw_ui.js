@@ -21,7 +21,7 @@
  * Thanks to: Seamus Leahy for adding deltaX and deltaY
  *
  * Version: 3.0.6
- * 
+ *
  * Requires: 1.2.2+
  */
 
@@ -114,9 +114,10 @@ function handler(event) {
  * @param string _icon specifies the icon which should be viewd besides the title in the side menu
  * @param function(_sender) _callback specifies the function which should be called when the entry is clicked. The _sender parameter passed is a reference to this egw_fw_ui_sidemenu_entry element.
  * @param object _tag can be used to attach any user data to the object. Inside egw_fw _tag is used to attach an egw_fw_class_application to each sidemenu entry.
+ * @param string _app application name
  */
 function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _callback,
-	_tag)
+	_tag, _app)
 {
 	this.baseDiv = _baseDiv;
 	this.elemDiv = _elemDiv;
@@ -129,6 +130,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 
 	//Add a new div for the new entry to the base div
 	this.headerDiv = document.createElement("div");
+	this.headerDiv.id = _app+'_sidebox_header';
 	$j(this.headerDiv).addClass("egw_fw_ui_sidemenu_entry_header");
 
 	//Create the icon and set its image
@@ -136,7 +138,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	iconDiv.src = this.icon;
 	iconDiv.alt = _name;
 	$j(iconDiv).addClass("egw_fw_ui_sidemenu_entry_icon");
-	
+
 	//Create the AJAX loader image (currently NOT used)
 	this.ajaxloader = document.createElement("div");
 	$j(this.ajaxloader).addClass("egw_fw_ui_ajaxloader");
@@ -163,6 +165,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 
 	//Create the content div
 	this.contentDiv = document.createElement("div");
+	this.contentDiv.id = _app+'_sidebox_content';
 	$j(this.contentDiv).addClass("egw_fw_ui_sidemenu_entry_content");
 	$j(this.contentDiv).hide();
 
@@ -209,7 +212,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 			parent.parent.stopDrag.call(parent.parent);
 			parent.parent.refreshSort.call(parent.parent);
 		},
-		
+
 		opacity: 0.7,
 //		appendTo: 'body',
 //		helper: 'clone',
@@ -337,7 +340,7 @@ egw_fw_ui_sidemenu.prototype._searchMarkers = function(_resultArray, _children)
 	for (var i = 0; i < _children.length; i++)
 	{
 		var child = _children[i];
-		
+
 		if (child.className == 'egw_fw_ui_sidemenu_marker' && typeof child._parent != 'undefined')
 		{
 			_resultArray.push(child._parent);
@@ -366,7 +369,7 @@ egw_fw_ui_sidemenu.prototype.stopDrag = function()
 }
 
 /**
- * Called by the sidemenu elements whenever they were sorted. An array containing 
+ * Called by the sidemenu elements whenever they were sorted. An array containing
  * the sidemenu_entries ui-objects is generated and passed to the sort callback
  */
 egw_fw_ui_sidemenu.prototype.refreshSort = function()
@@ -381,16 +384,18 @@ egw_fw_ui_sidemenu.prototype.refreshSort = function()
 
 /**
  * Adds an entry to the sidemenu.
- * 
+ *
  * @param string _name specifies the title of the new sidemenu entry
  * @param string _icon specifies the icon displayed aside the title
  * @param function(_sender) _callback specifies the function which should be called when a callback is clicked
+ * @param object _tag extra data
+ * @param string _app application name
  */
-egw_fw_ui_sidemenu.prototype.addEntry = function(_name, _icon, _callback, _tag)
+egw_fw_ui_sidemenu.prototype.addEntry = function(_name, _icon, _callback, _tag, _app)
 {
 	//Create a new sidemenu entry and add it to the list
 	var entry = new egw_fw_ui_sidemenu_entry(this, this.baseDiv, this.elemDiv, _name, _icon,
-		_callback, _tag);
+		_callback, _tag, _app);
 	this.entries[this.entries.length] = entry;
 
 	return entry;
@@ -465,13 +470,13 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	this.callback = _callback;
 	this.closeCallback = _closeCallback;
 	this.position = _pos;
-	
+
 	//Create the header div and set its "click" function and "hover" event
 	this.headerDiv = document.createElement("span");
 	this.headerDiv._position = _pos;
 	$j(this.headerDiv).addClass("egw_fw_ui_tab_header");
 
-	//Create a new callback object and attach it to the header div	
+	//Create a new callback object and attach it to the header div
 	this.headerDiv._callbackObject = new egw_fw_class_callback(this, _callback);
 	$j(this.headerDiv).click(
 		function(){
@@ -497,8 +502,8 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 			tab._callbackObject.call(tab);
 		}
 	});
-	
-		
+
+
 	//Create the close button and append it to the header div
 	this.closeButton = document.createElement("span");
 	this.closeButton._callbackObject = new egw_fw_class_callback(this, _closeCallback);
@@ -525,7 +530,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	$j(this.headerDiv).append(icon);
 
 	//Create the title h1 and append it to the header div
-	this.headerH1 = document.createElement("h1");	
+	this.headerH1 = document.createElement("h1");
 	this.setTitle('');
 	$j(this.headerDiv).append(this.headerH1);
 
@@ -535,7 +540,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	this.contentDiv = document.createElement("div");
 	$j(this.contentDiv).addClass("egw_fw_ui_tab_content");
 	$j(this.contentDiv).hide();
-	
+
 	//Sort the element in at the given position
 	var _this = this;
 	var $_children = $j(this.contHeaderDiv).children();
@@ -561,7 +566,7 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 		$j(this.contHeaderDiv).append(this.headerDiv);
 	}
 
-	$j(this.contDiv).append(this.contentDiv);	
+	$j(this.contDiv).append(this.contentDiv);
 }
 
 /**
@@ -618,7 +623,7 @@ egw_fw_ui_tab.prototype.remove = function()
 
 /**
  * Sets whether the close button is shown/the close callback ever gets called.
- * 
+ *
  * @param boolean _closeable if true, the close button is shown, if false, the close button is hidden. default is true.
  */
 egw_fw_ui_tab.prototype.setCloseable = function(_closeable)
@@ -661,7 +666,7 @@ function egw_fw_ui_tabs(_contDiv)
 	this.appHeaderContainer.append(this.appHeader);
 
 	this.tabs = Array();
-	
+
 	this.activeTab = null;
 	this.tabHistory = Array();
 }
@@ -719,7 +724,7 @@ egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _ta
 	if (typeof _pos != 'undefined')
 		pos = _pos;
 
-	var tab = new egw_fw_ui_tab(this, this.contHeaderDiv, this.contDiv, _icon, _callback, 
+	var tab = new egw_fw_ui_tab(this, this.contHeaderDiv, this.contDiv, _icon, _callback,
 		_closeCallback, _tag, pos);
 
 	//Insert the tab into the tab list.
@@ -744,7 +749,7 @@ egw_fw_ui_tabs.prototype.addTab = function(_icon, _callback, _closeCallback, _ta
 
 	if (this.activeTab == null)
 		this.showTab(tab);
-	
+
 	return tab;
 }
 
@@ -762,13 +767,13 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 		if (this.tabHistory[i] == _tab)
 			array_remove(this.tabHistory, i);
 	}
-	
+
 	//Delete entries in the histroy which might be double
 	this.cleanHistory();
-	
+
 	//Special treatement if the currently active tab gets deleted
 	if (_tab == this.activeTab)
-	{	
+	{
 		//Search for the next tab which should be selected
 		if (this.tabs.length > 0)
 		{
@@ -783,7 +788,7 @@ egw_fw_ui_tabs.prototype.removeTab = function(_tab)
 			tab.callback.call(tab);
 		}
 	}
-	
+
 	//Perform the actual deletion of the tab
 	_tab.remove();
 	for (var i = this.tabs.length - 1; i >= 0; i--)
@@ -809,14 +814,14 @@ egw_fw_ui_tabs.prototype.showTab = function(_tab)
 				this.tabs[i].hide();
 			}
 		}
-	
+
 		_tab.show();
 		this.activeTab = _tab;
-		
+
 		if (this.tabHistory[this.tabHistory.length - 1] != _tab)
 			this.tabHistory[this.tabHistory.length] = _tab;
-			
-		//Limit the tabHistory size in order to save memory			
+
+		//Limit the tabHistory size in order to save memory
 		if (this.tabHistory.length > 50)
 		{
 			array_remove(this.tabHistory, 0);
@@ -828,7 +833,7 @@ egw_fw_ui_tabs.prototype.showTab = function(_tab)
  * Calls the setCloseable function of all tabs in the list.
  */
 egw_fw_ui_tabs.prototype.setCloseable = function(_closeable)
-{	
+{
 	for (i = 0; i < this.tabs.length; i++)
 	{
 		this.tabs[i].setCloseable(_closeable);
@@ -874,8 +879,8 @@ function egw_fw_ui_category(_contDiv, _name, _title, _content, _callback, _anima
 	//Create the ui divs
 	this.headerDiv = document.createElement('div');
 	$j(this.headerDiv).addClass('egw_fw_ui_category');
-	
-	//Add the text	
+
+	//Add the text
 	var entryH1 = document.createElement('h1');
 	$j(entryH1).append(_title);
 	$j(this.headerDiv).append(entryH1);
@@ -1043,7 +1048,7 @@ egw_fw_ui_scrollarea.prototype.setScrollPos = function(_pos)
 	if (this.buttonsVisible)
 	{
 		if (_pos <= 0)
-		{			
+		{
 			if (this.btnUpEnabled)
 				$j(this.btnUp).addClass("egw_fw_ui_scrollarea_button_disabled");
 			if (!this.btnDownEnabled)
@@ -1135,7 +1140,7 @@ egw_fw_ui_scrollarea.prototype.getScrollDelta = function(_timeGap)
 egw_fw_ui_scrollarea.prototype.mouseOverCallback = function(_context)
 {
 	//Do the scrolling
-	_context.scrollDelta(_context.getScrollDelta(_context.timerInterval) * 
+	_context.scrollDelta(_context.getScrollDelta(_context.timerInterval) *
 		_context.dir);
 
 	if (_context.mouseOver)
@@ -1196,7 +1201,7 @@ function egw_fw_ui_splitter(_contDiv, _orientation, _resizeCallback, _constraint
 	if (_constraints.constructor == Array)
 	{
 		for (var i = 0; i < 2; i++)
-		{		
+		{
 			if (typeof _constraints[i] != 'undefined')
 			{
 				if (typeof _constraints[i].size != 'undefined')
