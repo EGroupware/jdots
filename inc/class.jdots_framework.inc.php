@@ -426,7 +426,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 							$app_data['name'] : 'about')."')";
 				}
 		}
-		$this->topmenu_items[] = '<a href="'.htmlspecialchars($app_data['url']).'">'.
+		error_log(array2string($app_data));
+		$id = $app_data['id'] ? $app_data['id'] : ($app_data['name'] ? $app_data['name'] : $app_data['title']);
+		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'">'.
 			htmlspecialchars($alt_label ? $alt_label : $app_data['title']).'</a>';
 	}
 
