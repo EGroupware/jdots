@@ -414,6 +414,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	{
 		switch($app_data['name'])
 		{
+			case 'logout':
+				return;	// no need for logout in topmenu on jdots
+
 			case 'manual':
 				$app_data['url'] = "javascript:callManual();";
 				break;
