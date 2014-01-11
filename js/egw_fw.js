@@ -1234,6 +1234,9 @@ egw_fw_content_browser.prototype.browse = function(_url)
 
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
+	// Abort if data is from wrong kind of response - only 'data'
+	if(_data.type != undefined) return;
+
 	this.data = _data[0];
 	this.browse_finished();
 };
