@@ -453,10 +453,10 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 	{
 		_url = _app.indexUrl;
 	}
-	else if (_app.browser != null && _url == _app.browser.currentLocation)
+	else if (_app.browser != null && _app.browser.iframe == null && _url == _app.browser.currentLocation)
 	{
 		// Just do an egw_refresh to avoid a full reload
-		egw_refresh('Just refresh',_app.appName);
+		egw_refresh(''.appName);
 		return;
 	}
 
