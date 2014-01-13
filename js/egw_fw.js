@@ -450,7 +450,15 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 	this.createApplicationTab(_app, _pos);
 
 	if (typeof _url == 'undefined' || _url == null)
+	{
 		_url = _app.indexUrl;
+	}
+	else if (_url == _app.browser.currentLocation)
+	{
+		// Just do an egw_refresh to avoid a full reload
+		egw_refresh('Just refresh',_app.appName);
+		return;
+	}
 
 	if (_app.browser == null)
 	{
