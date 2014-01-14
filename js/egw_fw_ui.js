@@ -134,9 +134,7 @@ function egw_fw_ui_sidemenu_entry(_parent, _baseDiv, _elemDiv, _name, _icon, _ca
 	$j(this.headerDiv).addClass("egw_fw_ui_sidemenu_entry_header");
 
 	//Create the icon and set its image
-	var iconDiv = document.createElement("img");
-	iconDiv.src = this.icon;
-	iconDiv.alt = _name;
+	var iconDiv = egw.image_element(this.icon, _name);
 	$j(iconDiv).addClass("egw_fw_ui_sidemenu_entry_icon");
 
 	//Create the AJAX loader image (currently NOT used)
@@ -523,10 +521,8 @@ function egw_fw_ui_tab(_parent, _contHeaderDiv, _contDiv, _icon, _callback,
 	$j(this.headerDiv).append(this.closeButton);
 
 	//Create the icon and append it to the header div
-	var icon = document.createElement("img");
+	var icon = egw.image_element(_icon);
 	$j(icon).addClass("egw_fw_ui_tab_icon");
-	icon.src = _icon;
-	icon.alt = 'Tab icon';
 	$j(this.headerDiv).append(icon);
 
 	//Create the title h1 and append it to the header div
