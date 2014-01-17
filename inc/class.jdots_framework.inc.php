@@ -377,9 +377,12 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 
 		parent::topmenu($vars,$apps);
 		$vars['topmenu_items'] = "<ul>\n<li>".implode("</li>\n<li>",$this->topmenu_items)."</li>\n</ul>";
-		$vars['topmenu_info_items'] = '<div class="topmenu_info_item">'.
-			implode("</div>\n".'<div class="topmenu_info_item">',$this->topmenu_info_items)."</div>\n";
-
+		$vars['topmenu_info_items'] = '';
+		foreach($this->topmenu_info_items as $id => $item)
+		{
+			$vars['topmenu_info_items'] .= '<div class="topmenu_info_item"'.
+				(is_numeric($id) ? '' : 'id="topmenu_info_'.$id.'"').'>'.$item."</div>\n";
+		}
 		$this->topmenu_items = $this->topmenu_info_items = null;
 
 		return $vars;
@@ -429,7 +432,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 							$app_data['name'] : 'about')."')";
 				}
 		}
-		error_log(array2string($app_data));
 		$id = $app_data['id'] ? $app_data['id'] : ($app_data['name'] ? $app_data['name'] : $app_data['title']);
 		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'">'.
 			htmlspecialchars($alt_label ? $alt_label : $app_data['title']).'</a>';
@@ -439,10 +441,11 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * Add info items to the topmenu template class to be displayed
 	 *
 	 * @param string $content html of item
+	 * @param string $id=null
 	 * @access protected
 	 * @return void
 	 */
-	function _add_topmenu_info_item($content)
+	function _add_topmenu_info_item($content, $id=null)
 	{
 		if (strpos($content,'tz_selection') !== false)
 		{
@@ -452,7 +455,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			$content = preg_replace('/href="([^"]+)"/',"href=\"javascript:egw_link_handler('\\1','admin')\"",$content);
 		}
-		$this->topmenu_info_items[] = $content;
+		if ($id)
+		{
+			$this->topmenu_info_items[$id] = $content;
+		}
+		else
+		{
+			$this->topmenu_info_items[] = $content;
+		}
 	}
 
 	/**
