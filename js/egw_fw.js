@@ -1462,7 +1462,7 @@ egw_LAB.wait(function() {
 
 		// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
 		var href_regexp = /^javascript:([^\(]+)\((.*)?\);?$/;
-		jQuery('#egw_fw_topmenu_items,#egw_fw_topmenu_info_items,#egw_fw_sidemenu').on('click','a[href^="javascript:"]',function(){
+		jQuery('#egw_fw_topmenu_items,#egw_fw_topmenu_info_items,#egw_fw_sidemenu,#egw_fw_footer').on('click','a[href^="javascript:"]',function(){
 			var matches = this.href.match(href_regexp);
 			if (matches && typeof window[matches[1]] == 'function') {
 				var args = [];
