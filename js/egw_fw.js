@@ -459,6 +459,11 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 	{
 		// Just do an egw_refresh to avoid a full reload
 		egw_refresh('',appName);
+		//Show the application tab
+		if (_app.tab)
+		{
+			this.setActiveApp(_app);
+		}
 		return;
 	}
 
