@@ -248,8 +248,10 @@ egw_fw.prototype.splitterResize = function(_width)
 {
 	if (this.tag.activeApp)
 	{
-		app = this.tag.activeApp;
-		var req = egw.jsonq(app.getMenuaction('ajax_sideboxwidth'),[app.internalName, _width]);
+		var req = egw.jsonq(
+			this.tag.activeApp.getMenuaction('ajax_sideboxwidth'),
+			[this.tag.activeApp.internalName, _width]
+		);
 
 		//If there are no global application width values, set the sidebox width of
 		//the application every time the splitter is resized
