@@ -458,7 +458,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 	else if (_app.browser != null && _app.browser.iframe == null && _url == _app.browser.currentLocation)
 	{
 		// Just do an egw_refresh to avoid a full reload
-		egw_refresh('',appName);
+		egw_refresh('',_app.appName);
 		//Show the application tab
 		if (_app.tab)
 		{
