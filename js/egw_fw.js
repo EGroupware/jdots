@@ -1130,6 +1130,19 @@ egw_fw_content_browser.prototype.setBrowserType = function(_type)
 
 egw_fw_content_browser.prototype.browse = function(_url)
 {
+	// check if app has its own linkHandler and it accepts the link (returns true), or returns different url instead
+	if (typeof window.app == 'object' && typeof window.app[this.app.appName] == 'object' &&
+			typeof window.app[this.app.appName].linkHandler == 'function')
+	{
+		var ret = window.app[this.app.appName].linkHandler.call(window.app[this.app.appName], _url);
+		{
+			if (ret === true) return;
+			if (typeof ret === 'string')
+			{
+				_url = ret;
+			}
+		}
+	}
 	var useIframe = true;
 	var targetUrl = _url;
 
@@ -1210,13 +1223,6 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	}
 	else
 	{
-		// check if app has its own linkHandler and it accepts the link (returns true)
-		if (typeof window.app == 'object' && typeof window.app[this.app.appName] == 'object' &&
-				typeof window.app[this.app.appName].linkHandler == 'function' &&
-				window.app[this.app.appName].linkHandler.call(window.app[this.app.appName], _url) === true)
-		{
-			return;
-		}
 		this.setBrowserType(EGW_BROWSER_TYPE_DIV);
 
 		// Save the actual url which has been passed as parameter
