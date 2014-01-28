@@ -74,8 +74,6 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
 
-	_sideboxSizeCallback(_sideboxStartSize);
-
 	//Register the resize handler
 	$j(window).resize(function(){window.framework.resizeHandler();});
 
@@ -261,6 +259,12 @@ egw_fw.prototype.splitterResize = function(_width)
 		}
 	}
 	this.tag.sideboxSizeCallback(_width);
+
+	// Notify app about change
+	if(this.tag.activeApp && this.tag.activeApp.browser != null)
+	{
+		this.tag.activeApp.browser.callResizeHandler();
+	}
 };
 
 /**
@@ -647,6 +651,9 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 	//Set the current state of the tabs and activate TabChangeNotification.
 	this.serializedTabState = egw.jsonEncode(this.assembleTabList());
 	this.notifyTabChangeEnabled = true;
+
+	// Disable loader, if present
+	$j('#egw_fw_loading').hide()
 };
 
 /**
