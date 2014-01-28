@@ -185,20 +185,6 @@ class jdots_framework extends egw_framework
 	}
 
 	/**
-	 * Redirects direct to a generated link
-	 *
-	 * If a session could not be verified or during login time, jDots is NOT used!
-	 * It's only used if user preferences are loaded AND user select it in his prefs
-	 *
-	 * @param string	$string	The url the link is for
-	 * @param string|array	$extravars	Extra params to be passed to the url
-	 */
-	static function redirect_link($url = '',$extravars='')
-	{
-		return parent::redirect_link($url, $extravars);
-	}
-
-	/**
 	 * Overwrite to add our customizable colors
 	 *
 	 * @see egw_framework::_get_css()
