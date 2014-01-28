@@ -74,6 +74,8 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
 	}
 
+	_sideboxSizeCallback(_sideboxStartSize);
+	
 	//Register the resize handler
 	$j(window).resize(function(){window.framework.resizeHandler();});
 
@@ -671,7 +673,7 @@ egw_fw.prototype.loadApplications = function(_menuaction)
 
 	//Perform an AJAX request loading all available applications
 	var req = egw.json(_menuaction, [window.location.href],
-		this.loadApplicationsCallback, this, false,this);
+		this.loadApplicationsCallback, this, true,this);
 	req.sendRequest();
 };
 
