@@ -69,31 +69,26 @@ class jdots_framework extends egw_framework
 	 */
 	private static function get_sidebar_width($app)
 	{
-		//If the global_sidebar_width option is set, we'll simply return false
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'])
+		$width = self::DEFAULT_SIDEBAR_WIDTH;
+
+		//Check whether the width had been stored explicitly for the jdots template, use that value
+		if ($GLOBALS['egw_info']['user']['preferences'][$app]['jdotssideboxwidth'])
 		{
-			$width = self::DEFAULT_SIDEBAR_WIDTH;
-
-			//Check whether the width had been stored explicitly for the jdots template, use that value
-			if ($GLOBALS['egw_info']['user']['preferences'][$app]['jdotssideboxwidth'])
-			{
-				$width = (int)$GLOBALS['egw_info']['user']['preferences'][$app]['jdotssideboxwidth'];
+			$width = (int)$GLOBALS['egw_info']['user']['preferences'][$app]['jdotssideboxwidth'];
 //				error_log(__METHOD__.__LINE__."($app):$width --> reading jdotssideboxwidth");
-			}
-			//Otherwise use the legacy "idotssideboxwidth" value
-			else if ($GLOBALS['egw_info']['user']['preferences'][$app]['idotssideboxwidth'])
-			{
-				$width = (int)$GLOBALS['egw_info']['user']['preferences'][$app]['idotssideboxwidth'];
-//				error_log(__METHOD__.__LINE__."($app):$width --> reading idotssideboxwidth");
-			}
-
-			//Width may not be smaller than MIN_SIDEBAR_WIDTH
-			if ($width < self::MIN_SIDEBAR_WIDTH)
-				$width = self::MIN_SIDEBAR_WIDTH;
-
-			return $width;
 		}
-		return false;
+		//Otherwise use the legacy "idotssideboxwidth" value
+		else if ($GLOBALS['egw_info']['user']['preferences'][$app]['idotssideboxwidth'])
+		{
+			$width = (int)$GLOBALS['egw_info']['user']['preferences'][$app]['idotssideboxwidth'];
+//				error_log(__METHOD__.__LINE__."($app):$width --> reading idotssideboxwidth");
+		}
+
+		//Width may not be smaller than MIN_SIDEBAR_WIDTH
+		if ($width < self::MIN_SIDEBAR_WIDTH)
+			$width = self::MIN_SIDEBAR_WIDTH;
+
+		return $width;
 	}
 
 	/**
@@ -102,12 +97,6 @@ class jdots_framework extends egw_framework
 	 */
 	private static function get_global_sidebar_width()
 	{
-		if (!$GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'] &&
-		    $GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width_value'])
-		{
-			return $GLOBALS['egw_info']['user']['preferences']['common']['global_sidebar_width_value'];
-		}
-
 		return self::DEFAULT_SIDEBAR_WIDTH;
 	}
 
@@ -119,16 +108,7 @@ class jdots_framework extends egw_framework
 	private static function set_sidebar_width($app, $val)
 	{
 		$GLOBALS['egw']->preferences->read_repository();
-		if ($GLOBALS['egw_info']['user']['preferences']['common']['app_specific_sidebar_width'])
-		{
-//			error_log(__METHOD__.__LINE__."($app, $val) --> setting jdotssideboxwidth");
-			$GLOBALS['egw']->preferences->change($app, 'jdotssideboxwidth', $val);
-		}
-		else
-		{
-//			error_log(__METHOD__.__LINE__."($app, $val) --> setting global sidebar width value");
-			$GLOBALS['egw']->preferences->change('common', 'global_sidebar_width_value', $val);
-		}
+		$GLOBALS['egw']->preferences->change($app, 'jdotssideboxwidth', $val);
 		$GLOBALS['egw']->preferences->save_repository(True);
 	}
 
