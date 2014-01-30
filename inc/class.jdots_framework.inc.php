@@ -530,6 +530,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	public function sidebox($appname,$menu_title,$file,$type=null)
 	{
 		if (!isset($file['menuOpened'])) $file['menuOpened'] = (boolean)$this->sidebox_menu_opened;
+		error_log(__METHOD__."('$appname', '$menu_title', file[menuOpened]=$file[menuOpened], ...) this->sidebox_menu_opened=$this->sidebox_menu_opened");
 		$this->sidebox_menu_opened = false;
 
 		// fix app admin menus to use admin.admin_ui.index loader
@@ -681,19 +682,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active);
 			$GLOBALS['egw']->preferences->save_repository(true);
 		}
-	}
-
-	/**
-	 * Ajax callback to store opened/closed status of menu's within one apps sidebox
-	 *
-	 * @param string $app
-	 * @param string $menu_name
-	 * @param boolean $opened true = user opened menu, false = user closed it
-	 * @todo implement storing and using stored values in get_sidebox
-	 */
-	public function ajax_sidebox_menu_opened($app,$menu_name,$opened)
-	{
-		//error_log(__METHOD__."('$app','$menu_name',$opened)");
 	}
 
 	/**

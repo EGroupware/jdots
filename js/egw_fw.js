@@ -46,8 +46,6 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 	this.sidemenuUi = null;
 	this.tabsUi = null;
 
-	this.categoryOpenCache = new Object();
-
 	this.applications = new Object();
 	this.activeApp = null;
 
@@ -75,7 +73,7 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 	}
 
 	_sideboxSizeCallback(_sideboxStartSize);
-	
+
 	//Register the resize handler
 	$j(window).resize(function(){window.framework.resizeHandler();});
 
@@ -697,13 +695,7 @@ egw_fw.prototype.getApplicationByName = function(_name)
  */
 egw_fw.prototype.categoryOpenCloseCallback = function(_opened)
 {
-	// switched off, 'til we start using it
-	//egw.json("home.jdots_framework.ajax_sidebox_menu_opened",
-	//	[this.tag.appName, this.catName, _opened],null,null,true).sendRequest();
-
-	/* Store the state of the category localy */
-	this.tag.parentFw.categoryOpenCache[this.tag.appName + '#' + this.catName] = _opened;
-//	this.tag.parentFw.scrollAreaUi.update();
+	egw.set_preference(this.tag.appName, 'jdots_sidebox_'+this.catName, _opened);
 };
 
 egw_fw.prototype.categoryAnimationCallback = function()
@@ -776,13 +768,11 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 
 					//Lookup whether this entry was opened before. If no data is
 					//stored about this, use the information we got from the server
-					var opened = this.categoryOpenCache[
-						_app.appName + '#' + _data[i].menu_name];
+					var opened = egw.preference('jdots_sidebox_'+_data[i].menu_name, _app.appName);
 					if (typeof opened == 'undefined')
 					{
 						opened = _data[i].opened;
 					}
-
 
 					if (opened)
 					{
