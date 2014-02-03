@@ -674,19 +674,10 @@ function egw_fw_ui_tabs(_contDiv)
  */
 egw_fw_ui_tabs.prototype.setAppHeader = function(_text, _msg_class)
 {
-	if (_text != "")
-	{
-		this.appHeader.text(_text);
-		this.appHeader.prop('class', "egw_fw_ui_app_header");
-		if (_msg_class) this.appHeader.addClass(_msg_class);
-//		this.appHeader.prepend("<span style=\"color:gray \">&raquo;</span> ");
-		this.appHeader.show();
-	}
-	else
-	{
-		this.appHeader.empty();
-		this.appHeader.hide();
-	}
+	this.appHeader.text(_text);
+	this.appHeader.prop('class', "egw_fw_ui_app_header");
+	if (_msg_class) this.appHeader.addClass(_msg_class);
+	this.appHeader.show();
 };
 
 /**
