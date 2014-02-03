@@ -473,8 +473,10 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// only send admin sidebox, for admin index url (when clicked on admin),
 		// not for other admin pages, called eg. from sidebox menu of other apps
 		// --> that way we always stay in the app, and NOT open admin sidebox for an app tab!!!
-		if ($app == 'admin' && substr($_SERVER['PHP_SELF'],-16) != '/admin/index.php')
+		if ($app == 'admin' && substr($_SERVER['PHP_SELF'],-16) != '/admin/index.php' &&
+			$_GET['menuaction'] != 'admin.admin_ui.index')
 		{
+			//error_log(__METHOD__."() app=$app, menuaction=$_GET[menuaction], PHP_SELF=$_SERVER[PHP_SELF] --> sidebox request ignored");
 			return;
 		}
 		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
