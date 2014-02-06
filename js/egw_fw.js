@@ -1255,7 +1255,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 egw_fw_content_browser.prototype.browse_callback = function(_data)
 {
 	// Abort if data is from wrong kind of response - only 'data'
-	if(_data.type != undefined) return;
+	if(!_data || _data.type != undefined) return;
 
 	this.data = _data[0];
 	this.browse_finished();
@@ -1329,8 +1329,8 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
 
-	// display message
-	framework.setMessage(_msg, _msg_type);
+	// display message, dont call setMessage direct, let egw object decide
+	egw.message(_msg, _msg_type);
 
 	if(typeof framework.app_refresh == "function" && typeof framework.app_refresh.registered == undefined)
 	{
