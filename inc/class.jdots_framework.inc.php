@@ -532,7 +532,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	public function sidebox($appname,$menu_title,$file,$type=null)
 	{
 		if (!isset($file['menuOpened'])) $file['menuOpened'] = (boolean)$this->sidebox_menu_opened;
-		error_log(__METHOD__."('$appname', '$menu_title', file[menuOpened]=$file[menuOpened], ...) this->sidebox_menu_opened=$this->sidebox_menu_opened");
+		//error_log(__METHOD__."('$appname', '$menu_title', file[menuOpened]=$file[menuOpened], ...) this->sidebox_menu_opened=$this->sidebox_menu_opened");
 		$this->sidebox_menu_opened = false;
 
 		// fix app admin menus to use admin.admin_ui.index loader
