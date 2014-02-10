@@ -595,7 +595,17 @@ egw_fw_ui_tab.prototype.setContent = function(_content)
 egw_fw_ui_tab.prototype.show = function()
 {
 	$j(this.headerDiv).addClass("egw_fw_ui_tab_header_active");
-	$j(this.contentDiv).show();
+	var content = $j(this.contentDiv);
+	if(!content.is(':visible'))
+	{
+		content.show();
+
+		// Trigger an event on the browser content, so apps & widgets know
+		if(this.tag && this.tag.browser && this.tag.browser.contentDiv)
+		{
+			$j(this.tag.browser.contentDiv).trigger('show');
+		}
+	}
 }
 
 /**
@@ -604,7 +614,17 @@ egw_fw_ui_tab.prototype.show = function()
 egw_fw_ui_tab.prototype.hide = function()
 {
 	$j(this.headerDiv).removeClass("egw_fw_ui_tab_header_active");
-	$j(this.contentDiv).hide();
+	var content = $j(this.contentDiv);
+	if(content.is(':visible'))
+	{
+		content.hide();
+
+		// Trigger an event on the browser content, so apps & widgets know
+		if(this.tag && this.tag.browser && this.tag.browser.contentDiv)
+		{
+			$j(this.tag.browser.contentDiv).trigger('hide');
+		}
+	}
 }
 
 /**
