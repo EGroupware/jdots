@@ -520,20 +520,17 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 
 /**
  * loadApplications refreshes the list of applications. Upon calling, all existing applications
- * will be deleted from the list, and all open tabs will be closed. Then an AJAX request to the
- * given URL will be send in order to obtain the application list with JSON encoding.
+ * will be deleted from the list, and all open tabs will be closed.
  *
- * @param object apps contains the parsed JSON data describing the applications.
- *	The JSON object should have the following structure
- *		apps = array[
- *			{
- *				string name (the internal name of the application)
- *				string title (the name of the application how it should be viewed)
- *				string icon (path to the icon of the application)
- *				string url (path to the application) //TODO: Change this
- *				[boolean isDefault] (whether this entry is the default entry which should be opened)
- *			}
- *		]
+ * @param {array} apps array of objects per application with following attributes:
+ *	- string name application name
+ *	- string title application title as displayed to user
+ *	- string icon url of application icon
+ *	- string url index url of application
+ *	- int opened order of open tabs starting with 0, not set for closed apps
+ *	- boolean active true for the active app
+ *	- boolean noNavbar true if application is NOT shown in navigation
+ *	- boolean isDefault default app of user (currently not used)
  */
 egw_fw.prototype.loadApplications = function(apps)
 {
