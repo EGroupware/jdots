@@ -153,12 +153,19 @@ egw_fw.prototype.redirect = function(_url)
 
 /**
  * Sets the active framework application to the application specified by _app
+ *
+ * @param {egw_fw_class_application} _app application object
  */
 egw_fw.prototype.setActiveApp = function(_app)
 {
 	//Only perform the following commands if a new application is activated
 	if (_app != this.activeApp)
 	{
+		// tab not yet loaded, load it now
+		if (!_app.browser.currentLocation)
+		{
+			_app.browser.browse(_app.indexUrl, false);
+		}
 		this.activeApp = _app;
 
 		//Set the sidebox width if a application specific sidebox width is set
@@ -176,6 +183,8 @@ egw_fw.prototype.setActiveApp = function(_app)
 			{
 				this.sidemenuUi.open(_app.sidemenuEntry);
 			}
+			/* disabling dynamic loading of sidebox, as it seems to happen always,
+			 * because request for app itself has not yet returned
 			else
 			{
 				//Probably the sidemenu data just got lost along the way. This
@@ -197,7 +206,7 @@ egw_fw.prototype.setActiveApp = function(_app)
 					{'app' : _app, 'fw' : this}
 				);
 				req.sendRequest();
-			}
+			}*/
 		}
 		else
 		{
@@ -479,8 +488,6 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 		_app.browser = new egw_fw_content_browser(_app, callback);
 		_app.tab.setContent(_app.browser.baseDiv);
 	}
-
-	_app.browser.browse(_url, _hidden);
 
 	if (typeof _hidden == 'undefined' || !_hidden)
 	{
