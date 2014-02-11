@@ -65,11 +65,12 @@ function egw_fw(_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCa
 					"size": _sideboxStartSize,
 					"minsize": _sideboxMinSize,
 					"maxsize": 0
-				},
+				}
 			], this);
 
-
-		this.loadApplications("home.jdots_framework.ajax_navbar_apps");
+		var egw_script = document.getElementById('egw_script_id');
+		var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
+		this.loadApplications(JSON.parse(apps));
 	}
 
 	_sideboxSizeCallback(_sideboxStartSize);
@@ -518,8 +519,9 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
 };
 
 /**
- * loadApplicationsCallback is internally used by egw_fw in order to handle the
- * receiving of the application list.
+ * loadApplications refreshes the list of applications. Upon calling, all existing applications
+ * will be deleted from the list, and all open tabs will be closed. Then an AJAX request to the
+ * given URL will be send in order to obtain the application list with JSON encoding.
  *
  * @param object apps contains the parsed JSON data describing the applications.
  *	The JSON object should have the following structure
@@ -533,8 +535,12 @@ egw_fw.prototype.parseAppFromUrl = function(_url)
  *			}
  *		]
  */
-egw_fw.prototype.loadApplicationsCallback = function(apps)
+egw_fw.prototype.loadApplications = function(apps)
 {
+	//Close all open tabs, remove all applications from the application list
+	this.sidemenuUi.clean();
+	this.tabsUi.clean();
+
 	var defaultApp = null;
 	var restore = new Object;
 	var restore_count = 0;
@@ -654,25 +660,6 @@ egw_fw.prototype.loadApplicationsCallback = function(apps)
 
 	// Disable loader, if present
 	$j('#egw_fw_loading').hide()
-};
-
-/**
- * loadApplications refreshes the list of applications. Upon calling, all existing applications
- * will be deleted from the list, and all open tabs will be closed. Then an AJAX request to the
- * given URL will be send in order to obtain the application list with JSON encoding.
- *
- * @param string _menuaction specifies the menuaction
- */
-egw_fw.prototype.loadApplications = function(_menuaction)
-{
-	//Close all open tabs, remove all applications from the application list
-	this.sidemenuUi.clean();
-	this.tabsUi.clean();
-
-	//Perform an AJAX request loading all available applications
-	var req = egw.json(_menuaction, [window.location.href],
-		this.loadApplicationsCallback, this, true,this);
-	req.sendRequest();
 };
 
 /**

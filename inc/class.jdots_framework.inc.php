@@ -270,6 +270,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			{
 				$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
 			}
+			$extra['navbar-apps'] = $this->get_navbar_apps($_SERVER['REQUEST_URI']);
 		}
 		// for an url WITHOUT cd=yes --> load framework if not yet loaded:
 		// - if top has framework object, we are all right
@@ -842,7 +843,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 *  'openOnce' => unset or the url which will be opened when the tab is restored
 	 * )
 	 */
-	public function ajax_navbar_apps($url)
+	protected function get_navbar_apps($url)
 	{
 		$apps = $this->navbar_apps();
 
@@ -909,9 +910,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				}
 			}
 		}
-
-		$response = egw_json_response::get();
-		$response->data(array_values($apps));
+		return array_values($apps);
 	}
 
 	/**
