@@ -1008,6 +1008,10 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 
 		$GLOBALS['egw']->framework->response = egw_json_response::get();
 
+		// send preferences, so we dont need to request them in a second ajax request
+		$GLOBALS['egw']->framework->response->call('egw.set_preferences',
+			(array)$GLOBALS['egw_info']['user']['preferences'][$app], $app);
+
 		// call application menuaction
 		ob_start();
 		$obj->$method();
