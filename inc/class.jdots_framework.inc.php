@@ -805,9 +805,12 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		$apps += $this->jdots_remote_apps();
 
 		//Add its sidebox width to each app
-		foreach ($apps as $key => $value)
+		foreach ($apps as $app => &$data)
 		{
-			$apps[$key]['sideboxwidth'] = self::get_sidebar_width($key);
+			$data['sideboxwidth'] = self::get_sidebar_width($app);
+			// overwrite icon with svg, if supported by browser
+			$data['icon'] = common::image($app, 'navbar', '', common::svg_usable());
+			unset($data['icon_hover']);	// not used in jdots
 		}
 
 		unset($apps['logout']);	// never display it
