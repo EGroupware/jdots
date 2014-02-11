@@ -663,7 +663,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		}
 		// send app a notification, that it's tab got closed
 		// used eg. in phpFreeChat to leave the chat
-		if (($old_tabs =& egw_cache::getSession(__CLASS__, 'open_tabs')))
+		if (($old_tabs = egw_cache::getSession(__CLASS__, 'open_tabs')))
 		{
 			foreach(array_diff(explode(',',$old_tabs),$tabs) as $app)
 			{
@@ -674,12 +674,13 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				), $app);
 			}
 		}
-		$tabs = $old_tabs = implode(',',$tabs);
+		$tabs = implode(',',$tabs);
 
 		if ($tabs != $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'] ||
 			$active != $GLOBALS['egw_info']['user']['preferences']['common']['active_tab'])
 		{
 			//error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
+			egw_cache::setSession(__CLASS__, 'open_tabs', $tabs);
 			$GLOBALS['egw']->preferences->read_repository();
 			$GLOBALS['egw']->preferences->change('common', 'open_tabs', $tabs);
 			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active);
