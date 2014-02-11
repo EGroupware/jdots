@@ -162,9 +162,10 @@ egw_fw.prototype.setActiveApp = function(_app)
 	if (_app != this.activeApp)
 	{
 		// tab not yet loaded, load it now
-		if (!_app.browser.currentLocation)
+		if (!_app.browser.currentLocation && !_app.browser.iframe)
 		{
-			_app.browser.browse(_app.indexUrl, false);
+			this.applicationTabNavigate(_app, _app.indexUrl);
+			return;
 		}
 		this.activeApp = _app;
 
@@ -491,6 +492,7 @@ egw_fw.prototype.applicationTabNavigate = function(_app, _url, _hidden, _pos)
 
 	if (typeof _hidden == 'undefined' || !_hidden)
 	{
+		_app.browser.browse(_url);
 		this.setActiveApp(_app);
 	}
 	else
