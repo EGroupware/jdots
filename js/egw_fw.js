@@ -665,7 +665,7 @@ egw_fw.prototype.loadApplications = function(apps)
 	this.notifyTabChangeEnabled = true;
 
 	// Disable loader, if present
-	$j('#egw_fw_loading').hide()
+	$j('#egw_fw_loading').hide();
 };
 
 /**
@@ -799,6 +799,12 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 		//Only view the sidemenu content if this is really the active application
 		if (_app == _app.parentFw.activeApp)
 		{
+			//Set the sidebox width if a application specific sidebox width is set
+			if (_app.sideboxWidth !== false)
+			{
+				this.sideboxSizeCallback(_app.sideboxWidth);
+				this.splitterUi.constraints[0].size = _app.sideboxWidth;
+			}
 			_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
 			_app.parentFw.scrollAreaUi.update();
 			_app.parentFw.scrollAreaUi.setScrollPos(0);
