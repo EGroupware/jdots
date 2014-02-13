@@ -808,6 +808,13 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 			_app.sidemenuEntry.parent.open(_app.sidemenuEntry);
 			_app.parentFw.scrollAreaUi.update();
 			_app.parentFw.scrollAreaUi.setScrollPos(0);
+
+			// reliable init sidebox, as app.js might initialise earlier
+			if (typeof app[_app.appName] == 'object' && !app[_app.appName].sidebox)
+			{
+				var sidebox = $j('#favorite_sidebox_'+_app.appName, this.sidemenuDiv);
+				if (sidebox.length) app[_app.appName]._init_sidebox.call(app[_app.appName], sidebox);
+			}
 		}
 	}
 };
