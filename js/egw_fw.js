@@ -1366,14 +1366,21 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 	var win = egw_appWindow(_app);
 	if (win == window || typeof win.egw_refresh == 'undefined')
 	{
-		// jDots refresh on just the relevant entry
+		var refresh_done = false;
+		// et2 nextmatch available, let it refresh
 		if(typeof etemplate2 == "function" && etemplate2.getByApplication)
 		{
 			var et2 = etemplate2.getByApplication(_app);
 			for(var i = 0; i < et2.length; i++)
 			{
-				et2[i].refresh(_msg,_app,_id,_type);
+				refresh_done = et2[i].refresh(_msg,_app,_id,_type) || refresh_done;
 			}
+		}
+		// if not trigger a regular refresh
+		if (!refresh_done)
+		{
+			var app = framework.getApplicationByName(_app);
+			app.browser.reload();
 		}
 	}
 	else
