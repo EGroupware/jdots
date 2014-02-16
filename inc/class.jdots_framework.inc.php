@@ -801,15 +801,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	public function navbar_apps()
 	{
-		$apps = parent::_get_navbar_apps();
-		$apps += $this->jdots_remote_apps();
+		$apps = parent::_get_navbar_apps(common::svg_usable());	// use svg if usable in browser
+		//$apps += $this->jdots_remote_apps();	currently not used/usable
 
 		//Add its sidebox width to each app
 		foreach ($apps as $app => &$data)
 		{
 			$data['sideboxwidth'] = self::get_sidebar_width($app);
 			// overwrite icon with svg, if supported by browser
-			$data['icon'] = common::image($app, 'navbar', '', common::svg_usable());
 			unset($data['icon_hover']);	// not used in jdots
 		}
 
