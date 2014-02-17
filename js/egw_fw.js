@@ -335,7 +335,13 @@ egw_fw.prototype.resizeHandler = function()
 	this.scrollAreaUi.update();
 };
 
-egw_fw.prototype.getIFrameHeight = function()
+/**
+ * Callback to calculate height of browser iframe or div
+ *
+ * @param {object} _iframe dom node of iframe or null for div
+ * @returns number in pixel
+ */
+egw_fw.prototype.getIFrameHeight = function(_iframe)
 {
 	$header = $j(this.tabsUi.appHeaderContainer);
  	var height = $j(this.sidemenuDiv).height()-this.tabsUi.appHeaderContainer.outerHeight();
@@ -1081,7 +1087,7 @@ egw_fw_content_browser.prototype.callResizeHandler = function()
  */
 egw_fw_content_browser.prototype.resize = function()
 {
-	var height = this.heightCallback.call() + 'px';
+	var height = this.heightCallback.call(this.iframe) + 'px';
 
 	//Set the height of the content div or the iframe
 	if (this.contentDiv)
