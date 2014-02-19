@@ -348,7 +348,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		foreach($this->topmenu_info_items as $id => $item)
 		{
 			$vars['topmenu_info_items'] .= '<div class="topmenu_info_item"'.
-				(is_numeric($id) ? '' : 'id="topmenu_info_'.$id.'"').'>'.$item."</div>\n";
+				(is_numeric($id) ? '' : ' id="topmenu_info_'.$id.'"').'>'.$item."</div>\n";
 		}
 		$this->topmenu_items = $this->topmenu_info_items = null;
 
