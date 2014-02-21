@@ -213,6 +213,23 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	}
 
 	/**
+	 * Query additional CSP frame-src from current app
+	 *
+	 * We have to query all apps, as we dont reload frameset!
+	 *
+	 * @return array
+	 */
+	protected function _get_csp_frame_src()
+	{
+		$srcs = array();
+		foreach($GLOBALS['egw']->hooks->process('csp-frame-src') as $src)
+		{
+			if ($src) $srcs = array_merge($srcs, $src);
+		}
+		return $srcs;
+	}
+
+	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
 	 * @param array $extra=array() extra attributes passed as data-attribute to egw.js
@@ -447,15 +464,28 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	}
 
 	/**
+	 * Flag if do_sidebox() was called
+	 *
+	 * @var boolean
+	 */
+	protected $sidebox_done = false;
+
+	/**
 	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
 	 *
-	 * jDots does NOT use a navbar.
+	 * jDots does NOT use a navbar, but it tells us that application might want a sidebox!
 	 *
 	 * @return string
 	 */
 	function navbar()
 	{
 		$GLOBALS['egw_info']['flags']['nonavbar'] = false;
+
+		if (!$this->sidebox_done && self::$header_done)
+		{
+			$this->do_sidebox();
+			return '<span id="late-sidebox" data-setSidebox="'.htmlspecialchars(json_encode(egw_framework::$extra['setSidebox'])).'"/>';
+		}
 
 		return '';
 	}
@@ -469,6 +499,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	function do_sidebox()
 	{
+		$this->sidebox_done = true;
+
 		$app = $GLOBALS['egw_info']['flags']['currentapp'];
 
 		// only send admin sidebox, for admin index url (when clicked on admin),
