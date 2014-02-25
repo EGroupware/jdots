@@ -262,6 +262,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// load clientside link registry to framework only
 		$GLOBALS['egw_info']['flags']['js_link_registry'] = $do_framework;
 
+		// Loader
+		$this->tpl->set_var('loader_text', lang('please wait...'));
+
 		if ($do_framework)
 		{
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
