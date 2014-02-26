@@ -1369,7 +1369,25 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 	}
 
 	// Call appropriate default / fallback refresh
-	var win = egw_appWindow(_app);
+	var win = window;
+	var app = framework.getApplicationByName(_app);
+	if (app)
+	{
+		// app with closed, or not yet loaded tab
+		if (!app.browser)
+		{
+			// we can either load and optional open it, or ignore the request completly
+			framework.applicationTabNavigate(app, app.indexUrl, false);	// hidden=false --> open it automatic
+		}
+		else	// inactive app (tab visible, but not open)
+		{
+			framework.setActiveApp(app);	// open it automatic
+		}
+		if (app.browser && app.browser.iframe)
+		{
+			win = app.browser.iframe.contentWindow;
+		}
+	}
 	if (win == window || typeof win.egw_refresh == 'undefined')
 	{
 		var refresh_done = false;
