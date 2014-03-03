@@ -241,7 +241,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		if (self::$header_done) return '';
 		self::$header_done = true;
 
-		self::_send_headers();
+		$this->send_headers();
 
 		// catch error echo'ed before the header, ob_start'ed in the header.inc.php
 		$content = ob_get_contents();
