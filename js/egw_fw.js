@@ -1373,15 +1373,10 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 	var app = framework.getApplicationByName(_app);
 	if (app)
 	{
-		// app with closed, or not yet loaded tab
+		// app with closed, or not yet loaded tab --> ignore update, happens automatic when tab loads
 		if (!app.browser)
 		{
-			// we can either load and optional open it, or ignore the request completly
-			framework.applicationTabNavigate(app, app.indexUrl, false);	// hidden=false --> open it automatic
-		}
-		else	// inactive app (tab visible, but not open)
-		{
-			framework.setActiveApp(app);	// open it automatic
+			return;
 		}
 		if (app.browser && app.browser.iframe)
 		{
