@@ -138,10 +138,11 @@ egw_fw.prototype.print = function()
 {
 	if (this.activeApp && this.activeApp.appName != 'manual')
 	{
-		if (this.activeApp.browser.iframe)
+		var appWindow = this.egw_appWindow(this.activeApp.appName);
+		if (appWindow)
 		{
-			this.activeApp.browser.iframe.contentWindow.focus();
-			this.activeApp.browser.iframe.contentWindow.print();
+			appWindow.focus();
+			appWindow.print();
 		}
 	}
 };
@@ -1500,7 +1501,7 @@ egw_LAB.wait(function() {
 		window.framework = new egw_fw("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
 			window.egw_webserverUrl, egw_setSideboxSize, 225, 185);
 		window.callManual = window.framework.callManual;
-		jQuery('#egw_fw_print').click(window.framework.print);
+		jQuery('#egw_fw_print').click(function(){window.framework.print()});
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
 		window.egw.link_quick_add('quick_add');
 
