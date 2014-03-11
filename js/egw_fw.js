@@ -1179,30 +1179,32 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	}
 
 	// Unload etemplate2, if there
-	var et2_list = [];
 	if(typeof etemplate2 == "function")
 	{
-		et2_list = etemplate2.getByApplication(this.app.appName);
-		for(var i = 0; i < et2_list.length; i++)
-		{
-			// Make sure to only clear etemplates in this tab, or orphans which
-			// can come from navigating while a "page" is loading
-			if($j(this.contentDiv).has(et2_list[i].DOMContainer).length > 0 || et2_list[i].DOMContainer.parentNode == null)
+		// Clear all etemplates on this tab, regardless of application, by using DOM nodes
+		$j('.et2_container',this.contentDiv).each(function() {
+			var et = etemplate2.getById(this.id);
+			if(et !== null)
 			{
-				et2_list[i].clear();
+				et.clear();
 			}
-		}
+		});
 	}
 	else if(this.iframe && typeof this.iframe.contentWindow.etemplate2 == "function")
 	{
-		try {
+		try
+		{
 			if(typeof this.iframe.contentWindow.etemplate2 == "function")
 			{
-				et2_list = this.iframe.contentWindow.etemplate2.getByApplication(this.app.appName);
-				for(var i = 0; i < et2_list.length; i++)
-				{
-					et2_list[i].clear();
-				}
+				// Clear all etemplates on this tab, regardless of application, by using DOM nodes
+				var content = this.iframe.contentWindow;
+				$j('.et2_container',this.iframe.contentWindow).each(function() {
+					var et = content.etemplate2.getById(this.id);
+					if(et !== null)
+					{
+						et.clear();
+					}
+				});
 			}
 		}
 		catch(e) {}	// catch error if eg. SiteMgr runs a different origin, otherwise tab cant be closed
