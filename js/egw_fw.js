@@ -1182,7 +1182,7 @@ egw_fw_content_browser.prototype.browse = function(_url)
 	if(typeof etemplate2 == "function")
 	{
 		// Clear all etemplates on this tab, regardless of application, by using DOM nodes
-		$j('.et2_container',this.contentDiv).each(function() {
+		$j('.et2_container',this.contentDiv||this.baseDiv).each(function() {
 			var et = etemplate2.getById(this.id);
 			if(et !== null)
 			{
