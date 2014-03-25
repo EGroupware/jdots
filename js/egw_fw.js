@@ -472,11 +472,11 @@ egw_fw.prototype.checkTabOverflow = function()
 	var outer_width = $j(this.tabsUi.contHeaderDiv).width();
 	var spans = $j(this.tabsUi.contHeaderDiv).children('span');
 	spans.css('max-width','');
-	spans.each(function() { width += $j(this).outerWidth();});
+	spans.each(function() { width += $j(this).outerWidth(true);});
 	if(width > outer_width)
 	{
 		var max_width = Math.floor(outer_width / this.tabsUi.contHeaderDiv.childElementCount) -
-			(spans.outerWidth() - spans.width());
+			(spans.outerWidth(true) - spans.width());
 		spans.css('max-width',max_width + 'px');
 	}
 };
