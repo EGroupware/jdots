@@ -453,6 +453,28 @@ egw_fw.prototype.createApplicationTab = function(_app, _pos)
 
 		//Set the tab closeable if there's more than one tab
 		this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
+
+		// Check for too many tabs, and adjust width if needed
+		this.checkTabOverflow();
+	}
+};
+
+/**
+ * Check to see if the tab header will overflow and want to wrap.  
+ * Deal with it by setting some smaller widths on the tabs.
+ */
+egw_fw.prototype.checkTabOverflow = function()
+{
+	var width = 0;
+	var outer_width = $j(this.tabsUi.contHeaderDiv).width();
+	var spans = $j(this.tabsUi.contHeaderDiv).children('span');
+	spans.css('max-width','');
+	spans.each(function() { width += $j(this).outerWidth();});
+	if(width > outer_width)
+	{
+		var max_width = Math.floor(outer_width / this.tabsUi.contHeaderDiv.childElementCount) -
+			(spans.outerWidth() - spans.width());
+		spans.css('max-width',max_width + 'px');
 	}
 };
 
