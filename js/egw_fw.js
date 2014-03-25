@@ -323,6 +323,9 @@ egw_fw.prototype.tabCloseClickCallback = function(_sender)
 
 egw_fw.prototype.resizeHandler = function()
 {
+	// Tabs overflow needs to be checked again
+	this.checkTabOverflow();
+	
 	//Resize the browser area of the applications
 	for (var app in this.applications)
 	{
