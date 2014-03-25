@@ -1225,12 +1225,17 @@ egw_fw_content_browser.prototype.browse = function(_url)
 			//Set the "_legacy_iframe" flag to allow link handlers to easily determine
 			//the type of the link source
 			if (self.iframe && self.iframe.contentWindow) {
-				self.iframe.contentWindow._legacy_iframe = true;
+				try {
+					self.iframe.contentWindow._legacy_iframe = true;
 
-				// Focus the iframe of the current application
-				if (self.app == framework.activeApp)
-				{
-					self.iframe.contentWindow.focus();
+					// Focus the iframe of the current application
+					if (self.app == framework.activeApp)
+					{
+						self.iframe.contentWindow.focus();
+					}
+				}
+				catch (e) {
+					// ignoer SecurityError: Blocked a frame ..., caused by different origin
 				}
 			}
 		}, 1);
