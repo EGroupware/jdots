@@ -272,13 +272,17 @@ html, body {
 	background-color: RGB(230, 230, 230);
 	display: inline-block;
 	margin: 0px 5px 0px 0px;
-	padding: 2px 10px 2px 10px;
+	padding: 2px 15px 2px 10px;
 	cursor: pointer;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #c6ced6;
 	background-image:url(images/tabs_bg.png);
 	background-repeat:repeat-x;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	position: relative;
 }
 
 .egw_fw_ui_tab_header_hover{
@@ -319,11 +323,13 @@ html, body {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
-	margin-left: 5px;
+	margin-left: 0px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-image: url(images/close_button.png);
-	float: right;
+	position: absolute;
+	top: 1px;
+	right: 0px;
 }
 
 .egw_fw_ui_tab_close_button:hover {
