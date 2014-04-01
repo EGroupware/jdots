@@ -325,7 +325,7 @@ egw_fw.prototype.resizeHandler = function()
 {
 	// Tabs overflow needs to be checked again
 	this.checkTabOverflow();
-	
+
 	//Resize the browser area of the applications
 	for (var app in this.applications)
 	{
@@ -463,7 +463,7 @@ egw_fw.prototype.createApplicationTab = function(_app, _pos)
 };
 
 /**
- * Check to see if the tab header will overflow and want to wrap.  
+ * Check to see if the tab header will overflow and want to wrap.
  * Deal with it by setting some smaller widths on the tabs.
  */
 egw_fw.prototype.checkTabOverflow = function()
@@ -1429,9 +1429,8 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 			}
 		}
 		// if not trigger a regular refresh
-		if (!refresh_done)
+		if (!refresh_done && app)
 		{
-			var app = framework.getApplicationByName(_app);
 			app.browser.reload();
 		}
 	}
