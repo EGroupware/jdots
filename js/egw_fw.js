@@ -1010,7 +1010,7 @@ egw_fw.prototype.egw_openWindowCentered2 = function(_url, _windowName, _width, _
 
 	// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 	windowID.egw = window.egw;
-	windowID.framework = this;
+	windowID.framework = framework;
 
 	if (navigate)
 	{
