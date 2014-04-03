@@ -1371,6 +1371,11 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 {
 	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
 
+	if (!_app)	// force reload of entire framework, eg. when template-set changes
+	{
+		window.location.href = window.egw_webserverUrl+'/index.php?cd=yes'+(_msg ? '&msg='+encodeURIComponent(_msg) : '');
+	}
+
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
 
