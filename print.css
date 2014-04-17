@@ -17,12 +17,10 @@
 
 @media print {
 
-	@page {size: landscape}
-
 	html, body {
 		width: 100% !important;
 	}
-	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide , #egw_message, .mailDisplayAttachments {
+	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide , #egw_message {
 		display: none;
 	}
 
