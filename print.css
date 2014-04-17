@@ -20,7 +20,7 @@
 	html, body {
 		width: 100% !important;
 	}
-	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide , #egw_message {
+	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide {
 		display: none;
 	}
 
@@ -34,22 +34,8 @@
 	.egw_fw_ui_tab_content div {
 		height: auto !important;
 	}
-	.et2_toolbar div {
-			display: none;
-	}
 	body {
 		background: white;
-	}
-	.tmpPrintDiv {
-		display: block;
-		overflow: visible;
-		height: auto;
-	}
+	}	
 } /* @media print */
 
-@media screen {
-	.tmpPrintDiv {
-		display: none;
-		height: auto;
-	}
-}
