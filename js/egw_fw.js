@@ -845,6 +845,20 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 			if (typeof app[_app.appName] == 'object')
 			{
 				var sidebox = $j('#favorite_sidebox_'+_app.appName, this.sidemenuDiv);
+				var self = this;
+				var currentAppName = _app.appName;
+				// make sidebox 
+				sidebox.children().sortable({
+
+					items:'li:not([data-id$="add"])',
+					placeholder:'ui-fav-sortable-placeholder',
+					update: function (event, ui)
+					{
+						var favSortedList = jQuery(this).sortable('toArray', {attribute:'data-id'});
+
+						egw().set_preference(currentAppName,'fav_sort_pref',favSortedList);
+					}
+				});
 				if (sidebox.length) app[_app.appName]._init_sidebox.call(app[_app.appName], sidebox);
 			}
 		}
