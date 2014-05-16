@@ -482,15 +482,20 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	function navbar()
 	{
+		$header = '';
+		if (!self::$header_done)
+		{
+			$header = $this->header();
+		}
 		$GLOBALS['egw_info']['flags']['nonavbar'] = false;
 
 		if (!$this->sidebox_done && self::$header_done)
 		{
 			$this->do_sidebox();
-			return '<span id="late-sidebox" data-setSidebox="'.htmlspecialchars(json_encode(egw_framework::$extra['setSidebox'])).'"/>';
+			return $header.'<span id="late-sidebox" data-setSidebox="'.htmlspecialchars(json_encode(egw_framework::$extra['setSidebox'])).'"/>';
 		}
 
-		return '';
+		return $header;
 	}
 
 	/**
