@@ -847,7 +847,7 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 				var sidebox = $j('#favorite_sidebox_'+_app.appName, this.sidemenuDiv);
 				var self = this;
 				var currentAppName = _app.appName;
-				// make sidebox 
+				// make sidebox
 				sidebox.children().sortable({
 
 					items:'li:not([data-id$="add"])',
@@ -1381,7 +1381,7 @@ egw_fw_content_browser.prototype.blank = function()
  * @param string _with
  * @param string _msg_type 'error', 'warning' or 'success' (default)
  */
-window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with, _msg_type)
+egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with, _msg_type)
 {
 	//alert("egw_refresh(\'"+_msg+"\',\'"+_app+"\',\'"+_id+"\',\'"+_type+"\')");
 
@@ -1392,9 +1392,6 @@ window.egw_refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _wit
 
 	// if window defines an app_refresh method, just call it
 	var framework = egw_getFramework();
-
-	// display message, dont call setMessage direct, let egw object decide
-	egw.message(_msg, _msg_type);
 
 	if(typeof framework.app_refresh == "function" && typeof framework.app_refresh.registered == undefined)
 	{
