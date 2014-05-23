@@ -1372,14 +1372,15 @@ egw_fw_content_browser.prototype.blank = function()
 /**
  * Refresh given application _targetapp display of entry _app _id, incl. outputting _msg
  *
- * @param string _msg message (already translated) to show, eg. 'Entry deleted'
- * @param string _app application name
- * @param string|int _id=null id of entry to refresh
- * @param string _type=null either 'edit', 'delete', 'add' or null
- * @param string _targetapp which app's window should be refreshed, default current
- * @param string|RegExp _replace regular expression to replace in url
- * @param string _with
- * @param string _msg_type 'error', 'warning' or 'success' (default)
+ * @param {string} _msg message (already translated) to show, eg. 'Entry deleted'
+ * @param {string|undefined} _app application name
+ * @param {string|number|undefined} _id id of entry to refresh
+ * @param {string|undefined} _type either 'edit', 'delete', 'add' or undefined
+ * @param {string|undefined} _targetapp which app's window should be refreshed, default current
+ * @param {string|RegExp} _replace regular expression to replace in url
+ * @param {string} _with
+ * @param {string} _msg_type 'error', 'warning' or 'success' (default)
+ * @return {DOMwindow|null} null if refresh was triggered, or DOMwindow of app
  */
 egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace, _with, _msg_type)
 {
@@ -1391,35 +1392,25 @@ egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace
 	}
 
 	// if window defines an app_refresh method, just call it
-	var framework = egw_getFramework();
-
-	if(typeof framework.app_refresh == "function" && typeof framework.app_refresh.registered == undefined)
+	if(typeof this.app_refresh == "function" && typeof this.app_refresh.registered == undefined)
 	{
 		egw().log("error", "An application has overwritten app_refresh() instead of calling register_app_refresh()");
 	}
-	if( typeof framework.app_refresh != "undefined" && framework.app_refresh.registered(_app))
+	if( typeof this.app_refresh != "undefined" && this.app_refresh.registered(_app))
 	{
-		framework.app_refresh(_msg, _app, _id, _type);
+		this.app_refresh(_msg, _app, _id, _type);
 
-		// Just this one app, already handled - safe to return here
-		if(!_targetapp || _app == _targetapp)
+		// if different target-app given, refresh it too
+		if (_targetapp && _app != _targetapp)
 		{
-			return;
+			return this.refresh(_msg, _targetapp, null, null, null, _replace, _with, _msg_type);
 		}
-	}
-	// Check to see if target app needs to be refreshed too
-	if(_targetapp && _app != _targetapp)
-	{
-		if(framework.app_refresh.registered(_targetapp))
-		{
-			framework.app_refresh(_msg, _app, _id, _type, _targetapp);
-			return;
-		}
+		return;
 	}
 
 	// Call appropriate default / fallback refresh
 	var win = window;
-	var app = framework.getApplicationByName(_app);
+	var app = this.getApplicationByName(_app);
 	if (app)
 	{
 		// app with closed, or not yet loaded tab --> ignore update, happens automatic when tab loads
@@ -1432,17 +1423,15 @@ egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace
 			win = app.browser.iframe.contentWindow;
 		}
 	}
-	if (win == window || typeof win.egw_refresh == 'undefined')
+
+	// app running top-level (no full refresh / window reload!)
+	if (win == window)
 	{
 		var refresh_done = false;
 		// et2 nextmatch available, let it refresh
-		if(typeof etemplate2 == "function" && etemplate2.getByApplication)
+		if(typeof etemplate2 == "function" && etemplate2.app_refresh)
 		{
-			var et2 = etemplate2.getByApplication(_app);
-			for(var i = 0; i < et2.length; i++)
-			{
-				refresh_done = et2[i].refresh(_msg,_app,_id,_type) || refresh_done;
-			}
+			refresh_done = etemplate2.app_refresh(_msg, _app, _id, _type);
 		}
 		// if not trigger a regular refresh
 		if (!refresh_done && app)
@@ -1450,25 +1439,17 @@ egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace
 			app.browser.reload();
 		}
 	}
-	else
+
+	// if different target-app given, refresh it too
+	if (_targetapp && _app != _targetapp)
 	{
-		// Refresh requested app
-		win.egw_refresh(_msg, _app, _id, _type, _app, _replace, _with);
+		this.refresh(_msg, _targetapp, null, null, null, _replace, _with, _msg_type);
 	}
 
-	if(_targetapp && _app != _targetapp)
+	// app runs in iframe (refresh iframe content window)
+	if (win != window)
 	{
-		win = egw_appWindow(_targetapp);
-		if (win == window || typeof win.egw_refresh == 'undefined')
-		{
-			// TODO: jDots refresh on just the relevant change (add,edit,delete)
-		}
-		else
-		{
-			// if target given, dispatch to that window
-			// _targetapp must be undefined to avoid getting the current window
-			win.egw_refresh(_msg, _app, _id, _type, undefined, _replace, _with);
-		}
+		return win;
 	}
 };
 
