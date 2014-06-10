@@ -31,8 +31,8 @@
 	#egw_fw_basecontainer {
 		position: inherit;
 	}
-	.egw_fw_ui_tab_content div {
-		height: auto !important;
+	.egw_fw_ui_tab_content, .egw_fw_ui_tab_content > div {
+		height: auto;
 	}
 	body {
 		background: white;
