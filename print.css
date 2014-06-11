@@ -20,7 +20,7 @@
 	html, body {
 		width: 100% !important;
 	}
-	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide {
+	#egw_fw_sidebar, #egw_fw_topmenu, .egw_fw_ui_tabs_header, #egw_fw_topmenu_slide,#egw_fw_print,#egw_fw_logout {
 		display: none;
 	}
 
@@ -36,6 +36,6 @@
 	}
 	body {
 		background: white;
-	}	
+	}
 } /* @media print */
 
