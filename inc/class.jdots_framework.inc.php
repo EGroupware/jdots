@@ -434,11 +434,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	function _add_topmenu_info_item($content, $id=null)
 	{
-		if (strpos($content,'tz_selection') !== false)
-		{
-			$content = preg_replace('/onchange="[^"]+"/','onchange="framework.tzSelection(this.value); return false;"',$content);
-		}
-		elseif(strpos($content,'menuaction=admin.admin_accesslog.sessions') !== false)
+		if(strpos($content,'menuaction=admin.admin_accesslog.sessions') !== false)
 		{
 			$content = preg_replace('/href="([^"]+)"/',"href=\"javascript:egw_link_handler('\\1','admin')\"",$content);
 		}

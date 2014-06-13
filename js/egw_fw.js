@@ -1531,6 +1531,7 @@ egw_LAB.wait(function() {
 		window.callManual = window.framework.callManual;
 		jQuery('#egw_fw_print').click(function(){window.framework.print()});
 		jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
+		jQuery('form[name^="tz_selection"]').children().on('change', function(){framework.tzSelection(this.value);	return false;});
 		window.egw.link_quick_add('quick_add');
 
 		// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
