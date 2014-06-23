@@ -1434,9 +1434,10 @@ egw_fw.prototype.refresh = function(_msg, _app, _id, _type, _targetapp, _replace
 			refresh_done = etemplate2.app_refresh(_msg, _app, _id, _type);
 		}
 		// if not trigger a regular refresh
-		if (!refresh_done && app)
+		if (!refresh_done)
 		{
-			app.browser.reload();
+			if (!app) app = this.activeApp;
+			if (app && app.browser)	app.browser.reload();
 		}
 	}
 
