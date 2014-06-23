@@ -805,7 +805,8 @@ egw_fw.prototype.setSidebox = function(_app, _data, _md5)
 					}
 				}
 			}
-
+			// Stop ajax loader spinner icon in case there's no data and still is not stopped
+			if (_data.length <= 0) _app.sidemenuEntry.hideAjaxLoader();
 			//Rewrite all form actions if they contain some javascript
 			var forms = $j('form', contDiv).toArray();
 			for (var i = 0; i < forms.length; ++i)
