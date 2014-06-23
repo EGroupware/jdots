@@ -1037,7 +1037,9 @@ if ($default_app == 'home')
 			throw new egw_exception_no_permission_app($app);
 		}
 		$GLOBALS['egw_info']['flags']['currentapp'] = $app;
-
+		
+		$GLOBALS['egw']->framework->response = egw_json_response::get();
+	
 		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
 
 		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
@@ -1049,8 +1051,6 @@ if ($default_app == 'home')
 
 		// need to call do_sidebox, as header() with $header_done does NOT!
 		$GLOBALS['egw']->framework->do_sidebox();
-
-		$GLOBALS['egw']->framework->response = egw_json_response::get();
 
 		// send preferences, so we dont need to request them in a second ajax request
 		$GLOBALS['egw']->framework->response->call('egw.set_preferences',
