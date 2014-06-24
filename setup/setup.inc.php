@@ -12,7 +12,7 @@
 
 $GLOBALS['egw_info']['template']['jdots']['name']      = 'jdots';
 $GLOBALS['egw_info']['template']['jdots']['title']     = 'Stylite';
-$GLOBALS['egw_info']['template']['jdots']['version']   = '1.0';
+$GLOBALS['egw_info']['template']['jdots']['version']   = '14.1';
 
 $GLOBALS['egw_info']['template']['jdots']['author'] = array(
    array('name' => 'Andreas Stoeckel', 'email' => 'as@stylite.de'),
