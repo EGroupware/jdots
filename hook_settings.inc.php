@@ -7,6 +7,7 @@
  * @author Andreas Stöckel <as@stylite.de>
  * @author Ralf Becker <rb@stylite.de>
  * @author Nathan Gray <ng@stylite.de>
+ * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  * @version $Id$
  */
 

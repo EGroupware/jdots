@@ -5,6 +5,7 @@
  * which represent UI elements.
  *
  * @link http://www.egroupware.org
+ * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  * @author Andreas Stoeckel <as@stylite.de>
  * @version $Id$
  */

@@ -7,6 +7,7 @@
  * @author Andreas Stöckel <as@stylite.de>
  * @author Ralf Becker <rb@stylite.de>
  * @author Nathan Gray <ng@stylite.de>
+ * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
  * @version $Id$
  */
 
@@ -1037,9 +1038,9 @@ if ($default_app == 'home')
 			throw new egw_exception_no_permission_app($app);
 		}
 		$GLOBALS['egw_info']['flags']['currentapp'] = $app;
-		
+
 		$GLOBALS['egw']->framework->response = egw_json_response::get();
-	
+
 		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
 
 		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
