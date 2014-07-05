@@ -121,6 +121,7 @@ class jdots_framework extends egw_framework
 	 */
 	public static function app_from_url($url)
 	{
+		$matches = null;
 		if (preg_match('/menuaction=([a-z0-9_-]+)\./i',$url,$matches))
 		{
 			return $matches[1];
@@ -157,10 +158,10 @@ class jdots_framework extends egw_framework
 			// Link gets handled in JS, so quotes need slashes as well as url-encoded
 			// encoded ampersands in get parameters (%26) need to be encoded twise,
 			// so they are still encoded when assigned to window.location
-			$link = str_replace(array('%27','%26'), array('\%27','%2526'), $link);
+			$link_with_slashes = str_replace(array('%27','%26'), array('\%27','%2526'), $link);
 
 			//$link = "javascript:window.egw_link_handler?egw_link_handler('$link','$link_app'):parent.egw_link_handler('$link','$link_app');";
-			$link = "javascript:egw_link_handler('$link','$link_app')";
+			$link = "javascript:egw_link_handler('$link_with_slashes','$link_app')";
 		}
 		return $link;
 	}
@@ -312,7 +313,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				$extra['check-framework'] = true;
 			}
 		}
-		$this->tpl->set_var($vars = $this->_get_header($extra));
+		$this->tpl->set_var($this->_get_header($extra));
 		$content = $this->tpl->fp('out','head').$content;
 
 		if (!$do_framework)
@@ -389,6 +390,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	*/
 	function topmenu_info_icon($id,$icon_src,$iconlink,$blink=false,$tooltip=null)
 	{
+		unset($id,$icon_src,$iconlink,$blink,$tooltip);	// not used
 		// not yet implemented, only used in admin/inc/hook_topmenu_info.inc.php to notify about pending updates
 	}
 
@@ -542,6 +544,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	public function isTop($consider_navbar_not_yet_called_as_true=true)
 	{
+		unset($consider_navbar_not_yet_called_as_true);	// not used
 		return isset($_GET['cd']) && $_GET['cd'] === 'yes';
 	}
 
@@ -711,16 +714,16 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				), $app);
 			}
 		}
-		$tabs = implode(',',$tabs);
+		$open = implode(',',$tabs);
 
-		if ($tabs != $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'] ||
+		if ($open != $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'] ||
 			$active != $GLOBALS['egw_info']['user']['preferences']['common']['active_tab'])
 		{
 			//error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
-			egw_cache::setSession(__CLASS__, 'open_tabs', $tabs);
+			egw_cache::setSession(__CLASS__, 'open_tabs', $open);
 			$GLOBALS['egw']->preferences->read_repository();
-			$GLOBALS['egw']->preferences->change('common', 'open_tabs', $tabs);
-			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active);
+			$GLOBALS['egw']->preferences->add('common', 'open_tabs', $open);
+			$GLOBALS['egw']->preferences->add('common', 'active_tab', $active);
 			$GLOBALS['egw']->preferences->save_repository(true);
 		}
 	}
