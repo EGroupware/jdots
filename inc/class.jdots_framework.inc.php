@@ -905,11 +905,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			$default_app = 'home';
 		}
-// until home works again, we use default_app from prefs (if set and not home) or calendar, if allowed, or first app found
-if ($default_app == 'home')
-{
-	$default_app = isset($GLOBALS['egw_info']['user']['apps']['calendar']) ? 'calendar' : key($GLOBALS['egw_info']['user']['apps']);
-}
 		if (isset($apps[$default_app]))
 		{
 			$apps[$default_app]['isDefault'] = true;
