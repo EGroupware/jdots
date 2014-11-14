@@ -48,7 +48,7 @@ class jdots_framework extends egw_framework
 	/**
 	 * Constructor
 	 *
-	 * @param string $template='idots' name of the template
+	 * @param string $template = 'idots' name of the template
 	 */
 	function __construct($template=self::APP)
 	{
@@ -152,9 +152,9 @@ class jdots_framework extends egw_framework
 	/**
 	 * Link url generator
 	 *
-	 * @param string	$string	The url the link is for
+	 * @param string $url The url the link is for
 	 * @param string|array	$extravars	Extra params to be passed to the url
-	 * @param string $link_app=null if appname or true, some templates generate a special link-handler url
+	 * @param string $link_app = null if appname or true, some templates generate a special link-handler url
 	 * @return string	The full url after processing
 	 */
 	static function link($url = '', $extravars = '', $link_app=null)
@@ -244,7 +244,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Returns the html-header incl. the opening body tag
 	 *
-	 * @param array $extra=array() extra attributes passed as data-attribute to egw.js
+	 * @param array $extra = array() extra attributes passed as data-attribute to egw.js
 	 * @return string with html
 	 */
 	function header(array $extra=array())
@@ -282,8 +282,10 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
 			self::validate_file('jquery','jquery-ui');
-			self::validate_file('.', 'egw_fw', self::JS_INCLUDE_APP);
-			self::validate_file('.', 'egw_fw_ui', self::JS_INCLUDE_APP);
+			self::validate_file('framework', 'fw', self::JS_INCLUDE_APP);
+			self::validate_file('framework', 'fw_browser', self::JS_INCLUDE_APP);
+			self::validate_file('framework', 'fw_ui', self::JS_INCLUDE_APP);
+			self::validate_file('.', 'fw_jdots', self::JS_INCLUDE_APP);
 			self::validate_file('.', 'egw_fw_classes', self::JS_INCLUDE_APP);
 			self::validate_file('.','etemplate2','etemplate');
 
@@ -441,7 +443,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * Add info items to the topmenu template class to be displayed
 	 *
 	 * @param string $content html of item
-	 * @param string $id=null
+	 * @param string $id = null
 	 * @access protected
 	 * @return void
 	 */
@@ -578,7 +580,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * @param string $appname
 	 * @param string $menu_title
 	 * @param array $file
-	 * @param string $type=null 'admin', 'preferences', 'favorites', ...
+	 * @param string $type = null 'admin', 'preferences', 'favorites', ...
 	 */
 	public function sidebox($appname,$menu_title,$file,$type=null)
 	{
@@ -976,7 +978,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Returns the html from the closing div of the main application area to the closing html-tag
 	 *
-	 * @param boolean $no_framework=true
+	 * @param boolean $no_framework = true
 	 * @return string
 	 */
 	function footer($no_framework=true)

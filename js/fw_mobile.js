@@ -9,6 +9,7 @@
 "use strict";
 /*egw:uses
 	jquery.jquery;
+	/phpgwapi/js/jquery/TouchSwipe/jquery.touchSwipe.js;
 	framework.fw_base;
 	framework.fw_browser;
 	framework.fw_ui;
@@ -27,7 +28,7 @@
 		 * 
 		 * @returns {undefined}
 		 */
-		init: function()
+		init: function(_a)
 		{
 			this._super.apply(this,arguments);
 			
@@ -44,10 +45,38 @@
 		 * 
 		 * @returns {undefined}
 		 */
-		init: function(_baseDiv, _sortCallback)
+		init: function()
 		{
 			this._super.apply(this,arguments);
-			
+			var $baseDiv = $j(this.baseDiv);
+			$baseDiv.swipe({
+				swipe: function (e, direction,distance)
+				{
+
+					switch (direction)
+					{
+						case "up":
+						case "down":
+							if ($baseDiv.css('overflow') == 'hidden')
+								$baseDiv.css('overflow','auto');
+					}
+				},
+				swipeStatus:function(event, phase, direction, distance, duration, fingers)
+				{
+					switch (direction)
+					{
+
+						case "left":
+							$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
+							break;
+						 case "right":
+							$baseDiv.css('transform', 'translate3d(' + distance + 'px,0px,0px)');
+					}
+				},
+				allowPageScroll: "vertical",
+			});
+			// Do not attach sidebox application entries
+			$j(this.elemDiv).detach();
 		},
 		/**
 		 * Adds an entry to the sidemenu.
@@ -67,6 +96,20 @@
 		   this.entries[this.entries.length] = entry;
 
 		   return entry;
+		},
+		/**
+		 * Transfer tabs function takes carre of transfering all application tabs handlers either to sidebox or topBox
+		 * 
+		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
+		 *	default value is "side"
+		 */
+		transferTabs: function(_orientation)
+		{
+			var orientation = _orientation || "side";
+			
+			var $tabs = $j('.egw_fw_ui_tabs_header');
+			
+			$tabs.appendTo(this.baseDiv);
 		}
 	});
 	
@@ -81,25 +124,20 @@
 		 * 
 		 * @param {string} _sidemenuId sidebar menu div id
 		 * @param {string} _tabsId tab area div id
-		 * @param {string} _splitterId splitter div id
 		 * @param {string} _webserverUrl specifies the egroupware root url
 		 * @param {function} _sideboxSizeCallback 
 		 * @param {int} _sideboxStartSize sidebox start size
 		 * @param {int} _sideboxMinSize sidebox minimum size
 		 */
-		init:function (_sidemenuId, _tabsId, _splitterId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _sideboxMinSize)
+		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize)
 		{
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
-				//Wrap a scroll area handler around the applications
-				this.scrollAreaUi = new egw_fw_ui_scrollarea(this.sidemenuDiv);
-
-				//Create the sidemenu, the tabs area and the splitter
-				this.sidemenuUi = new mobile_ui_sidemenu(this.scrollAreaUi.contentDiv,
-					this.sortCallback);
+				//Create the sidemenu, the tabs area
+				this.sidemenuUi = new mobile_ui_sidemenu(this.sidemenuDiv);
 				this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 				
 				var egw_script = document.getElementById('egw_script_id');
@@ -122,14 +160,44 @@
 			//this is an legacyApp (null triggers the application default), whether the
 			//application is hidden (only the active tab is shown) and its position
 			//in the tab list.
-			for (var i = 0; i < apps.length; i++)
-			{
+			for (var app in this.applications)
 				this.applicationTabNavigate(
-					apps[i].app, apps[i].url, i != 0,
-					apps[i].position);
-			}
+					this.applications[app], this.applications[app].url, true,
+					this.applications[app].position);
+
+			//Set the current state of the tabs and activate TabChangeNotification.
+			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
+			this.notifyTabChangeEnabled = true;
+			
+			this.sidemenuUi.transferTabs('side');
+			// Disable loader, if present
+			$j('#egw_fw_loading').hide();
 		},
 		
+		/**
+		 * 
+		 * @param {app object} _app
+		 * @param {int} _pos
+		 * Checks whether the application already owns a tab and creates one if it doesn't exist
+		 */
+		createApplicationTab: function(_app, _pos)
+		{
+			//Default the pos parameter to -1
+			if (typeof _pos == 'undefined')
+				_pos = -1;
+
+			if (_app.tab == null)
+			{
+				//Create the tab
+				_app.tab = this.tabsUi.addTab(_app.icon, this.tabClickCallback, function(){},
+					_app, _pos);
+				_app.tab.setTitle(_app.displayName);
+
+				//Set the tab closeable if there's more than one tab
+				this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
+			}
+		},
+
 	});
 	
 	/**
@@ -143,8 +211,8 @@
 		}
 
 		$j(document).ready(function() {
-			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", "egw_fw_splitter",
-					window.egw_webserverUrl, egw_setSideboxSize, 255, 215);	// should be identical to jdots_framework::(DEFAULT|MIN)_SIDEBAR_WIDTH
+			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
+					window.egw_webserverUrl, egw_setSideboxSize, 255);	// should be identical to jdots_framework::(DEFAULT|MIN)_SIDEBAR_WIDTH
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
