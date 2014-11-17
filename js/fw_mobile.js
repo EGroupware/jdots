@@ -31,8 +31,33 @@
 		init: function(_a)
 		{
 			this._super.apply(this,arguments);
-			
-		}
+			var self = this;
+			var $sidebarMenu = $j(document.createElement("span"));
+			$sidebarMenu
+				.addClass('egw_fw_mobile_sidebarMenu')
+				.click(function(){
+					self.toggleMenu();
+				})
+				.appendTo(this.headerDiv);
+		},
+		
+		/**
+		 * Toggle sidebar menu
+		 * @returns {undefined}
+		 */
+		toggleMenu: function ()
+		{
+			var $toggleMenu = $j(this.baseDiv).toggleClass('sidebarToggle', 100);
+			if ($toggleMenu.hasClass('sidebarToggle'))
+			{
+				framework.toggleMenuResizeHandler(255);
+			}
+			else
+			{
+				framework.toggleMenuResizeHandler(82);
+			}
+		},
+		
 	});
 	
 	/**
@@ -58,7 +83,7 @@
 						case "up":
 						case "down":
 							if ($baseDiv.css('overflow') == 'hidden')
-								$baseDiv.css('overflow','auto');
+								$baseDiv.css('overflow-y','auto');
 					}
 				},
 				swipeStatus:function(event, phase, direction, distance, duration, fingers)
@@ -67,10 +92,10 @@
 					{
 
 						case "left":
-							$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
+						//	$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
 							break;
 						 case "right":
-							$baseDiv.css('transform', 'translate3d(' + distance + 'px,0px,0px)');
+						//	$baseDiv.css('transform', 'translate3d(' + distance + 'px,0px,0px)');
 					}
 				},
 				allowPageScroll: "vertical",
@@ -144,8 +169,10 @@
 				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
 				this.loadApplications(JSON.parse(apps));
 			}
-
-			_sideboxSizeCallback(_sideboxStartSize);
+			// Disable scalability to avoid auto zooming by selecting elements
+			document.getElementsByTagName('head')[0].innerHTML += '<meta name="viewport" content="user-scalable=no" />';
+			
+			this.sideboxSizeCallback(_sideboxStartSize);
 		},
 		
 		/**
@@ -154,24 +181,66 @@
 		 */
 		loadApplications: function (apps)
 		{
-			this._super.apply(this, arguments);
+			var restore = this._super.apply(this, arguments);
+			var activeApp = '';
 			
 			//Now actually restore the tabs by passing the application, the url, whether
 			//this is an legacyApp (null triggers the application default), whether the
 			//application is hidden (only the active tab is shown) and its position
 			//in the tab list.
 			for (var app in this.applications)
-				this.applicationTabNavigate(
-					this.applications[app], this.applications[app].url, true,
-					this.applications[app].position);
-
+			{
+				if (typeof restore[app] == 'undefined')
+				{
+					restore[app]= {
+						app:this.applications[app],
+						url:this.applications[app].url
+					};
+				}
+				if (restore[app].active !='undefined' && restore[app].active)
+				{
+					activeApp = app;
+				}
+				this.applicationTabNavigate(restore[app].app, restore[app].url, app == activeApp?false:true,
+					-1);
+			}
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
-			this.notifyTabChangeEnabled = true;
 			
 			this.sidemenuUi.transferTabs('side');
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
+		},
+		
+		/**
+		 * applicationClickCallback is used internally by fw_mobile in order to handle clicks on
+		 * sideboxmenu
+		 *
+		 * @param {egw_fw_ui_tab} _sender specifies the tab ui object, the user has clicked
+		 */
+		applicationClickCallback: function(_sender)
+		{
+			this.tag.sidemenuEntry.toggleMenu();
+		},
+		
+		/**
+		 * tabClickCallback is used internally by egw_fw in order to handle clicks on
+		 * a tab.
+		 *
+		 * @param {egw_fw_ui_tab} _sender specifies the tab ui object, the user has clicked
+		 */
+		tabClickCallback: function(_sender)
+		{
+		   this._super.apply(this,arguments);
+		   
+		},
+		
+		
+		toggleMenuResizeHandler:function(_size)
+		{
+			var size= _size || 255;
+			this.sideboxSizeCallback(size);
+			this.appData.browser.callResizeHandler();
 		},
 		
 		/**
