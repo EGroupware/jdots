@@ -41,22 +41,7 @@
 				.appendTo(this.headerDiv);
 		},
 		
-		/**
-		 * Toggle sidebar menu
-		 * @returns {undefined}
-		 */
-		toggleMenu: function ()
-		{
-			var $toggleMenu = $j(this.baseDiv).toggleClass('sidebarToggle', 100);
-			if ($toggleMenu.hasClass('sidebarToggle'))
-			{
-				framework.toggleMenuResizeHandler(255);
-			}
-			else
-			{
-				framework.toggleMenuResizeHandler(82);
-			}
-		},
+		
 		
 	});
 	
@@ -154,11 +139,16 @@
 		 * @param {int} _sideboxStartSize sidebox start size
 		 * @param {int} _sideboxMinSize sidebox minimum size
 		 */
-		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize)
+		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _baseContainer, _mobileMenu)
 		{
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
-			
+			var self = this;
+			this.baseContainer = document.getElementById(_baseContainer);
+			this.mobileMenu = document.getElementById(_mobileMenu);
+			var $mobileMenu = $j(this.mobileMenu).click(function(){
+				self.toggleMenu();
+			});
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
 				//Create the sidemenu, the tabs area
@@ -169,10 +159,27 @@
 				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
 				this.loadApplications(JSON.parse(apps));
 			}
-			// Disable scalability to avoid auto zooming by selecting elements
-			document.getElementsByTagName('head')[0].innerHTML += '<meta name="viewport" content="user-scalable=no" />';
 			
 			this.sideboxSizeCallback(_sideboxStartSize);
+		},
+		
+		/**
+		 * Toggle sidebar menu
+		 * @returns {undefined}
+		 */
+		toggleMenu: function ()
+		{
+			var $toggleMenu = $j(this.baseContainer);
+			var toggleState = $toggleMenu.hasClass('sidebarToggle');
+			$toggleMenu.toggleClass('sidebarToggle',1);
+			if (toggleState)
+			{
+				this.toggleMenuResizeHandler(280);
+			}
+			else
+			{
+				this.toggleMenuResizeHandler(72);
+			}
 		},
 		
 		/**
@@ -220,7 +227,7 @@
 		 */
 		applicationClickCallback: function(_sender)
 		{
-			this.tag.sidemenuEntry.toggleMenu();
+			this._super.apply(this,arguments);
 		},
 		
 		/**
@@ -232,7 +239,6 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
-		   
 		},
 		
 		
@@ -241,6 +247,20 @@
 			var size= _size || 255;
 			this.sideboxSizeCallback(size);
 			this.appData.browser.callResizeHandler();
+		},
+		
+		/**
+		 * Callback to calculate height of browser iframe or div
+		 *
+		 * @param {object} _iframe dom node of iframe or null for div
+		 * @returns number in pixel
+		 */
+		getIFrameHeight: function(_iframe)
+		{
+			var height = this._super.apply(this, arguments);
+			height +=  jQuery('#egw_fw_sidebar').offset().top;
+			
+			return height;
 		},
 		
 		/**
@@ -261,9 +281,6 @@
 				_app.tab = this.tabsUi.addTab(_app.icon, this.tabClickCallback, function(){},
 					_app, _pos);
 				_app.tab.setTitle(_app.displayName);
-
-				//Set the tab closeable if there's more than one tab
-				this.tabsUi.setCloseable(this.tabsUi.tabs.length > 1);
 			}
 		},
 
@@ -281,7 +298,7 @@
 
 		$j(document).ready(function() {
 			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
-					window.egw_webserverUrl, egw_setSideboxSize, 255);	// should be identical to jdots_framework::(DEFAULT|MIN)_SIDEBAR_WIDTH
+					window.egw_webserverUrl, egw_setSideboxSize, 255, 'egw_fw_basecontainer', 'egw_fw_menu');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
