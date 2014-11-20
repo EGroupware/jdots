@@ -40,9 +40,6 @@
 				})
 				.appendTo(this.headerDiv);
 		},
-		
-		
-		
 	});
 	
 	/**
@@ -69,6 +66,17 @@
 						case "down":
 							if ($baseDiv.css('overflow') == 'hidden')
 								$baseDiv.css('overflow-y','auto');
+							break;	
+						case "left":
+							//$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
+							if (distance >= 100)
+							{
+								framework.toggleMenu(null,null,0);
+							}
+							
+							break;
+						 case "right":	
+							 framework.toggleMenu(null,null,0);
 					}
 				},
 				swipeStatus:function(event, phase, direction, distance, duration, fingers)
@@ -76,10 +84,7 @@
 					switch (direction)
 					{
 
-						case "left":
-						//	$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
-							break;
-						 case "right":
+						
 						//	$baseDiv.css('transform', 'translate3d(' + distance + 'px,0px,0px)');
 					}
 				},
@@ -111,15 +116,24 @@
 		 * Transfer tabs function takes carre of transfering all application tabs handlers either to sidebox or topBox
 		 * 
 		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
-		 *	default value is "side"
+		 *	default value is "landscape"
 		 */
 		transferTabs: function(_orientation)
 		{
-			var orientation = _orientation || "side";
-			
+			var orientation = _orientation || 'landscape';
 			var $tabs = $j('.egw_fw_ui_tabs_header');
+			var $pBar = $j('#egw_fw_portrait_bar');
 			
-			$tabs.appendTo(this.baseDiv);
+			if (orientation === 'landscape')
+			{
+				$tabs.appendTo(this.baseDiv);
+				
+			}
+			else
+			{
+				//$pBar.show();
+				$tabs.appendTo($pBar);
+			}
 		}
 	});
 	
@@ -144,10 +158,18 @@
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			var self = this;
+			
+			//Bind handler to orientation change
+			$j(window).on("orientationchange",function(event){
+				self.orientation(event);
+			});
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
-			var $mobileMenu = $j(this.mobileMenu).click(function(){
-				self.toggleMenu();
+			var $mobileMenu = $j(this.mobileMenu).swipe({
+				tap:function()
+				{
+					self.toggleMenu(72,280);
+				}
 			});
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
@@ -164,24 +186,65 @@
 		},
 		
 		/**
-		 * Toggle sidebar menu
-		 * @returns {undefined}
+		 * Check if the device is in landscape orientation
+		 * 
+		 * @returns {boolean} returns true if the device orientation is on landscape otherwise return false(protrait)
 		 */
-		toggleMenu: function ()
+		isLandscape: function ()
 		{
+			//if there's no window.orientation then the default is landscape
+			var orient = true;
+			if (typeof window.orientation != 'undefined')
+			{
+				orient = window.orientation & 2?true:false;
+			}
+			return orient;
+		},
+		
+		/**
+		 * Orientation on change method
+		 */
+		orientation: function ()
+		{
+			this.sidemenuUi.transferTabs(this.isLandscape()?'landscape':'portrait');
+		},
+		/**
+		 * Toggle sidebar menu
+		 * 
+		 * @param {int} _collapseSize minimum size of resize
+		 * @param {int} _expandSize maximum size of resize
+		 * @param {int} _delay delaying of toggleClass
+		 */
+		toggleMenu: function (_collapseSize, _expandSize, _delay)
+		{
+			var delay = _delay || 1;
+			var collapseSize = this.isLandscape()?_collapseSize || 72:1;
+			var expandSize = _expandSize || 280;
+			
 			var $toggleMenu = $j(this.baseContainer);
-			var toggleState = $toggleMenu.hasClass('sidebarToggle');
-			$toggleMenu.toggleClass('sidebarToggle',1);
+			var toggleState = $toggleMenu.hasClass('sidebar-toggle');
+			$toggleMenu.toggleClass('sidebar-toggle', delay);
+			//if (!this.isLandscape()) //$j('#egw_fw_portrait_bar').toggle();
 			if (toggleState)
 			{
-				this.toggleMenuResizeHandler(280);
+				this.toggleMenuResizeHandler(expandSize);
 			}
 			else
 			{
-				this.toggleMenuResizeHandler(72);
+				this.toggleMenuResizeHandler(collapseSize);
 			}
 		},
 		
+		get_toggleState: function (_state)
+		{
+			
+		},
+		
+		set_toggleState: function (_state)
+		{
+			
+			return 
+		},
 		/**
 		 * 
 		 * @returns {undefined}
@@ -214,7 +277,7 @@
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
 			
-			this.sidemenuUi.transferTabs('side');
+			this.sidemenuUi.transferTabs(this.isLandscape()?'landscape':'portrait');
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
 		},
@@ -245,7 +308,7 @@
 		toggleMenuResizeHandler:function(_size)
 		{
 			var size= _size || 255;
-			this.sideboxSizeCallback(size);
+			this.sideboxSizeCallback(size, this.isLandscape()?false:true);
 			this.appData.browser.callResizeHandler();
 		},
 		
@@ -288,12 +351,23 @@
 	
 	/**
 	* Initialise mobile framework
+	* @param {int} _size width size which sidebox suppose to be open
+	* @param {boolean} _fixedFrame make either the frame fixed or resizable
 	*/
 	egw_LAB.wait(function() {
-		function egw_setSideboxSize(_size)
+		function egw_setSideboxSize(_size,_fixedFrame)
 		{
-			document.getElementById('egw_fw_main').style.marginLeft = _size + 'px';
-			document.getElementById('egw_fw_sidebar').style.width = _size + 'px';
+			var fixedFrame = _fixedFrame || false;
+			var frameSize = _size;
+			var sidebar = document.getElementById('egw_fw_sidebar');
+			var mainFrame = document.getElementById('egw_fw_main');
+			if (fixedFrame)
+			{
+				frameSize = 0;
+				sidebar.style.zIndex = 999;
+			}
+			mainFrame.style.marginLeft = frameSize + 'px';
+			sidebar.style.width = _size + 'px';
 		}
 
 		$j(document).ready(function() {
