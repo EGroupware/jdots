@@ -71,12 +71,12 @@
 							//$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
 							if (distance >= 100)
 							{
-								framework.toggleMenu(null,null,0);
+								framework.toggleMenu();
 							}
 							
 							break;
 						 case "right":	
-							 framework.toggleMenu(null,null,0);
+							 framework.toggleMenu();
 					}
 				},
 				swipeStatus:function(event, phase, direction, distance, duration, fingers)
@@ -112,29 +112,6 @@
 
 		   return entry;
 		},
-		/**
-		 * Transfer tabs function takes carre of transfering all application tabs handlers either to sidebox or topBox
-		 * 
-		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
-		 *	default value is "landscape"
-		 */
-		transferTabs: function(_orientation)
-		{
-			var orientation = _orientation || 'landscape';
-			var $tabs = $j('.egw_fw_ui_tabs_header');
-			var $pBar = $j('#egw_fw_portrait_bar');
-			
-			if (orientation === 'landscape')
-			{
-				$tabs.appendTo(this.baseDiv);
-				
-			}
-			else
-			{
-				//$pBar.show();
-				$tabs.appendTo($pBar);
-			}
-		}
 	});
 	
 	/**
@@ -168,7 +145,7 @@
 			var $mobileMenu = $j(this.mobileMenu).swipe({
 				tap:function()
 				{
-					self.toggleMenu(72,280);
+					self.toggleMenu();
 				}
 			});
 			if (this.sidemenuDiv && this.tabsDiv)
@@ -183,6 +160,16 @@
 			}
 			
 			this.sideboxSizeCallback(_sideboxStartSize);
+		},
+		
+		/**
+		 * 
+		 * @returns {undefined}
+		 */
+		setSidebox:function()
+		{
+			this._super.apply(this,arguments);
+			this.setSidebarState(this.activeApp.preferences.toggleMenu);
 		},
 		
 		/**
@@ -202,49 +189,117 @@
 		},
 		
 		/**
-		 * Orientation on change method
-		 */
-		orientation: function ()
-		{
-			this.sidemenuUi.transferTabs(this.isLandscape()?'landscape':'portrait');
-		},
-		/**
-		 * Toggle sidebar menu
+		 * Arranging toolbar icons according to device orientation
 		 * 
-		 * @param {int} _collapseSize minimum size of resize
-		 * @param {int} _expandSize maximum size of resize
-		 * @param {int} _delay delaying of toggleClass
+		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
+		 * default value is landscape
 		 */
-		toggleMenu: function (_collapseSize, _expandSize, _delay)
+		arrangeToolbar: function (_orientation)
 		{
-			var delay = _delay || 1;
-			var collapseSize = this.isLandscape()?_collapseSize || 72:1;
-			var expandSize = _expandSize || 280;
-			
-			var $toggleMenu = $j(this.baseContainer);
-			var toggleState = $toggleMenu.hasClass('sidebar-toggle');
-			$toggleMenu.toggleClass('sidebar-toggle', delay);
-			//if (!this.isLandscape()) //$j('#egw_fw_portrait_bar').toggle();
-			if (toggleState)
+			var orientation = _orientation || 'landscape';
+			var $toolbar = $j('#egw_fw_top_toolbar');
+			if (orientation === 'landscape')
 			{
-				this.toggleMenuResizeHandler(expandSize);
+				$toolbar.css('height','auto');
+				this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?72:280);
 			}
 			else
 			{
-				this.toggleMenuResizeHandler(collapseSize);
+				$toolbar.css('height','60px');
 			}
 		},
 		
-		get_toggleState: function (_state)
+		/**
+		 * Orientation on change method
+		 * @param {event} _event orientation event
+		 */
+		orientation: function (_event)
 		{
-			
+			this.arrangeToolbar(this.isLandscape()?'landscape':'portrait');
 		},
 		
-		set_toggleState: function (_state)
+		/**
+		 * Toggle sidebar menu
+		 * @param {int} _delay delaying of toggleClass
+		 */
+		toggleMenu: function (_state)
 		{
+			var state = _state || this.getToggleMenuState();
+			var collapseSize = this.isLandscape()?72:1;
+			var expandSize = 280;
+			var $toggleMenu = $j(this.baseContainer);
 			
-			return 
+			if (state === 'on')
+			{
+				$toggleMenu.addClass('sidebar-toggle');
+				this.toggleMenuResizeHandler(collapseSize);
+				this.setToggleMenuState('off');
+			}
+			else
+			{
+				$toggleMenu.removeClass('sidebar-toggle');
+				this.toggleMenuResizeHandler(expandSize);
+				this.setToggleMenuState('on');
+			}
 		},
+		
+		/**
+		 * Gets the active app toggleMenu state value
+		 *
+		 * @returns {string} returns state value off | on
+		 */
+		getToggleMenuState: function ()
+		{
+			var $toggleMenu = $j(this.baseContainer);
+			var state = ''
+			if (typeof this.activeApp.preferences.toggleMenu!='undefined')
+			{
+				state = this.activeApp.preferences.toggleMenu;
+			}
+			else
+			{
+				state = $toggleMenu.hasClass('sidebar-toggle')?'off':'on';
+					
+			}
+			return state;
+		},
+		
+		/**
+		 * Sets toggle menu state value
+		 * @param {string} _state toggle state value, either off|on
+		 */
+		setToggleMenuState: function (_state)
+		{
+			if (_state === 'on' || _state === 'off')
+			{
+				this.activeApp.preferences['toggleMenu'] = _state;
+				egw.set_preference(this.activeApp.appName,'egw_fw_mobile',this.activeApp.preferences);
+			}
+			else
+			{
+				egw().debug("error","The toggle menu value must be either on | off");
+			}
+		},
+		/**
+		 * set sidebar state
+		 * @param {type} _state
+		 * @returns {undefined}
+		 */
+		setSidebarState: function(_state)
+		{
+			var $toggleMenu = $j(this.baseContainer);
+			if (_state === 'off')
+			{
+				$toggleMenu.addClass('sidebar-toggle');
+				this.toggleMenuResizeHandler(72);
+			}
+			else
+			{
+				$toggleMenu.removeClass('sidebar-toggle');
+				this.toggleMenuResizeHandler(280);
+			}
+		},
+		
 		/**
 		 * 
 		 * @returns {undefined}
@@ -253,7 +308,7 @@
 		{
 			var restore = this._super.apply(this, arguments);
 			var activeApp = '';
-			
+
 			//Now actually restore the tabs by passing the application, the url, whether
 			//this is an legacyApp (null triggers the application default), whether the
 			//application is hidden (only the active tab is shown) and its position
@@ -276,10 +331,25 @@
 			}
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
+		
+			// Transfer tabs to the sidebar
+			var $tabs = $j('.egw_fw_ui_tabs_header');
+			$tabs.appendTo(this.sidemenuDiv);
 			
-			this.sidemenuUi.transferTabs(this.isLandscape()?'landscape':'portrait');
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
+		},
+		
+		/**
+		 * Sets the active framework application to the application specified by _app
+		 *
+		 * @param {egw_fw_class_application} _app application object
+		 */
+		setActiveApp: function(_app)
+		{
+			this._super.apply(this,arguments);
+			
+			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
 		},
 		
 		/**
@@ -302,13 +372,15 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
+		   
+		   framework.setSidebarState(this.tag.preferences.toggleMenu);
 		},
 		
 		
 		toggleMenuResizeHandler:function(_size)
 		{
-			var size= _size || 255;
-			this.sideboxSizeCallback(size, this.isLandscape()?false:true);
+			var size= _size || 280;
+			this.sideboxSizeCallback(size);
 			this.appData.browser.callResizeHandler();
 		},
 		
@@ -372,7 +444,7 @@
 
 		$j(document).ready(function() {
 			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
-					window.egw_webserverUrl, egw_setSideboxSize, 255, 'egw_fw_basecontainer', 'egw_fw_menu');
+					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
