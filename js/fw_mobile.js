@@ -35,8 +35,11 @@
 			var $sidebarMenu = $j(document.createElement("span"));
 			$sidebarMenu
 				.addClass('egw_fw_mobile_sidebarMenu')
-				.click(function(){
-					self.toggleMenu();
+				.swipe({
+					tap:function()
+					{
+						self.toggleMenu();
+					}
 				})
 				.appendTo(this.headerDiv);
 		},
@@ -68,7 +71,6 @@
 								$baseDiv.css('overflow-y','auto');
 							break;	
 						case "left":
-							//$baseDiv.css('transform', 'translate3d(' + -distance + 'px,0px,0px)');
 							if (distance >= 100)
 							{
 								framework.toggleMenu();
@@ -85,7 +87,7 @@
 					{
 
 						
-						//	$baseDiv.css('transform', 'translate3d(' + distance + 'px,0px,0px)');
+						
 					}
 				},
 				allowPageScroll: "vertical",
@@ -198,14 +200,35 @@
 		{
 			var orientation = _orientation || 'landscape';
 			var $toolbar = $j('#egw_fw_top_toolbar');
+			//tabs container
+			var $tabs = $j('.egw_fw_ui_tabs_header');
+			
 			if (orientation === 'landscape')
 			{
 				$toolbar.css('height','auto');
 				this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?72:280);
+				$tabs.appendTo('#egw_fw_sidemenu');
+				// Remove tabs header portriat's specific styles
+				$tabs.removeClass('tabs-header-portrait-collapsed');
 			}
 			else
 			{
 				$toolbar.css('height','60px');
+				$tabs.appendTo($toolbar);
+				this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?1:280);
+				if (this.getToggleMenuState() === "off")
+				{
+					$tabs.addClass('tabs-header-portrait-collapsed');
+				}
+				else
+				{
+					$tabs.removeClass('tabs-header-portrait-collapsed');
+				}
+				//Tabs are scrollable
+				if ($tabs[0].scrollHeight > $tabs.height())
+				{
+					$tabs.addClass('egw-fw-tabs-scrollable');
+				}
 			}
 		},
 		
@@ -228,18 +251,21 @@
 			var collapseSize = this.isLandscape()?72:1;
 			var expandSize = 280;
 			var $toggleMenu = $j(this.baseContainer);
-			
+			var $tabs =  $j('.egw_fw_ui_tabs_header');
 			if (state === 'on')
 			{
 				$toggleMenu.addClass('sidebar-toggle');
+				if (!this.isLandscape()) $tabs.addClass('tabs-header-portrait-collapsed');
 				this.toggleMenuResizeHandler(collapseSize);
 				this.setToggleMenuState('off');
+				
 			}
 			else
 			{
 				$toggleMenu.removeClass('sidebar-toggle');
 				this.toggleMenuResizeHandler(expandSize);
 				this.setToggleMenuState('on');
+				if (!this.isLandscape()) $tabs.removeClass('tabs-header-portrait-collapsed');
 			}
 		},
 		
