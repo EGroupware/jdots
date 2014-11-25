@@ -114,6 +114,89 @@
 
 		   return entry;
 		},
+
+		/**
+		 * Hide sidebar menu and top toolbar
+		 */
+		disable: function ()
+		{
+			$j(this.baseDiv).hide();
+			$j('#egw_fw_top_toolbar').hide();
+		},
+		
+		/**
+		 * * Show sidebar menu and top toolbar
+		 */
+		enable: function ()
+		{
+			$j(this.baseDiv).show();
+			$j('#egw_fw_top_toolbar').show();
+		}
+	});
+	
+	/**
+	 * popup frame constructor
+	 */
+	var popupFrame = Class.extend({
+		init:function(_iframe)
+		{
+			this.popupContainer = document.getElementsByClassName('egw_fw_mobile_popup_container');
+			this.popupFrame = _iframe;
+		},
+		/**
+		 * 
+		 * @param {type} _url
+		 * @param {type} _width
+		 * @param {type} _height
+		 * @param {type} _posX
+		 * @param {type} _posY
+		 * @returns {undefined}
+		 */
+		open: function(_url,_width,_height,_posX,_posY)
+		{
+			//Open iframe with the url
+			this.popupFrame.src = _url;
+			var self = this;
+			var $popupContainer = $j(this.popupContainer);
+			//this.resize(this.popupFrame,_width,_height,_posX,_posY);
+			$j(this.popupFrame).on('load', function (){
+				
+				// set the popup toolbar position
+				$j('.egw_fw_mobile_popup_toolbar').offset({top:this.offsetTop,left:this.offsetLeft});
+				// bind click handler to close button
+				$j('#egw_fw_mobile_popup_close').click(function (){
+						self.popupFrame.contentWindow.close();
+					});
+					
+				// Overrride window close function	
+				this.contentWindow.close = $j.proxy(function ()
+				{
+					this.close();
+				},self);
+			});
+			$popupContainer.show();
+			
+		},
+		close: function ()
+		{
+			this.popupFrame.src = ''
+			$j(this.popupContainer).hide();
+		},
+		
+		resize: function (elem,_width,_height,_posX,_posY)
+		{
+			var $elem = $j(elem);
+			if (_width && _height )
+			{
+				$elem.width(_width);
+				$elem.height(_width);
+			}
+			if (_posX && _posY)
+			{
+				$elem.offset({top:_posX,left:_posY});
+			}
+				
+		}
 	});
 	
 	/**
@@ -132,7 +215,7 @@
 		 * @param {int} _sideboxStartSize sidebox start size
 		 * @param {int} _sideboxMinSize sidebox minimum size
 		 */
-		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _baseContainer, _mobileMenu)
+		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _baseContainer, _mobileMenu, _popupFrame)
 		{
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
@@ -142,6 +225,9 @@
 			$j(window).on("orientationchange",function(event){
 				self.orientation(event);
 			});
+			this.popupFrame = document.getElementById( _popupFrame);
+			this.popupFrameUi = new popupFrame(this.popupFrame);
+			
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
 			var $mobileMenu = $j(this.mobileMenu).swipe({
@@ -421,7 +507,7 @@
 			var height = this._super.apply(this, arguments);
 			height +=  jQuery('#egw_fw_sidebar').offset().top;
 			
-			return height;
+			return height+40;
 		},
 		
 		/**
@@ -444,7 +530,68 @@
 				_app.tab.setTitle(_app.displayName);
 			}
 		},
+		
+		/**
+		 * Opens popup window at the center inside an iframe
+		 * 
+		 * @param {type} _url popup url
+		 * @param {type} _windowName name of popup window
+		 * @param {type} _width width of window
+		 * @param {type} _height height of window
+		 * @param {type} _status 
+		 * @param {type} _app application which popup belongs to it
+		 * @param {type} _returnID
+		 * @returns {window} returns window
+		*/
+		egw_openWindowCentered2: function(_url, _windowName, _width, _height, _status, _app, _returnID)
+		{
+			if (typeof _returnID == 'undefined') _returnID = false;
+			var windowWidth = egw_getWindowOuterWidth();
+			var windowHeight = egw_getWindowOuterHeight();
 
+			var positionLeft = (windowWidth/2)-(_width/2)+egw_getWindowLeft();
+			var positionTop  = (windowHeight/2)-(_height/2)+egw_getWindowTop();
+
+			var navigate = false;
+			if (typeof _app != 'undefined' && _app !== false)
+			{
+				var appEntry = framework.getApplicationByName(_app);
+				if (appEntry && appEntry.browser == null)
+				{
+					navigate = true;
+					framework.applicationTabNavigate(appEntry, 'about:blank');
+				}
+			}
+			else
+			{
+				var appEntry = framework.activeApp;
+			}
+
+			framework.popupFrameUi.open(_url,_width,_height,positionLeft,positionTop);
+			
+			
+			var windowID = framework.popupFrame.contentWindow;
+			
+			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
+			windowID.egw = window.egw;
+			windowID.framework = framework;
+
+			if (navigate)
+			{
+				window.setTimeout("framework.applicationTabNavigate(framework.activeApp, framework.activeApp.indexUrl);", 500);
+			}
+
+			if (_returnID === false)
+			{
+				// return nothing
+			}
+			else
+			{
+				return windowID;
+			}
+		},
+
+		
 	});
 	
 	/**
@@ -470,7 +617,7 @@
 
 		$j(document).ready(function() {
 			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
-					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu');
+					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu', 'egw_fw_mobile_popupFrame');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
