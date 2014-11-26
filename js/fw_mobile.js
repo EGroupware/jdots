@@ -28,7 +28,7 @@
 		 * 
 		 * @returns {undefined}
 		 */
-		init: function(_a)
+		init: function()
 		{
 			this._super.apply(this,arguments);
 			var self = this;
@@ -42,7 +42,7 @@
 					}
 				})
 				.appendTo(this.headerDiv);
-		},
+		}
 	});
 	
 	/**
@@ -90,7 +90,7 @@
 						
 					}
 				},
-				allowPageScroll: "vertical",
+				allowPageScroll: "vertical"
 			});
 			// Do not attach sidebox application entries
 			$j(this.elemDiv).detach();
@@ -138,13 +138,27 @@
 	 * popup frame constructor
 	 */
 	var popupFrame = Class.extend({
-		init:function(_iframe)
-		{
-			this.popupContainer = document.getElementsByClassName('egw_fw_mobile_popup_container');
-			this.popupFrame = _iframe;
-		},
+		
 		/**
-		 * 
+		 * Constructor of popupFrame
+		 * @param {type} _wnd
+		 */
+		init:function(_wnd)
+		{
+			this.$popupContainer = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container');
+			this.$closeBtn = $j(document.createElement('span'))
+					.addClass('egw_fw_mobile_popup_close')
+					.appendTo(this.$popupContainer);
+			this.$popupFrame = $j(document.createElement('iframe'))
+					.addClass('egw_fw_mobile_popupFrame')
+					.appendTo(this.$popupContainer);
+			this.$popupContainer.appendTo('body');
+			this.windowOpener = _wnd;
+		},
+		
+		/**
+		 * Opens the iframe window as modal popup
+		 *  
 		 * @param {type} _url
 		 * @param {type} _width
 		 * @param {type} _height
@@ -155,46 +169,44 @@
 		open: function(_url,_width,_height,_posX,_posY)
 		{
 			//Open iframe with the url
-			this.popupFrame.src = _url;
+			this.$popupFrame.attr('src',_url);
 			var self = this;
-			var $popupContainer = $j(this.popupContainer);
-			//this.resize(this.popupFrame,_width,_height,_posX,_posY);
-			$j(this.popupFrame).on('load', function (){
-				
-				// set the popup toolbar position
-				$j('.egw_fw_mobile_popup_toolbar').offset({top:this.offsetTop,left:this.offsetLeft});
-				// bind click handler to close button
-				$j('#egw_fw_mobile_popup_close').click(function (){
-						self.popupFrame.contentWindow.close();
-					});
-					
-				// Overrride window close function	
-				this.contentWindow.close = $j.proxy(function ()
-				{
-					this.close();
-				},self);
-			});
-			$popupContainer.show();
 			
+
+			this.$popupFrame.on('load', 
+				//In this function we can override all popup window objects
+				function ()
+				{
+					var popupWindow = this.contentWindow;
+					var parentWindow = this.windowOpener || window;
+
+					// set the popup toolbar position
+					self.$popupFrame.offset({top:this.offsetTop,left:this.offsetLeft});
+
+					// bind click handler to close button
+					self.$closeBtn.click(function (){
+							self.$popupFrame[0].contentWindow.close();
+						});
+
+					//Set window opener
+					popupWindow.opener = parentWindow;
+
+					// Overrride window close function	
+					popupWindow.close = $j.proxy(function ()
+					{
+						this.close();
+					},self);
+				}
+			);
+			this.$popupContainer.show();
 		},
 		close: function ()
 		{
-			this.popupFrame.src = ''
-			$j(this.popupContainer).hide();
+			this.$popupContainer.detach()
 		},
 		
 		resize: function (elem,_width,_height,_posX,_posY)
 		{
-			var $elem = $j(elem);
-			if (_width && _height )
-			{
-				$elem.width(_width);
-				$elem.height(_width);
-			}
-			if (_posX && _posY)
-			{
-				$elem.offset({top:_posX,left:_posY});
-			}
 				
 		}
 	});
@@ -213,20 +225,19 @@
 		 * @param {string} _webserverUrl specifies the egroupware root url
 		 * @param {function} _sideboxSizeCallback 
 		 * @param {int} _sideboxStartSize sidebox start size
-		 * @param {int} _sideboxMinSize sidebox minimum size
+		 * @param {string} _baseContainer
+		 * @param {string} _mobileMenu
 		 */
-		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _baseContainer, _mobileMenu, _popupFrame)
+		init:function (_sidemenuId, _tabsId, _webserverUrl, _sideboxSizeCallback, _sideboxStartSize, _baseContainer, _mobileMenu)
 		{
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			var self = this;
 			
 			//Bind handler to orientation change
-			$j(window).on("orientationchange",function(event){
-				self.orientation(event);
+			$j(window).on("orientationchange",function(){
+				self.orientation();
 			});
-			this.popupFrame = document.getElementById( _popupFrame);
-			this.popupFrameUi = new popupFrame(this.popupFrame);
 			
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
@@ -320,16 +331,15 @@
 		
 		/**
 		 * Orientation on change method
-		 * @param {event} _event orientation event
 		 */
-		orientation: function (_event)
+		orientation: function ()
 		{
 			this.arrangeToolbar(this.isLandscape()?'landscape':'portrait');
 		},
 		
 		/**
 		 * Toggle sidebar menu
-		 * @param {int} _delay delaying of toggleClass
+		 * @param {string} _state 
 		 */
 		toggleMenu: function (_state)
 		{
@@ -363,7 +373,7 @@
 		getToggleMenuState: function ()
 		{
 			var $toggleMenu = $j(this.baseContainer);
-			var state = ''
+			var state = '';
 			if (typeof this.activeApp.preferences.toggleMenu!='undefined')
 			{
 				state = this.activeApp.preferences.toggleMenu;
@@ -416,7 +426,7 @@
 		 * 
 		 * @returns {undefined}
 		 */
-		loadApplications: function (apps)
+		loadApplications: function ()
 		{
 			var restore = this._super.apply(this, arguments);
 			var activeApp = '';
@@ -541,14 +551,16 @@
 		 * @param {type} _status 
 		 * @param {type} _app application which popup belongs to it
 		 * @param {type} _returnID
+		 * @param {window} _parentWnd parent window
 		 * @returns {window} returns window
+		 * 
 		*/
-		egw_openWindowCentered2: function(_url, _windowName, _width, _height, _status, _app, _returnID)
+		egw_openWindowCentered2: function(_url, _windowName, _width, _height, _status, _app, _returnID, _parentWnd)
 		{
 			if (typeof _returnID == 'undefined') _returnID = false;
 			var windowWidth = egw_getWindowOuterWidth();
 			var windowHeight = egw_getWindowOuterHeight();
-
+			var parentWindow = _parentWnd || window;
 			var positionLeft = (windowWidth/2)-(_width/2)+egw_getWindowLeft();
 			var positionTop  = (windowHeight/2)-(_height/2)+egw_getWindowTop();
 
@@ -566,15 +578,14 @@
 			{
 				var appEntry = framework.activeApp;
 			}
-
-			framework.popupFrameUi.open(_url,_width,_height,positionLeft,positionTop);
+			parentWindow.popupFrameUi = new popupFrame(parentWindow);
+			parentWindow.popupFrameUi.open(_url,_width,_height,positionLeft,positionTop);
 			
 			
-			var windowID = framework.popupFrame.contentWindow;
+			var windowID = parentWindow.popupFrameUi.$popupFrame[0].contentWindow;
 			
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 			windowID.egw = window.egw;
-			windowID.framework = framework;
 
 			if (navigate)
 			{
@@ -589,9 +600,7 @@
 			{
 				return windowID;
 			}
-		},
-
-		
+		}
 	});
 	
 	/**
@@ -617,7 +626,7 @@
 
 		$j(document).ready(function() {
 			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
-					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu', 'egw_fw_mobile_popupFrame');
+					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
