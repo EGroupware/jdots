@@ -68,7 +68,7 @@ class jdots_framework extends egw_framework
 	 */
 	public static function is_supported_user_agent()
 	{
-		if (html::$ua_mobile || html::$user_agent == 'msie' && html::$ua_version < 7)
+		if (html::$user_agent == 'msie' && html::$ua_version < 7)
 		{
 			return false;
 		}
@@ -264,7 +264,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// as the old Template class has problems if restored from the session (php-restore)
 		// todo: check if this is still true
 		$this->tpl = new Template(common::get_tpl_dir(static::APP));
-		$this->tpl->set_file(array('_head' => 'head.tpl'));
+		if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
+		{
+			$this->tpl->set_file(array('_head' => 'head_mobile.tpl'));
+		}
+		else
+		{
+			$this->tpl->set_file(array('_head' => 'head.tpl'));
+		}
 		$this->tpl->set_block('_head','head');
 		$this->tpl->set_block('_head','framework');
 
@@ -285,7 +292,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			self::validate_file('framework', 'fw', self::JS_INCLUDE_APP);
 			self::validate_file('framework', 'fw_browser', self::JS_INCLUDE_APP);
 			self::validate_file('framework', 'fw_ui', self::JS_INCLUDE_APP);
-			self::validate_file('.', 'fw_jdots', self::JS_INCLUDE_APP);
+			if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
+			{
+				self::validate_file('.', 'fw_mobile', self::JS_INCLUDE_APP);
+			}
+			else
+			{
+				self::validate_file('.', 'fw_jdots', self::JS_INCLUDE_APP);
+			}
 			self::validate_file('.', 'egw_fw_classes', self::JS_INCLUDE_APP);
 			self::validate_file('.','etemplate2','etemplate');
 
@@ -435,8 +449,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				}
 		}
 		$id = $app_data['id'] ? $app_data['id'] : ($app_data['name'] ? $app_data['name'] : $app_data['title']);
-		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'">'.
-			htmlspecialchars($alt_label ? $alt_label : $app_data['title']).'</a>';
+		$title = html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'
+			? '' : htmlspecialchars($alt_label ? $alt_label : $app_data['title']);
+		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'">'.$title.'</a>';
 	}
 
 	/**
