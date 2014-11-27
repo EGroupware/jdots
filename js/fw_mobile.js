@@ -16,16 +16,21 @@
 	egw_fw_classes;
 	egw_inheritance.js;
 */
+
+/**
+ *
+ * @param {DOMWindow} window
+ */
 (function(window){
 	/**
-	 * 
+	 *
 	 * @type @exp;fw_ui_sidemenu_entry@call;extend
 	 */
 	var mobile_ui_sidemenu_entry = fw_ui_sidemenu_entry.extend({
-		
+
 		/**
 		 * Override fw_ui_sidemenu_entry class constructor
-		 * 
+		 *
 		 * @returns {undefined}
 		 */
 		init: function()
@@ -33,15 +38,15 @@
 			this._super.apply(this,arguments);
 		}
 	});
-	
+
 	/**
-	 * 
+	 *
 	 * @type @exp;fw_ui_sidemenu@call;extend
 	 */
 	var mobile_ui_sidemenu = fw_ui_sidemenu.extend({
-		
+
 		/**
-		 * 
+		 *
 		 * @returns {undefined}
 		 */
 		init: function()
@@ -58,15 +63,15 @@
 						case "down":
 							if ($baseDiv.css('overflow') == 'hidden')
 								$baseDiv.css('overflow-y','auto');
-							break;	
+							break;
 						case "left":
 							if (distance >= 100)
 							{
 								framework.toggleMenu();
 							}
-							
+
 							break;
-						 case "right":	
+						 case "right":
 							 framework.toggleMenu();
 					}
 				},
@@ -75,8 +80,8 @@
 					switch (direction)
 					{
 
-						
-						
+
+
 					}
 				},
 				allowPageScroll: "vertical"
@@ -91,7 +96,7 @@
 		 * @param {type} _callback specifies the function which should be called when a callback is clicked
 		 * @param {type} _tag extra data
 		 * @param {type} _app application name
-		 * 
+		 *
 		 * @returns {jdots_ui_sidemenu_entry}
 		 */
 		addEntry: function(_name, _icon, _callback, _tag, _app)
@@ -112,7 +117,7 @@
 			$j(this.baseDiv).hide();
 			$j('#egw_fw_top_toolbar').hide();
 		},
-		
+
 		/**
 		 * * Show sidebar menu and top toolbar
 		 */
@@ -122,12 +127,12 @@
 			$j('#egw_fw_top_toolbar').show();
 		}
 	});
-	
+
 	/**
 	 * popup frame constructor
 	 */
 	var popupFrame = Class.extend({
-		
+
 		/**
 		 * Constructor of popupFrame
 		 * @param {type} _wnd
@@ -144,10 +149,10 @@
 			this.$container.appendTo('body');
 			this.windowOpener = _wnd;
 		},
-		
+
 		/**
 		 * Opens the iframe window as modal popup
-		 *  
+		 *
 		 * @param {type} _url
 		 * @param {type} _width
 		 * @param {type} _height
@@ -159,11 +164,11 @@
 		{
 			//Open iframe with the url
 			this.$iFrame.attr('src',_url);
-			
-			var self = this;
-			
 
-			this.$iFrame.on('load', 
+			var self = this;
+
+
+			this.$iFrame.on('load',
 				//In this function we can override all popup window objects
 				function ()
 				{
@@ -185,17 +190,18 @@
 			);
 			this.$container.show();
 		},
+
 		close: function ()
 		{
-			this.$container.detach()
+			this.$container.detach();
 		},
-		
+
 		resize: function (elem,_width,_height,_posX,_posY)
 		{
-				
+
 		}
 	});
-	
+
 	/**
 	 * mobile framework object defenition
 	 * here we can add framework methods and also override fw_base methods if it is neccessary
@@ -204,11 +210,11 @@
 	var fw_mobile = fw_base.extend({
 		/**
 		 * jdots framework constructor
-		 * 
+		 *
 		 * @param {string} _sidemenuId sidebar menu div id
 		 * @param {string} _tabsId tab area div id
 		 * @param {string} _webserverUrl specifies the egroupware root url
-		 * @param {function} _sideboxSizeCallback 
+		 * @param {function} _sideboxSizeCallback
 		 * @param {int} _sideboxStartSize sidebox start size
 		 * @param {string} _baseContainer
 		 * @param {string} _mobileMenu
@@ -218,18 +224,18 @@
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			var self = this;
-			
+
 			// Stores opened popups object
 			this.popups = [];
-			
+
 			//Bind handler to orientation change
 			$j(window).on("orientationchange",function(){
 				self.orientation();
 			});
-			
+
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
-			
+
 			//Bind the click handler to menu
 			$j(this.mobileMenu).on({
 				click:function()
@@ -237,23 +243,23 @@
 					self.toggleMenu();
 				}
 			});
-			
+
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
 				//Create the sidemenu, the tabs area
 				this.sidemenuUi = new mobile_ui_sidemenu(this.sidemenuDiv);
 				this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
-				
+
 				var egw_script = document.getElementById('egw_script_id');
 				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
 				this.loadApplications(JSON.parse(apps));
 			}
-			
+
 			this.sideboxSizeCallback(_sideboxStartSize);
 		},
-		
+
 		/**
-		 * 
+		 *
 		 * @returns {undefined}
 		 */
 		setSidebox:function()
@@ -261,10 +267,10 @@
 			this._super.apply(this,arguments);
 			this.setSidebarState(this.activeApp.preferences.toggleMenu);
 		},
-		
+
 		/**
 		 * Check if the device is in landscape orientation
-		 * 
+		 *
 		 * @returns {boolean} returns true if the device orientation is on landscape otherwise return false(protrait)
 		 */
 		isLandscape: function ()
@@ -277,10 +283,10 @@
 			}
 			return orient;
 		},
-		
+
 		/**
 		 * Arranging toolbar icons according to device orientation
-		 * 
+		 *
 		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
 		 * default value is landscape
 		 */
@@ -290,7 +296,7 @@
 			var $toolbar = $j('#egw_fw_top_toolbar');
 			//tabs container
 			var $tabs = $j('.egw_fw_ui_tabs_header');
-			
+
 			if (orientation === 'landscape')
 			{
 				$toolbar.css('height','auto');
@@ -319,7 +325,7 @@
 				}
 			}
 		},
-		
+
 		/**
 		 * Orientation on change method
 		 */
@@ -327,10 +333,10 @@
 		{
 			this.arrangeToolbar(this.isLandscape()?'landscape':'portrait');
 		},
-		
+
 		/**
 		 * Toggle sidebar menu
-		 * @param {string} _state 
+		 * @param {string} _state
 		 */
 		toggleMenu: function (_state)
 		{
@@ -345,7 +351,7 @@
 				if (!this.isLandscape()) $tabs.addClass('tabs-header-portrait-collapsed');
 				this.toggleMenuResizeHandler(collapseSize);
 				this.setToggleMenuState('off');
-				
+
 			}
 			else
 			{
@@ -355,7 +361,7 @@
 				if (!this.isLandscape()) $tabs.removeClass('tabs-header-portrait-collapsed');
 			}
 		},
-		
+
 		/**
 		 * Gets the active app toggleMenu state value
 		 *
@@ -372,11 +378,11 @@
 			else
 			{
 				state = $toggleMenu.hasClass('sidebar-toggle')?'off':'on';
-					
+
 			}
 			return state;
 		},
-		
+
 		/**
 		 * Sets toggle menu state value
 		 * @param {string} _state toggle state value, either off|on
@@ -412,9 +418,9 @@
 				this.toggleMenuResizeHandler(280);
 			}
 		},
-		
+
 		/**
-		 * 
+		 *
 		 * @returns {undefined}
 		 */
 		loadApplications: function ()
@@ -444,15 +450,15 @@
 			}
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
-		
+
 			// Transfer tabs to the sidebar
 			var $tabs = $j('.egw_fw_ui_tabs_header');
 			$tabs.appendTo(this.sidemenuDiv);
-			
+
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
 		},
-		
+
 		/**
 		 * Sets the active framework application to the application specified by _app
 		 *
@@ -461,10 +467,10 @@
 		setActiveApp: function(_app)
 		{
 			this._super.apply(this,arguments);
-			
+
 			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
 		},
-		
+
 		/**
 		 * applicationClickCallback is used internally by fw_mobile in order to handle clicks on
 		 * sideboxmenu
@@ -475,7 +481,7 @@
 		{
 			this._super.apply(this,arguments);
 		},
-		
+
 		/**
 		 * tabClickCallback is used internally by egw_fw in order to handle clicks on
 		 * a tab.
@@ -485,18 +491,18 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
-		   
+
 		   framework.setSidebarState(this.tag.preferences.toggleMenu);
 		},
-		
-		
+
+
 		toggleMenuResizeHandler:function(_size)
 		{
 			var size= _size || 280;
 			this.sideboxSizeCallback(size);
 			this.appData.browser.callResizeHandler();
 		},
-		
+
 		/**
 		 * Callback to calculate height of browser iframe or div
 		 *
@@ -507,12 +513,12 @@
 		{
 			var height = this._super.apply(this, arguments);
 			height +=  jQuery('#egw_fw_sidebar').offset().top;
-			
+
 			return height+40;
 		},
-		
+
 		/**
-		 * 
+		 *
 		 * @param {app object} _app
 		 * @param {int} _pos
 		 * Checks whether the application already owns a tab and creates one if it doesn't exist
@@ -531,20 +537,20 @@
 				_app.tab.setTitle(_app.displayName);
 			}
 		},
-		
+
 		/**
 		 * Opens popup window at the center inside an iframe
-		 * 
+		 *
 		 * @param {type} _url popup url
 		 * @param {type} _windowName name of popup window
 		 * @param {type} _width width of window
 		 * @param {type} _height height of window
-		 * @param {type} _status 
+		 * @param {type} _status
 		 * @param {type} _app application which popup belongs to it
 		 * @param {type} _returnID
 		 * @param {window} _parentWnd parent window
 		 * @returns {window} returns window
-		 * 
+		 *
 		*/
 		egw_openWindowCentered2: function(_url, _windowName, _width, _height, _status, _app, _returnID, _parentWnd)
 		{
@@ -570,15 +576,15 @@
 				var appEntry = framework.activeApp;
 			}
 			var popup = new popupFrame(parentWindow);
-			
+
 			if (typeof window.framework.popups != 'undefined')
 				window.framework.popups.push(popup);
-			
+
 			popup.open(_url,_width,_height,positionLeft,positionTop);
-			
-			
+
+
 			var windowID = popup.$iFrame[0].contentWindow;
-			
+
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 			windowID.egw = window.egw;
 
@@ -597,32 +603,48 @@
 			}
 		},
 		/**
+		 * Check if given window is a "popup" alike, returning integer or undefined if not
+		 *
+		 * @param {DOMWindow} _wnd
+		 * @returns {number|undefined}
+		 */
+		popup_idx: function(_wnd)
+		{
+			if (typeof window.framework.popups != 'undefined')
+			{
+				for (var i=0; i < window.framework.popups.length; i++)
+				{
+					if (window.framework.popups[i].$iFrame[0].contentWindow === _wnd)
+					{
+						return i;
+					}
+				}
+			}
+			return undefined;
+		},
+		/**
 		 * @param {window} _wnd window object which suppose to be closed
 		 */
 		popup_close:function (_wnd)
 		{
-			if (typeof window.framework.popups != 'undefined')
+			var i = this.popup_idx(_wnd);
+
+			if (i !== undefined)
 			{
-				for (var i=0;i < window.framework.popups.length;i++)
-				{
-					if (window.framework.popups[i].$iFrame[0].contentWindow === _wnd)
-					{
-						// Close the matched popup
-						window.framework.popups[i].close();
-						//Remove the closed popup from popups array
-						window.framework.popups.splice(i,1);
-					}
-				}
+				// Close the matched popup
+				window.framework.popups[i].close();
+				//Remove the closed popup from popups array
+				window.framework.popups.splice(i,1);
 			}
 		}
 	});
-	
-	/**
-	* Initialise mobile framework
-	* @param {int} _size width size which sidebox suppose to be open
-	* @param {boolean} _fixedFrame make either the frame fixed or resizable
-	*/
+
 	egw_LAB.wait(function() {
+		/**
+		* Initialise mobile framework
+		* @param {int} _size width size which sidebox suppose to be open
+		* @param {boolean} _fixedFrame make either the frame fixed or resizable
+		*/
 		function egw_setSideboxSize(_size,_fixedFrame)
 		{
 			var fixedFrame = _fixedFrame || false;
@@ -639,7 +661,7 @@
 		}
 
 		$j(document).ready(function() {
-			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs", 
+			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs",
 					window.egw_webserverUrl, egw_setSideboxSize, 280, 'egw_fw_basecontainer', 'egw_fw_menu');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
