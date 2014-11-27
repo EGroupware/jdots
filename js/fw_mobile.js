@@ -6,7 +6,7 @@
  * @description Create jdots mobile framework
  */
 
-"use strict";
+
 /*egw:uses
 	jquery.jquery;
 	/phpgwapi/js/jquery/TouchSwipe/jquery.touchSwipe.js;
@@ -31,17 +31,6 @@
 		init: function()
 		{
 			this._super.apply(this,arguments);
-			var self = this;
-			var $sidebarMenu = $j(document.createElement("span"));
-			$sidebarMenu
-				.addClass('egw_fw_mobile_sidebarMenu')
-				.swipe({
-					tap:function()
-					{
-						self.toggleMenu();
-					}
-				})
-				.appendTo(this.headerDiv);
 		}
 	});
 	
@@ -192,10 +181,7 @@
 					popupWindow.opener = parentWindow;
 
 					// Overrride window close function	
-					popupWindow.close = $j.proxy(function ()
-					{
-						this.close();
-					},self);
+					popupWindow.close = function(){self.close()};
 				}
 			);
 			this.$popupContainer.show();
@@ -241,12 +227,15 @@
 			
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
-			var $mobileMenu = $j(this.mobileMenu).swipe({
-				tap:function()
+			
+			//Bind the click handler to menu
+			$j(this.mobileMenu).on({
+				click:function()
 				{
 					self.toggleMenu();
 				}
 			});
+			
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
 				//Create the sidemenu, the tabs area
