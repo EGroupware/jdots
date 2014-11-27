@@ -134,14 +134,14 @@
 		 */
 		init:function(_wnd)
 		{
-			this.$popupContainer = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container');
+			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container');
 			this.$closeBtn = $j(document.createElement('span'))
 					.addClass('egw_fw_mobile_popup_close')
-					.appendTo(this.$popupContainer);
-			this.$popupFrame = $j(document.createElement('iframe'))
+					.appendTo(this.$container);
+			this.$iFrame = $j(document.createElement('iframe'))
 					.addClass('egw_fw_mobile_popupFrame')
-					.appendTo(this.$popupContainer);
-			this.$popupContainer.appendTo('body');
+					.appendTo(this.$container);
+			this.$container.appendTo('body');
 			this.windowOpener = _wnd;
 		},
 		
@@ -158,11 +158,12 @@
 		open: function(_url,_width,_height,_posX,_posY)
 		{
 			//Open iframe with the url
-			this.$popupFrame.attr('src',_url);
+			this.$iFrame.attr('src',_url);
+			
 			var self = this;
 			
 
-			this.$popupFrame.on('load', 
+			this.$iFrame.on('load', 
 				//In this function we can override all popup window objects
 				function ()
 				{
@@ -170,25 +171,23 @@
 					var parentWindow = this.windowOpener || window;
 
 					// set the popup toolbar position
-					self.$popupFrame.offset({top:this.offsetTop,left:this.offsetLeft});
+					self.$iFrame.offset({top:this.offsetTop,left:this.offsetLeft});
 
 					// bind click handler to close button
 					self.$closeBtn.click(function (){
-							self.$popupFrame[0].contentWindow.close();
+							self.$iFrame[0].contentWindow.close();
 						});
 
 					//Set window opener
 					popupWindow.opener = parentWindow;
 
-					// Overrride window close function	
-					popupWindow.close = function(){self.close()};
 				}
 			);
-			this.$popupContainer.show();
+			this.$container.show();
 		},
 		close: function ()
 		{
-			this.$popupContainer.detach()
+			this.$container.detach()
 		},
 		
 		resize: function (elem,_width,_height,_posX,_posY)
@@ -219,6 +218,9 @@
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			var self = this;
+			
+			// Stores opened popups object
+			this.popups = [];
 			
 			//Bind handler to orientation change
 			$j(window).on("orientationchange",function(){
@@ -567,11 +569,15 @@
 			{
 				var appEntry = framework.activeApp;
 			}
-			parentWindow.popupFrameUi = new popupFrame(parentWindow);
-			parentWindow.popupFrameUi.open(_url,_width,_height,positionLeft,positionTop);
+			var popup = new popupFrame(parentWindow);
+			
+			if (typeof window.framework.popups != 'undefined')
+				window.framework.popups.push(popup);
+			
+			popup.open(_url,_width,_height,positionLeft,positionTop);
 			
 			
-			var windowID = parentWindow.popupFrameUi.$popupFrame[0].contentWindow;
+			var windowID = popup.$iFrame[0].contentWindow;
 			
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 			windowID.egw = window.egw;
@@ -588,6 +594,25 @@
 			else
 			{
 				return windowID;
+			}
+		},
+		/**
+		 * @param {window} _wnd window object which suppose to be closed
+		 */
+		popup_close:function (_wnd)
+		{
+			if (typeof window.framework.popups != 'undefined')
+			{
+				for (var i=0;i < window.framework.popups.length;i++)
+				{
+					if (window.framework.popups[i].$iFrame[0].contentWindow === _wnd)
+					{
+						// Close the matched popup
+						window.framework.popups[i].close();
+						//Remove the closed popup from popups array
+						window.framework.popups.splice(i,1);
+					}
+				}
 			}
 		}
 	});
