@@ -167,7 +167,10 @@
 
 			var self = this;
 
-
+			// bind click handler to close button
+			this.$closeBtn.click(function (){
+				self.close(framework.popup_idx(self.$iFrame[0].contentWindow));
+			});
 			this.$iFrame.on('load',
 				//In this function we can override all popup window objects
 				function ()
@@ -178,11 +181,6 @@
 					// set the popup toolbar position
 					self.$iFrame.offset({top:this.offsetTop,left:this.offsetLeft});
 
-					// bind click handler to close button
-					self.$closeBtn.click(function (){
-							self.$iFrame[0].contentWindow.close();
-						});
-
 					//Set window opener
 					popupWindow.opener = parentWindow;
 
@@ -190,10 +188,16 @@
 			);
 			this.$container.show();
 		},
-
-		close: function ()
+		/**
+		 * Close popup
+		 * @param {type} _idx remove the given popup index from the popups array
+		 * @returns {undefined}
+		 */
+		close: function (_idx)
 		{
 			this.$container.detach();
+			//Remove the closed popup from popups array
+			window.framework.popups.splice(_idx,1);
 		},
 
 		resize: function (elem,_width,_height,_posX,_posY)
@@ -632,9 +636,7 @@
 			if (i !== undefined)
 			{
 				// Close the matched popup
-				window.framework.popups[i].close();
-				//Remove the closed popup from popups array
-				window.framework.popups.splice(i,1);
+				window.framework.popups[i].close(i);
 			}
 		}
 	});
