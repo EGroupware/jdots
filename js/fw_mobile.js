@@ -171,16 +171,21 @@
 			this.$closeBtn.click(function (){
 				self.close(framework.popup_idx(self.$iFrame[0].contentWindow));
 			});
+			var prop = {
+				width:_width,
+				height:_height,
+				"margin-top":_posY,
+				"margin-left":_posX
+			}
+			// set the popup position and size
+			this.$iFrame.css(prop);
 			this.$iFrame.on('load',
 				//In this function we can override all popup window objects
 				function ()
 				{
 					var popupWindow = this.contentWindow;
 					var parentWindow = this.windowOpener || window;
-
-					// set the popup toolbar position
-					self.$iFrame.offset({top:this.offsetTop,left:this.offsetLeft});
-
+					
 					//Set window opener
 					popupWindow.opener = parentWindow;
 
@@ -199,10 +204,16 @@
 			//Remove the closed popup from popups array
 			window.framework.popups.splice(_idx,1);
 		},
-
-		resize: function (elem,_width,_height,_posX,_posY)
+		
+		/**
+		 * Resize the iFrame popup
+		 * @param {type} _width actuall width
+		 * @param {type} _height actuall height
+		 */
+		resize: function (_width,_height)
 		{
-
+			//As we can not calculate the delta value, add 30 px as delta
+			this.$iFrame.css({width:_width+30,	height:_height+30});
 		}
 	});
 
@@ -265,7 +276,7 @@
 			var fullScreen = this.isNotFullScreen()
 			if (fullScreen) egw.message(fullScreen,'info');
 		},
-
+		
 		/**
 		 *
 		 * @returns {undefined}
@@ -562,12 +573,11 @@
 		openPopup: function(_url, _width, _height, _windowName, _app, _returnID, _status, _parentWnd)
 		{
 			if (typeof _returnID == 'undefined') _returnID = false;
-			var windowWidth = egw_getWindowOuterWidth();
-			var windowHeight = egw_getWindowOuterHeight();
-			var parentWindow = _parentWnd || window;
-			var positionLeft = (windowWidth/2)-(_width/2)+egw_getWindowLeft();
-			var positionTop  = (windowHeight/2)-(_height/2)+egw_getWindowTop();
-
+			
+			var $wnd = jQuery(_parentWnd.top);
+			var positionLeft = ($wnd.outerWidth()/2)-(_width/2)+_parentWnd.screenX;
+			var positionTop  = ($wnd.outerHeight()/2)-(_height/2)+_parentWnd.screenY;
+			
 			var navigate = false;
 			if (typeof _app != 'undefined' && _app !== false)
 			{
@@ -582,7 +592,7 @@
 			{
 				var appEntry = framework.activeApp;
 			}
-			var popup = new popupFrame(parentWindow);
+			var popup = new popupFrame(_parentWnd);
 
 			if (typeof window.framework.popups != 'undefined')
 				window.framework.popups.push(popup);
@@ -643,6 +653,15 @@
 			}
 		},
 		
+		resize_popup: function (_w,_h, _wnd)
+		{
+			var i = this.popup_idx(_wnd);
+			if (i !== undefined)
+			{
+				// resize the matched popup
+				window.framework.popups[i].resize(_w,_h);
+			}
+		},
 		/**
 		 * Check if the framework is not running in fullScreen mode
 		 * @returns {boolean|string} returns recommendation message if the app is not running in fullscreen mode otherwise false
