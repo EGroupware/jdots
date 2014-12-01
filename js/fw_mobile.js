@@ -260,6 +260,10 @@
 			}
 
 			this.sideboxSizeCallback(_sideboxStartSize);
+			
+			// Check if user runs the app in full screen or not, then prompt user base on the mode
+			var fullScreen = this.isNotFullScreen()
+			if (fullScreen) egw.message(fullScreen,'info');
 		},
 
 		/**
@@ -636,6 +640,43 @@
 			{
 				// Close the matched popup
 				window.framework.popups[i].close(i);
+			}
+		},
+		
+		/**
+		 * Check if the framework is not running in fullScreen mode
+		 * @returns {boolean|string} returns recommendation message if the app is not running in fullscreen mode otherwise false
+		 */
+		isNotFullScreen: function ()
+		{
+			var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+			//  iOS and safari
+			if( userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i ) )
+			{
+				if (navigator.standalone)
+				{
+					return false;
+				}
+				else
+				{
+					return egw.lang('For better experience please install mobile template in your device: tap on safari share button and then select Add to Home Screen');
+				}
+			}
+			// Android and chrome
+			else if (userAgent.match(/android/i))
+			{
+				if (screen.height - window.outerHeight < 40)
+				{
+					return false;
+				}
+				else
+				{
+					return egw.lang('For better experience please install mobile template in your device: tap on chrome setting and then select Add to Home Screen');
+				}
+			}
+			else
+			{
+				// Other platforms
 			}
 		}
 	});
