@@ -543,20 +543,19 @@
 		},
 
 		/**
-		 * Opens popup window at the center inside an iframe
+		 * Open a (centered) popup window with given size and url as iframe
 		 *
-		 * @param {type} _url popup url
-		 * @param {type} _windowName name of popup window
-		 * @param {type} _width width of window
-		 * @param {type} _height height of window
-		 * @param {type} _status
-		 * @param {type} _app application which popup belongs to it
-		 * @param {type} _returnID
-		 * @param {window} _parentWnd parent window
-		 * @returns {window} returns window
-		 *
-		*/
-		egw_openWindowCentered2: function(_url, _windowName, _width, _height, _status, _app, _returnID, _parentWnd)
+		 * @param {string} _url
+		 * @param {number} _width
+		 * @param {number} _height
+		 * @param {string} _windowName or "_blank"
+		 * @param {string|boolean} _app app-name for framework to set correct opener or false for current app
+		 * @param {boolean} _returnID true: return window, false: return undefined
+		 * @param {string} _status "yes" or "no" to display status bar of popup
+		 * @param {DOMWindow} _parentWnd parent window
+		 * @returns {DOMWindow|undefined}
+		 */
+		openPopup: function(_url, _width, _height, _windowName, _app, _returnID, _status, _parentWnd)
 		{
 			if (typeof _returnID == 'undefined') _returnID = false;
 			var windowWidth = egw_getWindowOuterWidth();
@@ -586,11 +585,11 @@
 
 			popup.open(_url,_width,_height,positionLeft,positionTop);
 
-
 			var windowID = popup.$iFrame[0].contentWindow;
 
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
 			windowID.egw = window.egw;
+			windowID.framework = this;
 
 			if (navigate)
 			{
