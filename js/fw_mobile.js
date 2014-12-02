@@ -139,10 +139,7 @@
 		 */
 		init:function(_wnd)
 		{
-			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container');
-			this.$closeBtn = $j(document.createElement('span'))
-					.addClass('egw_fw_mobile_popup_close')
-					.appendTo(this.$container);
+			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container egw_fw_mobile_popup_loader');
 			this.$iFrame = $j(document.createElement('iframe'))
 					.addClass('egw_fw_mobile_popupFrame')
 					.appendTo(this.$container);
@@ -167,32 +164,34 @@
 
 			var self = this;
 
-			// bind click handler to close button
-			this.$closeBtn.click(function (){
-				self.close(framework.popup_idx(self.$iFrame[0].contentWindow));
-			});
-			var prop = {
-				width:_width,
-				height:_height,
-				"margin-top":_posY,
-				"margin-left":_posX
-			}
-			// set the popup position and size
-			this.$iFrame.css(prop);
 			this.$iFrame.on('load',
 				//In this function we can override all popup window objects
 				function ()
 				{
 					var popupWindow = this.contentWindow;
-					var parentWindow = this.windowOpener || window;
-					
-					//Set window opener
-					popupWindow.opener = parentWindow;
-
+					var $closeBtn = $j(document.createElement('span')).addClass('egw_fw_mobile_popup_close');
+					var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
+					if ($appHeader.length > 0)
+					{
+						//Make sure iFrame is loaded
+						setTimeout(
+							function()
+							{
+								$appHeader
+									.removeClass('onlyPrint')
+									.addClass('egw_fw_mobile_popup_appHeader')
+									.prepend($closeBtn);
+								$closeBtn.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
+								self.$container.removeClass('egw_fw_mobile_popup_loader');
+								self.$iFrame.slideDown();
+							}
+						,800);
+					}
 				}
 			);
 			this.$container.show();
-		},
+			
+		},	
 		/**
 		 * Close popup
 		 * @param {type} _idx remove the given popup index from the popups array
@@ -658,8 +657,7 @@
 			var i = this.popup_idx(_wnd);
 			if (i !== undefined)
 			{
-				// resize the matched popup
-				window.framework.popups[i].resize(_w,_h);
+				//Here we can call popup resize
 			}
 		},
 		/**
