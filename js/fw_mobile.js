@@ -181,6 +181,7 @@
 									.removeClass('onlyPrint')
 									.addClass('egw_fw_mobile_popup_appHeader')
 									.prepend($closeBtn);
+								if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
 								$closeBtn.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
 								self.$container.removeClass('egw_fw_mobile_popup_loader');
 								self.$iFrame.slideDown();
