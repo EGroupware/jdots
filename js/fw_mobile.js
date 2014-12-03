@@ -530,9 +530,25 @@
 		getIFrameHeight: function(_iframe)
 		{
 			var height = this._super.apply(this, arguments);
+			if (_iframe)
+			{
+				height +=25;
+			}
 			height +=  jQuery('#egw_fw_sidebar').offset().top;
-
-			return height+40;
+			
+			// fullScreen iOS need to be set with different height as safari adds an extra bottom border
+			if (this.getUserAgent() === 'iOS' && !this.isNotFullScreen())
+			{
+				height +=5;
+			}
+			else
+			{
+				height +=20;
+			}
+			
+			if (!this.isLandscape()) return height - 30;
+			
+			return height;
 		},
 
 		/**
@@ -666,35 +682,51 @@
 		 */
 		isNotFullScreen: function ()
 		{
+			switch (this.getUserAgent())
+			{
+				case 'iOS':
+					if (navigator.standalone)
+					{
+						$j(this.baseContainer).css({top:20});
+						return false;
+					}
+					else
+					{
+						return egw.lang('For better experience please install mobile template in your device: tap on safari share button and then select Add to Home Screen');
+					}
+					break;
+				case 'android':
+					if (screen.height - window.outerHeight < 40)
+					{
+						return false;
+					}
+					else
+					{
+						return egw.lang('For better experience please install mobile template in your device: tap on chrome setting and then select Add to Home Screen');
+					}
+				case 'unknown':
+					
+			}
+		},
+		
+		/**
+		 * get the device platform
+		 * @returns {string} returns device platform name
+		 */
+		getUserAgent: function ()
+		{
 			var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 			//  iOS and safari
 			if( userAgent.match( /iPad/i ) || userAgent.match( /iPhone/i ) || userAgent.match( /iPod/i ) )
 			{
-				if (navigator.standalone)
-				{
-					return false;
-				}
-				else
-				{
-					return egw.lang('For better experience please install mobile template in your device: tap on safari share button and then select Add to Home Screen');
-				}
+				return 'iOS'; 
 			}
-			// Android and chrome
-			else if (userAgent.match(/android/i))
+			// Android
+			if (userAgent.match(/android/i))
 			{
-				if (screen.height - window.outerHeight < 40)
-				{
-					return false;
-				}
-				else
-				{
-					return egw.lang('For better experience please install mobile template in your device: tap on chrome setting and then select Add to Home Screen');
-				}
+				return 'android';
 			}
-			else
-			{
-				// Other platforms
-			}
+			return 'unknown'
 		}
 	});
 
