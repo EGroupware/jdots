@@ -181,7 +181,6 @@
 								// Extend the dialog to 100% width
 								$et2_container.css({width:'100%'});
 								$appHeader
-									.removeClass('onlyPrint')
 									.addClass('egw_fw_mobile_popup_appHeader')
 									.prepend($closeBtn);
 								if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
