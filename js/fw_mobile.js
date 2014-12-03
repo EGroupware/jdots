@@ -171,12 +171,15 @@
 					var popupWindow = this.contentWindow;
 					var $closeBtn = $j(document.createElement('span')).addClass('egw_fw_mobile_popup_close');
 					var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
+					var $et2_container = $j(popupWindow.document).find('.et2_container');
 					if ($appHeader.length > 0)
 					{
 						//Make sure iFrame is loaded
 						setTimeout(
 							function()
 							{
+								// Extend the dialog to 100% width
+								$et2_container.css({width:'100%'});
 								$appHeader
 									.removeClass('onlyPrint')
 									.addClass('egw_fw_mobile_popup_appHeader')
