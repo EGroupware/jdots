@@ -537,6 +537,22 @@
 			if (_iframe)
 			{
 				height +=25;
+				
+				// Fix for iFrame Scrollbar for iOS
+				// ATM safari does not support regular scrolling content insdie an iframe, therefore
+				// we need to wrap them all with a div and apply overflow:scroll
+				if (this.getUserAgent() === 'iOS')
+				{
+					var $body =  $j(_iframe.contentWindow.document).find('body');
+					if ($body.children().length >1)
+					{
+						$body.children().wrapAll('<div style="height:100%;overflow:scroll;"></div>');
+					}
+					else if ($body.children().length == 1 && !$body.children().css('overflow') === 'scroll')
+					{
+						$body.children().css({overflow:'auto',height:'100%'});
+					}
+				}
 			}
 			height +=  jQuery('#egw_fw_sidebar').offset().top;
 			
