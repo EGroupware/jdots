@@ -1,9 +1,9 @@
 /**
- * eGroupware jdots mobile framework object
+ * eGroupware mobile framework object
  * @package framework
  * @author Hadi Nategh <hn@stylite.de>
  * @copyright Stylite AG 2014
- * @description Create jdots mobile framework
+ * @description Create mobile framework
  */
 
 
@@ -97,7 +97,7 @@
 		 * @param {type} _tag extra data
 		 * @param {type} _app application name
 		 *
-		 * @returns {jdots_ui_sidemenu_entry}
+		 * @returns {mobile_ui_sidemenu_entry}
 		 */
 		addEntry: function(_name, _icon, _callback, _tag, _app)
 		{
@@ -186,9 +186,9 @@
 								if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
 								$closeBtn.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
 								self.$container.removeClass('egw_fw_mobile_popup_loader');
-								self.$iFrame.slideDown();
+								self.$iFrame.show();
 							}
-						,800);
+						,1);
 					}
 				}
 			);
@@ -226,7 +226,7 @@
 	 */
 	var fw_mobile = fw_base.extend({
 		/**
-		 * jdots framework constructor
+		 * Mobile framework constructor
 		 *
 		 * @param {string} _sidemenuId sidebar menu div id
 		 * @param {string} _tabsId tab area div id
@@ -746,6 +746,25 @@
 				return 'android';
 			}
 			return 'unknown'
+		},
+		
+		/**
+		 * Calculate the excess height available on popup frame. The excess height will be use in etemplate2 resize handler
+		 * 
+		 * @param {type} _wnd current window
+		 * @returns {Number} excess height
+		 */
+		get_wExcessHeight: function (_wnd)
+		{
+			var $popup = $j(_wnd.document);
+			var $appHeader = $popup.find('#divAppboxHeader');
+
+			//Calculate the excess height
+			var excess_height = egw(_wnd).is_popup()? $j(_wnd).height() - $popup.find('#popupMainDiv').height() - $appHeader.outerHeight()+10: false;
+			// Recalculate excess height if the appheader is shown, e.g. mobile framework dialogs
+			if ($appHeader.length > 0 && $appHeader.is(':visible')) excess_height -= $appHeader.outerHeight()-9;
+			
+			return excess_height; 
 		}
 	});
 
