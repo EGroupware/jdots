@@ -300,7 +300,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			}
 			else
 			{
-				self::validate_file('.', 'fw_jdots', self::JS_INCLUDE_APP);
+				self::validate_file('.', 'fw_'.static::APP, static::JS_INCLUDE_APP);
 			}
 			self::validate_file('.', 'egw_fw_classes', self::JS_INCLUDE_APP);
 			self::validate_file('.','etemplate2','etemplate');
