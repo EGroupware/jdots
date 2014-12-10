@@ -179,6 +179,9 @@
 						$appHeader.addClass('egw_fw_mobile_popup_appHeader').prepend($closeBtn);
 					}			
 				}
+				
+				//Remove the loading class
+				self.$container.removeClass('egw_fw_mobile_popup_loader');
 			});
 			
 			
