@@ -163,32 +163,38 @@
 			this.$iFrame.attr('src',_url);
 
 			var self = this;
-
+			
+			//After the popup is fully loaded
+			this.$iFrame.on('onpopupload', function (){
+				var popupWindow = this.contentWindow;
+				var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
+				var $closeBtn = $appHeader.find('.egw_fw_mobile_popup_close');
+				if ($closeBtn.length  == 0)
+				{
+					$closeBtn =  $j(document.createElement('span'))
+										.addClass('egw_fw_mobile_popup_close')
+										.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
+					if ($appHeader.length > 0)
+					{
+						$appHeader.addClass('egw_fw_mobile_popup_appHeader').prepend($closeBtn);
+					}			
+				}
+			});
+			
+			
 			this.$iFrame.on('load',
 				//In this function we can override all popup window objects
 				function ()
 				{
 					var popupWindow = this.contentWindow;
-					var $closeBtn = $j(document.createElement('span')).addClass('egw_fw_mobile_popup_close');
 					var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
 					var $et2_container = $j(popupWindow.document).find('.et2_container');
 					if ($appHeader.length > 0)
 					{
-						//Make sure iFrame is loaded
-						setTimeout(
-							function()
-							{
-								// Extend the dialog to 100% width
-								$et2_container.css({width:'100%'});
-								$appHeader
-									.addClass('egw_fw_mobile_popup_appHeader')
-									.prepend($closeBtn);
-								if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
-								$closeBtn.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
-								self.$container.removeClass('egw_fw_mobile_popup_loader');
-								self.$iFrame.show();
-							}
-						,1);
+						// Extend the dialog to 100% width
+						$et2_container.css({width:'100%', height:'100%'});
+						if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
+						self.$iFrame.show();
 					}
 				}
 			);
@@ -765,6 +771,25 @@
 			if ($appHeader.length > 0 && $appHeader.is(':visible')) excess_height -= $appHeader.outerHeight()-9;
 			
 			return excess_height; 
+		},
+		
+		/**
+		 * Function runs after etemplate is fully loaded
+		 * - Triggers onpopupload framework popup's event
+		 * 
+		 * @param {type} _wnd local window
+		 */
+		et2_loadingFinished: function (_wnd)
+		{
+			if (typeof this.popups != 'undefined' && this.popups.length > 0)
+			{
+				var i = this.popup_idx(_wnd);
+				if (i !== undefined)
+				{
+					//Trigger onpopupload event for the current popup
+					window.framework.popups[i].$iFrame.trigger('onpopupload');
+				}
+			}
 		}
 	});
 
