@@ -276,12 +276,7 @@
 			
 			// Check if user runs the app in full screen or not, then prompt user base on the mode
 			var fullScreen = this.isNotFullScreen()
-			
-			// ATM switch message type of fullscreen message to type success,
-			// because click handler on message seems not working on iOS
-			// @TODO: Figuring out why click handler just not working on message
-			// for iOS and replace the success type with info
-			if (fullScreen) egw.message(fullScreen,'success');
+			if (fullScreen) egw.message(fullScreen,'info');
 		},
 		
 		/**
