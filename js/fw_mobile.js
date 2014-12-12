@@ -199,6 +199,8 @@
 						if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $appHeader.addClass('egw_fw_mobile_iOS_popup_appHeader');
 						self.$iFrame.show();
 					}
+					// Set the popup opener
+					popupWindow.opener = self.windowOpener;
 				}
 			);
 			this.$container.show();
