@@ -65,7 +65,7 @@
 								$baseDiv.css('overflow-y','auto');
 							break;
 						case "left":
-							if (distance >= 100)
+							if (distance >= 10)
 							{
 								framework.toggleMenu();
 							}
@@ -392,6 +392,10 @@
 				this.setToggleMenuState('on');
 				if (!this.isLandscape()) $tabs.removeClass('tabs-header-portrait-collapsed');
 			}
+			
+			//Audio effect for toggleMenu
+			var audio = $j('#egw_fw_menuAudioTag');
+			if (egw.preference('audio_effect','common') == '1')	audio[0].play();
 		},
 
 		/**
