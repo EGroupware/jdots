@@ -266,6 +266,13 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		$this->tpl = new Template(common::get_tpl_dir(static::APP));
 		if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 		{
+			// if we are not on pixelegg template, switch to it for this session
+			// otherwise we get an error: template head_mobile.tpl not found!
+			if (static::APP != 'pixelegg')
+			{
+				$GLOBALS['egw']->preferences->add('common', 'template_set', 'pixelegg', 'session');
+				egw::redirect_link('/index.php');
+			}
 			$this->tpl->set_file(array('_head' => 'head_mobile.tpl'));
 		}
 		else
