@@ -142,7 +142,6 @@
 			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container egw_fw_mobile_popup_loader');
 			this.$iFrame = $j(document.createElement('iframe'))
 					.addClass('egw_fw_mobile_popupFrame')
-					.hide()
 					.appendTo(this.$container);
 			this.$container.appendTo('body');
 			this.windowOpener = _wnd;
@@ -183,7 +182,7 @@
 				
 				//Remove the loading class
 				self.$container.removeClass('egw_fw_mobile_popup_loader');
-				self.$iFrame.show();
+				self.$iFrame.css({visibility:'visible'});
 			});
 			
 			
