@@ -870,7 +870,7 @@
 
 		$j(document).ready(function() {
 			window.framework = new fw_mobile("egw_fw_sidemenu", "egw_fw_tabs",
-					window.egw_webserverUrl, egw_setSideboxSize, 350, 'egw_fw_basecontainer', 'egw_fw_menu');
+					window.egw_webserverUrl, egw_setSideboxSize, 300, 'egw_fw_basecontainer', 'egw_fw_menu');
 			window.callManual = window.framework.callManual;
 			jQuery('#egw_fw_print').click(function(){window.framework.print();});
 			jQuery('#egw_fw_logout').click(function(){ window.framework.redirect(this.getAttribute('data-logout-url')); });
