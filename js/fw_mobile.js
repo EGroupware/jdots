@@ -534,6 +534,14 @@
 				// Do not load the apps which are not in the navbar
 				if (app_navbar_lookup(app)) this.applicationTabNavigate(restore[app].app, restore[app].url, app == activeApp?false:true,-1);
 			}
+			// Check if there is no activeApp active the Home app if exist
+			// otherwise the first app in the list
+			if (activeApp =="" || !activeApp)
+			{
+				this.setActiveApp(typeof this.applications.home !='undefined'?
+					this.applications.home:this.applications[Object.keys(this.applications)[0]]);
+			}
+
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
 
