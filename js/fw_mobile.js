@@ -149,6 +149,7 @@
 			var $closeBtn = $j(document.createElement('span'))
 				.addClass('egw_fw_mobile_popup_close')
 				.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
+			if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $closeBtn.css({top:"15px"});
 			this.$container.prepend($closeBtn);
 			
 			this.windowOpener = _wnd;
@@ -378,6 +379,7 @@
 		 */
 		orientation: function ()
 		{
+			if (!this.isLandscape()) this.toggleMenu('on');
 			this.arrangeToolbar(this.isLandscape()?'landscape':'portrait');
 
 		},
