@@ -28,7 +28,7 @@ class jdots_framework extends egw_framework
 	/**
 	 * Minimum width of sidebar eg. from German 2-letter daynames in Calendar
 	 *
-	 * Need to be changed in js/egw_fw.js around line 1536 too!
+	 * Need to be changed in js/fw_[template].js.
 	 */
 	const MIN_SIDEBAR_WIDTH = 215;
 	/**
@@ -112,16 +112,6 @@ class jdots_framework extends egw_framework
 	}
 
 
-	/**
-	 * Sets the sidebox width accoringly to the app_specific_sidebar_width setting, either
-     * in the current application or globaly
-	 */
-	private static function set_sidebar_width($app, $val)
-	{
-		$GLOBALS['egw']->preferences->read_repository();
-		$GLOBALS['egw']->preferences->change($app, 'jdotssideboxwidth', $val);
-		$GLOBALS['egw']->preferences->save_repository(True);
-	}
 
 	/**
 	 * Extract applicaton name from given url (incl. GET parameters)
