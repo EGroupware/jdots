@@ -517,4 +517,93 @@ html, body {
 	font-size: 9pt;
 	font-weight: bold;
 }
-
+/* Toggle Sidebar*/
+#egw_fw_sidebar #egw_fw_toggler {
+	display: block;
+	width: 28px;
+	height: 30px;
+	position: relative;
+	z-index: 1;
+	margin-top: 0;
+	margin-bottom: -30px;
+	float: right;
+	margin-right: 5px;
+}
+#egw_fw_sidebar #egw_fw_toggler span {
+	background-color: transparent;
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 5px;
+	backface-visibility: hidden;
+	border-radius: 2px;
+	top: 11px;
+	margin-left: 5px;
+}
+#egw_fw_sidebar #egw_fw_toggler span:before {
+	transition-duration: 0.7s;
+	transform: rotate(145deg) translate(8px, -2px);
+	background-color: black;
+}
+#egw_fw_sidebar #egw_fw_toggler span:before,
+#egw_fw_sidebar #egw_fw_toggler span:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: -9px;
+	width: 12px;
+	height: 3px;
+	background-color:black;
+	backface-visibility: hidden;
+	border-radius: 2px;
+}
+#egw_fw_sidebar #egw_fw_toggler span:after {
+	top: 9px;
+	transition-duration: 0.7s;
+	transform: rotate(-145deg) translate(8px, 2px);
+	background-color: black;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler {
+	margin: 1px auto 4px;
+	float: none;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler span {
+	background-color: #E0E0E0;
+	transition: all 0.3s;
+	margin:0;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler span:before,
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler span:after {
+	transform: none;
+	width: 100%;
+	height: 5px;
+	background-color: #E0E0E0;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler:hover span {
+	background-color: #E0E0E0;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler:hover span:before {
+	background-color: #E0E0E0;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn #egw_fw_toggler:hover span:after {
+	background-color: #E0E0E0;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn .egw_fw_ui_sidemenu_entry_content {
+	display: none !important;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn .egw_fw_ui_sidemenu_entry_header_active {
+	width: auto !important;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn .egw_fw_ui_sidemenu_entry_header {
+	width: 50px;
+	height: 27px;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn .egw_fw_ui_sidemenu_entry_header h1 {
+	visibility: hidden;
+}
+#egw_fw_sidebar .egw_fw_sidebar_toggleOn .egw_fw_ui_sidemenu_entry_header img {
+	margin: 4px auto 0px !important;
+	padding: 0 !important;
+	float: none !important;
+	display: block !important;
+}
