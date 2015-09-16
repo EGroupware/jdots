@@ -253,16 +253,8 @@ html, body {
 	font-size: 10pt;
 	font-weight: bold;
 }
-.egw_fw_ui_sidemenu_entry_header_active h1 {
-	background-image: url(images/reload.png);
-	background-repeat: no-repeat;
-	background-size: 16px;
-	background-position-x: 74%;
-	background-position-y: 60%;
-	background-position: 74%;
-	width: 100%;
-	display: block;
-	margin: 3px;
+.egw_fw_ui_sidemenu_entry_header_active:hover img{
+	content:url(images/reload.png);
 }
 .egw_fw_ui_sidemenu_entry_header_active h1:active {
 	background-image: url(images/ajax-loader.gif) !important;
@@ -555,7 +547,7 @@ html, body {
 	backface-visibility: hidden;
 	border-radius: 2px;
 	top: 11px;
-	margin-left: 5px;
+	margin-left: 15px;
 }
 #egw_fw_sidebar #egw_fw_toggler span:before {
 	transition-duration: 0.7s;
