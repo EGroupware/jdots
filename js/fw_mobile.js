@@ -77,10 +77,10 @@
 				},
 				swipeStatus:function(event, phase, direction, distance, duration, fingers)
 				{
-					switch (direction)
+					switch (phase)
 					{
-
-
+						case "move":
+							//TODO: implement smooth swip
 
 					}
 				},
@@ -263,12 +263,13 @@
 			
 			// The size that sidebox should be opened with
 			this.sideboxSize = _sideboxStartSize;
-
+			
+			this.sideboxCollapsedSize = egwIsMobile()?1:72;
 			//Bind handler to orientation change
 			$j(window).on("orientationchange",function(){
 				self.orientation();
 			});
-
+			
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
 
@@ -339,33 +340,9 @@
 			//tabs container
 			var $tabs = $j('.egw_fw_ui_tabs_header');
 
-			if (orientation === 'landscape')
-			{
-				$toolbar.css('height','auto');
-				this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?72:this.sideboxSize);
-				$tabs.appendTo('#egw_fw_sidemenu');
-				// Remove tabs header portriat's specific styles
-				$tabs.removeClass('tabs-header-portrait-collapsed');
-			}
-			else
-			{
-				$toolbar.css('height','60px');
-				$tabs.appendTo($toolbar);
-				this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?1:this.sideboxSize);
-				if (this.getToggleMenuState() === "off")
-				{
-					$tabs.addClass('tabs-header-portrait-collapsed');
-				}
-				else
-				{
-					$tabs.removeClass('tabs-header-portrait-collapsed');
-				}
-				//Tabs are scrollable
-				if ($tabs[0].scrollHeight > $tabs.height())
-				{
-					$tabs.addClass('egw-fw-tabs-scrollable');
-				}
-			}
+			$toolbar.css('height','auto');
+			this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?this.sideboxCollapsedSize:this.sideboxSize);
+			$tabs.appendTo('#egw_fw_sidemenu');
 		},
 
 		/**
@@ -385,14 +362,13 @@
 		toggleMenu: function (_state)
 		{
 			var state = _state || this.getToggleMenuState();
-			var collapseSize = this.isLandscape()?72:1;
+			var collapseSize = this.sideboxCollapsedSize;
 			var expandSize = this.sideboxSize;
 			var $toggleMenu = $j(this.baseContainer);
 			var $tabs =  $j('.egw_fw_ui_tabs_header');
 			if (state === 'on')
 			{
 				$toggleMenu.addClass('sidebar-toggle');
-				if (!this.isLandscape()) $tabs.addClass('tabs-header-portrait-collapsed');
 				this.toggleMenuResizeHandler(collapseSize);
 				this.setToggleMenuState('off');
 
@@ -402,7 +378,6 @@
 				$toggleMenu.removeClass('sidebar-toggle');
 				this.toggleMenuResizeHandler(expandSize);
 				this.setToggleMenuState('on');
-				if (!this.isLandscape()) $tabs.removeClass('tabs-header-portrait-collapsed');
 			}
 
 			//Audio effect for toggleMenu
@@ -419,7 +394,7 @@
 		{
 			var $toggleMenu = $j(this.baseContainer);
 			var state = '';
-			if (typeof this.activeApp.preferences.toggleMenu!='undefined')
+			if (this.activeApp && typeof this.activeApp.preferences.toggleMenu!='undefined')
 			{
 				state = this.activeApp.preferences.toggleMenu;
 			}
@@ -458,7 +433,7 @@
 			if (_state === 'off')
 			{
 				$toggleMenu.addClass('sidebar-toggle');
-				this.toggleMenuResizeHandler(72);
+				this.toggleMenuResizeHandler(this.sideboxCollapsedSize);
 			}
 			else
 			{
@@ -545,7 +520,15 @@
 
 			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
 		},
-
+		
+		/**
+		 * Keep the last opened tab as an active tab for the first time login
+		 */
+		storeTabsStatus: function ()
+		{
+		
+		},
+		
 		/**
 		 * applicationClickCallback is used internally by fw_mobile in order to handle clicks on
 		 * sideboxmenu
@@ -617,7 +600,7 @@
 			}
 			else
 			{
-				height +=20;
+				height +=30;
 			}
 
 			if (!this.isLandscape()) return height - 30;
@@ -860,7 +843,7 @@
 				frameSize = 0;
 				sidebar.style.zIndex = 999;
 			}
-			mainFrame.style.marginLeft = frameSize + 'px';
+			if (frameSize <= 72 || screen.width>700) mainFrame.style.marginLeft = frameSize + 'px';
 			sidebar.style.width = _size + 'px';
 		}
 
