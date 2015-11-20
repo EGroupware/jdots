@@ -27,10 +27,11 @@ class jdots_framework extends egw_framework
 
 	/**
 	 * Minimum width of sidebar eg. from German 2-letter daynames in Calendar
+	 * or Calendar's navigation buttons need to be seen
 	 *
 	 * Need to be changed in js/fw_[template].js.
 	 */
-	const MIN_SIDEBAR_WIDTH = 215;
+	const MIN_SIDEBAR_WIDTH = 245;
 	/**
 	 * Default width need to be tested with English 3-letter day-names and Pixelegg template in Calendar
 	 *
