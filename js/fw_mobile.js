@@ -500,7 +500,8 @@
 
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
-
+			this.notifyTabChangeEnabled = true;
+			
 			// Transfer tabs to the sidebar
 			var $tabs = $j('.egw_fw_ui_tabs_header');
 			$tabs.appendTo(this.sidemenuDiv);
@@ -526,7 +527,32 @@
 		 */
 		storeTabsStatus: function ()
 		{
-		
+			var data = [];
+			//Send the current tab list to the server
+			
+			var tabs = egw.preference('open_tabs','common');
+			if (tabs)
+			{
+				var active = this.activeApp.appName||egw.preference('active_tab','common');
+				if (tabs.indexOf(active)<0) tabs += ","+active;
+				tabs = tabs.split(',');
+				for (var i=0;i<tabs.length;i++)
+				{
+					data[i]= {
+						appName:tabs[i],
+						active: (active == tabs[i]?1:0),
+					};
+				}
+			}
+			//Serialize the tab list and check whether it really has changed since the last
+			//submit
+			var serialized = egw.jsonEncode(data);
+			if (serialized != this.serializedTabState)
+			{
+				this.serializedTabState = serialized;
+
+				egw.jsonq("home.jdots_framework.ajax_tab_changed_state", [data]);
+			}
 		},
 		
 		/**
