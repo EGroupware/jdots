@@ -140,7 +140,7 @@
 		init:function(_wnd)
 		{
 			var self = this;
-			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container egw_fw_mobile_popup_loader');
+			this.$container = $j(document.createElement('div')).addClass('egw_fw_mobile_popup_container');
 			this.$iFrame = $j(document.createElement('iframe'))
 					.addClass('egw_fw_mobile_popupFrame')
 					.appendTo(this.$container);
@@ -151,7 +151,7 @@
 				.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
 			if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $closeBtn.css({top:"15px"});
 			this.$container.prepend($closeBtn);
-			
+			egw.loading_prompt('popup', true,'',this.$iFrame,'horizental');
 			this.windowOpener = _wnd;
 		},
 
@@ -171,7 +171,7 @@
 			this.$iFrame.attr('src',_url);
 
 			var self = this;
-
+			
 			//After the popup is fully loaded
 			this.$iFrame.on('onpopupload', function (){
 				var popupWindow = this.contentWindow;
@@ -179,7 +179,7 @@
 				$appHeader.addClass('egw_fw_mobile_popup_appHeader');
 				
 				//Remove the loading class
-				self.$container.removeClass('egw_fw_mobile_popup_loader');
+				egw.loading_prompt('popup', false);
 				self.$iFrame.css({visibility:'visible'});
 			});
 
@@ -200,7 +200,7 @@
 					// If the popup is not an et2_popup
 					if ($et2_container.length == 0)
 					{
-						self.$container.removeClass('egw_fw_mobile_popup_loader');
+						egw.loading_prompt('popup', false);
 						self.$iFrame.css({visibility:'visible'});
 					}
 
@@ -575,8 +575,9 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
-
-		   framework.setSidebarState(this.tag.preferences.toggleMenu);
+		   framework.toggleMenu('on');
+		   //framework.setSidebarState(this.tag.preferences.toggleMenu);
+		   
 		},
 
 
