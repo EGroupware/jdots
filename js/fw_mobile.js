@@ -627,10 +627,10 @@
 			}
 			else
 			{
-				height +=30;
+				height +=40;
 			}
 
-			if (!this.isLandscape()) return height - 30;
+			if (!this.isLandscape()) return height;
 
 			return height;
 		},
