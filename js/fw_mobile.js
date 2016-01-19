@@ -171,7 +171,7 @@
 			this.$iFrame.attr('src',_url);
 
 			var self = this;
-			
+			jQuery(window.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1');
 			//After the popup is fully loaded
 			this.$iFrame.on('onpopupload', function (){
 				var popupWindow = this.contentWindow;
@@ -181,6 +181,7 @@
 				//Remove the loading class
 				egw.loading_prompt('popup', false);
 				self.$iFrame.css({visibility:'visible'});
+				jQuery(popupWindow.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1');
 			});
 
 
@@ -221,6 +222,7 @@
 			this.$container.detach();
 			//Remove the closed popup from popups array
 			window.framework.popups.splice(_idx,1);
+			jQuery(window.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1, user-scalable=no');
 		},
 
 		/**
