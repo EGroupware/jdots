@@ -177,7 +177,7 @@
 				var popupWindow = this.contentWindow;
 				var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
 				$appHeader.addClass('egw_fw_mobile_popup_appHeader');
-				
+				self.$container.find('.egw_fw_mobile_popup_close').addClass('loaded');
 				//Remove the loading class
 				egw.loading_prompt('popup', false);
 				self.$iFrame.css({visibility:'visible'});
