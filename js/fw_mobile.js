@@ -697,9 +697,9 @@
 
 			if (typeof window.framework.popups != 'undefined')
 				window.framework.popups.push(popup);
-
+			
 			popup.open(_url,_width,_height,positionLeft,positionTop);
-
+			history.pushState({current:_url, index:this.popup_idx(popup.$iFrame[0].contentWindow)},"popup", _url);
 			var windowID = popup.$iFrame[0].contentWindow;
 
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
@@ -884,7 +884,22 @@
 			jQuery('#topmenu_logout').click(function(){ window.framework.redirect(this.getAttribute('href')); return false;});
 			jQuery('form[name^="tz_selection"]').children().on('change', function(){framework.tzSelection(this.value);	return false;});
 			window.egw.link_quick_add('quick_add');
-
+			history.pushState({current:window.location.href,index:-1},"init");
+			jQuery(window).on('popstate', function(e){
+				var index = 0;
+				if (e.originalEvent.state === null || typeof e.originalEvent.state =='undefined')
+				{
+					framework.toggleMenu();
+					return false;
+				}
+				else if (e.originalEvent.state && e.originalEvent.state.index >= 0)
+				{
+					index = e.originalEvent.state.index+1;
+				}
+				
+				window.framework.popups[index].close(index);
+				e.preventDefault();
+			});
 			// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
 			var href_regexp = /^javascript:([^\(]+)\((.*)?\);?$/;
 			jQuery('#egw_fw_topmenu_items,#egw_fw_topmenu_info_items,#egw_fw_sidemenu,#egw_fw_footer').on('click','a[href^="javascript:"]',function(ev){
