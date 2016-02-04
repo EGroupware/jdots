@@ -871,7 +871,6 @@
 				if (e.originalEvent.state === null || typeof e.originalEvent.state =='undefined')
 				{
 					history.forward();
-					framework.toggleMenu();
 					return false;
 				}
 				else if (e.originalEvent.state && e.originalEvent.state.index >= 0)
