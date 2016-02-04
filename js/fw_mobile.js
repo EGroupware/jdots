@@ -36,6 +36,13 @@
 		init: function()
 		{
 			this._super.apply(this,arguments);
+			jQuery(this.elemDiv).addClass('egw_fw_ui_sidemenu_entry_apps');
+		},
+		
+		open: function()
+		{
+			this._super.apply(this,arguments);
+			framework.toggleMenu('on');
 		}
 	});
 
@@ -86,8 +93,6 @@
 				},
 				allowPageScroll: "vertical"
 			});
-			// Do not attach sidebox application entries
-			$j(this.elemDiv).detach();
 		},
 		/**
 		 * Adds an entry to the sidemenu.
@@ -171,7 +176,6 @@
 			this.$iFrame.attr('src',_url);
 
 			var self = this;
-			jQuery(window.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1');
 			//After the popup is fully loaded
 			this.$iFrame.on('onpopupload', function (){
 				var popupWindow = this.contentWindow;
@@ -181,7 +185,6 @@
 				//Remove the loading class
 				egw.loading_prompt('popup', false);
 				self.$iFrame.css({visibility:'visible'});
-				jQuery(popupWindow.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1');
 			});
 
 
@@ -286,7 +289,7 @@
 
 			if (this.sidemenuDiv && this.tabsDiv)
 			{
-				//Create the sidemenu, the tabs area
+				//Create the sidemenu
 				this.sidemenuUi = new mobile_ui_sidemenu(this.sidemenuDiv);
 				this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 
@@ -294,7 +297,7 @@
 				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
 				this.loadApplications(JSON.parse(apps));
 			}
-
+			
 			this.sideboxSizeCallback(_sideboxStartSize);
 
 			// Check if user runs the app in full screen or not,
@@ -330,32 +333,13 @@
 			return orient;
 		},
 
-		/**
-		 * Arranging toolbar icons according to device orientation
-		 *
-		 * @param {string} _orientation in order to determine which box should be transfered {"top"|"side"}.
-		 * default value is landscape
-		 */
-		arrangeToolbar: function (_orientation)
-		{
-			var orientation = _orientation || 'landscape';
-			var $toolbar = $j('#egw_fw_top_toolbar');
-			//tabs container
-			var $tabs = $j('.egw_fw_ui_tabs_header');
-
-			$toolbar.css('height','auto');
-			this.toggleMenuResizeHandler(this.getToggleMenuState() === "off"?this.sideboxCollapsedSize:this.sideboxSize);
-			$tabs.appendTo('#egw_fw_sidemenu');
-		},
-
+		
 		/**
 		 * Orientation on change method
 		 */
 		orientation: function ()
 		{
 			if (!this.isLandscape()) this.toggleMenu('on');
-			this.arrangeToolbar(this.isLandscape()?'landscape':'portrait');
-
 		},
 
 		/**
@@ -368,13 +352,11 @@
 			var collapseSize = this.sideboxCollapsedSize;
 			var expandSize = this.sideboxSize;
 			var $toggleMenu = $j(this.baseContainer);
-			var $tabs =  $j('.egw_fw_ui_tabs_header');
 			if (state === 'on')
 			{
 				$toggleMenu.addClass('sidebar-toggle');
 				this.toggleMenuResizeHandler(collapseSize);
 				this.setToggleMenuState('off');
-
 			}
 			else
 			{
@@ -404,7 +386,6 @@
 			else
 			{
 				state = $toggleMenu.hasClass('sidebar-toggle')?'off':'on';
-
 			}
 			return state;
 		},
@@ -507,7 +488,7 @@
 			
 			// Transfer tabs to the sidebar
 			var $tabs = $j('.egw_fw_ui_tabs_header');
-			$tabs.appendTo(this.sidemenuDiv);
+			$tabs.remove();
 
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
@@ -521,7 +502,6 @@
 		setActiveApp: function(_app)
 		{
 			this._super.apply(this,arguments);
-
 			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
 		},
 		
@@ -578,7 +558,7 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
-		   framework.toggleMenu('on');
+		 
 		   //framework.setSidebarState(this.tag.preferences.toggleMenu);
 		   
 		},
