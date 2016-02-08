@@ -315,6 +315,9 @@
 		{
 			this._super.apply(this,arguments);
 			this.setSidebarState(this.activeApp.preferences.toggleMenu);
+			var $user = jQuery('#egw_fw_userinfo .user');
+			$user.text(egw.user('account_fullname') +'(' +egw.user('account_lid') + ')');
+			var $avatar = jQuery('#egw_fw_userinfo .avatar');
 		},
 
 		/**
