@@ -317,7 +317,8 @@
 			this.setSidebarState(this.activeApp.preferences.toggleMenu);
 			var $user = jQuery('#egw_fw_userinfo .user');
 			$user.text(egw.user('account_fullname') +'(' +egw.user('account_lid') + ')');
-			var $avatar = jQuery('#egw_fw_userinfo .avatar');
+			var $avatar = jQuery('#egw_fw_userinfo .avatar img');
+			$avatar.attr('src', egw.webserverUrl + '/index.php?menuaction=addressbook.addressbook_ui.photo&account_id=' + egw.user('account_id'));
 		},
 
 		/**
