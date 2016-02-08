@@ -352,8 +352,10 @@
 			var collapseSize = this.sideboxCollapsedSize;
 			var expandSize = this.sideboxSize;
 			var $toggleMenu = $j(this.baseContainer);
+			var self = this;
 			if (state === 'on')
 			{
+				jQuery('.egw_fw_sidebar_dropMask').remove();
 				$toggleMenu.addClass('sidebar-toggle');
 				this.toggleMenuResizeHandler(collapseSize);
 				this.setToggleMenuState('off');
@@ -363,6 +365,14 @@
 				$toggleMenu.removeClass('sidebar-toggle');
 				this.toggleMenuResizeHandler(expandSize);
 				this.setToggleMenuState('on');
+				if (screen.width<700)
+				{
+					jQuery(document.createElement('div'))
+							.addClass('egw_fw_sidebar_dropMask')
+							.click(function(){self.toggleMenu('on')})
+							.css({position:'absolute',top:0,left:0,bottom:0,height:'100%',width:'100%'})
+							.appendTo('#egw_fw_main');
+				}
 			}
 
 			//Audio effect for toggleMenu
@@ -492,6 +502,7 @@
 
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
+			jQuery('#egw_fw_firstload').remove();
 		},
 
 		/**
@@ -503,6 +514,7 @@
 		{
 			this._super.apply(this,arguments);
 			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
+			
 		},
 		
 		/**
