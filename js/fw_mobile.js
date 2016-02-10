@@ -343,7 +343,17 @@
 		 */
 		orientation: function ()
 		{
-			if (!this.isLandscape()) this.toggleMenu('on');
+			var $body = jQuery('body');
+			if (!this.isLandscape()){
+				this.toggleMenu('on');
+				$body.removeClass('landscape').addClass('portrait');
+			}
+			else
+			{
+				
+				$body.removeClass('portrait').addClass('landscape');
+			}
+			
 		},
 
 		/**
