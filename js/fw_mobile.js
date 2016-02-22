@@ -10,6 +10,7 @@
 /*egw:uses
 	jquery.jquery;
 	/phpgwapi/js/jquery/TouchSwipe/jquery.touchSwipe.js;
+	/phpgwapi/js/jquery/fastclick/lib/fastclick.js;
 	framework.fw_base;
 	framework.fw_browser;
 	framework.fw_ui;
@@ -850,6 +851,7 @@
 		 */
 		et2_loadingFinished: function (_wnd)
 		{
+			if (egwIsMobile() && this.getUserAgent() == 'iOS') FastClick.attach(document.body);
 			if (typeof this.popups != 'undefined' && this.popups.length > 0)
 			{
 				var i = this.popup_idx(_wnd);
