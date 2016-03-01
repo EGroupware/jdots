@@ -14,7 +14,7 @@
 	framework.fw_base;
 	framework.fw_browser;
 	framework.fw_ui;
-	egw_fw_classes;
+	framework.fw_classes;
 	egw_inheritance.js;
 */
 
@@ -22,7 +22,10 @@
  *
  * @param {DOMWindow} window
  */
-(function(window){
+(function(window)
+{
+	"use strict";
+
 	/**
 	 *
 	 * @type @exp;fw_ui_sidemenu_entry@call;extend
@@ -39,7 +42,7 @@
 			this._super.apply(this,arguments);
 			jQuery(this.elemDiv).addClass('egw_fw_ui_sidemenu_entry_apps');
 		},
-		
+
 		open: function()
 		{
 			this._super.apply(this,arguments);
@@ -264,19 +267,19 @@
 			// call fw_base constructor, in order to build basic DOM elements
 			this._super.apply(this,arguments);
 			var self = this;
-			
+
 			// Stores opened popups object
 			this.popups = [];
-			
+
 			// The size that sidebox should be opened with
 			this.sideboxSize = _sideboxStartSize;
-			
+
 			this.sideboxCollapsedSize = egwIsMobile()?1:72;
 			//Bind handler to orientation change
 			$j(window).on("orientationchange",function(){
 				self.orientation();
 			});
-			
+
 			this.baseContainer = document.getElementById(_baseContainer);
 			this.mobileMenu = document.getElementById(_mobileMenu);
 
@@ -298,7 +301,7 @@
 				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
 				this.loadApplications(JSON.parse(apps));
 			}
-			
+
 			this.sideboxSizeCallback(_sideboxStartSize);
 
 			// Check if user runs the app in full screen or not,
@@ -338,7 +341,7 @@
 			return orient;
 		},
 
-		
+
 		/**
 		 * Orientation on change method
 		 */
@@ -351,10 +354,10 @@
 			}
 			else
 			{
-				
+
 				$body.removeClass('portrait').addClass('landscape');
 			}
-			
+
 		},
 
 		/**
@@ -453,7 +456,7 @@
 
 		/**
 		 * Load applications
-		 * 
+		 *
 		 * @param {object} _apps object list of applications
 		 * @returns {undefined}
 		 */
@@ -510,7 +513,7 @@
 			//Set the current state of the tabs and activate TabChangeNotification.
 			this.serializedTabState = egw.jsonEncode(this.assembleTabList());
 			this.notifyTabChangeEnabled = true;
-			
+
 			// Transfer tabs to the sidebar
 			var $tabs = $j('.egw_fw_ui_tabs_header');
 			$tabs.remove();
@@ -529,9 +532,9 @@
 		{
 			this._super.apply(this,arguments);
 			this.activeApp.preferences = egw.preference('egw_fw_mobile',this.activeApp.appName)||{};
-			
+
 		},
-		
+
 		/**
 		 * Keep the last opened tab as an active tab for the first time login
 		 */
@@ -539,7 +542,7 @@
 		{
 			var data = [];
 			//Send the current tab list to the server
-			
+
 			var tabs = egw.preference('open_tabs','common');
 			if (tabs)
 			{
@@ -564,7 +567,7 @@
 				egw.jsonq("home.jdots_framework.ajax_tab_changed_state", [data]);
 			}
 		},
-		
+
 		/**
 		 * applicationClickCallback is used internally by fw_mobile in order to handle clicks on
 		 * sideboxmenu
@@ -585,9 +588,9 @@
 		tabClickCallback: function(_sender)
 		{
 		   this._super.apply(this,arguments);
-		 
+
 		   //framework.setSidebarState(this.tag.preferences.toggleMenu);
-		   
+
 		},
 
 
@@ -705,7 +708,7 @@
 
 			if (typeof window.framework.popups != 'undefined')
 				window.framework.popups.push(popup);
-			
+
 			popup.open(_url,_width,_height,positionLeft,positionTop);
 			history.pushState({current:_url, index:this.popup_idx(popup.$iFrame[0].contentWindow)},"popup", _url);
 			var windowID = popup.$iFrame[0].contentWindow;
@@ -905,7 +908,7 @@
 				{
 					index = e.originalEvent.state.index+1;
 				}
-				
+
 				window.framework.popups[index].close(index);
 				e.preventDefault();
 			});
