@@ -281,10 +281,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
-			self::validate_file('jquery','jquery-ui');
-			self::validate_file('framework', 'fw', self::JS_INCLUDE_APP);
-			self::validate_file('framework', 'fw_browser', self::JS_INCLUDE_APP);
-			self::validate_file('framework', 'fw_ui', self::JS_INCLUDE_APP);
 			if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 			{
 				self::validate_file('.', 'fw_mobile', self::JS_INCLUDE_APP);
@@ -293,24 +289,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			{
 				self::validate_file('.', 'fw_'.static::APP, static::JS_INCLUDE_APP);
 			}
-			self::validate_file('.', 'egw_fw_classes', self::JS_INCLUDE_APP);
-			self::validate_file('.','etemplate2','etemplate');
-
-			// Need to load this here to get enhanced selectboxes working
-			self::validate_file('/phpgwapi/js/jquery/chosen/chosen.jquery.js');
-
 			egw_cache::unsetSession(__CLASS__,'sidebox_md5');	// sideboxes need to be send again
 
-			// load jscalendar for calendar users
-			if ($GLOBALS['egw_info']['user']['apps']['calendar'])
-			{
-				$GLOBALS['egw']->jscalendar;
-			}
-			// load dhtmlxtree for pm or email users
-			if ($GLOBALS['egw_info']['user']['apps']['projectmanager'] || $GLOBALS['egw_info']['user']['apps']['felamimail'])
-			{
-				$GLOBALS['egw_info']['flags']['java_script'] .= html::tree(null,null);
-			}
 			$extra['navbar-apps'] = $this->get_navbar_apps($_SERVER['REQUEST_URI']);
 		}
 		// for an url WITHOUT cd=yes --> load framework if not yet loaded:
