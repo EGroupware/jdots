@@ -873,6 +873,20 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			unset($apps['sitemgr-link']);
 		}
+
+		// enable only listed apps on site configuration for mobile
+		if (html::$ua_mobile)
+		{
+			$enabled_apps = explode(',', $GLOBALS['egw_info']['server']['fw_mobile_app_list']);
+			foreach($apps as &$app)
+			{
+				if (!in_array($app['name'], $enabled_apps) && $app['name'] != 'logout')
+				{
+					unset($apps[$app['name']]);
+				}
+			}
+		}
+
 		return $apps;
 	}
 
@@ -1084,5 +1098,20 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			$GLOBALS['egw']->framework->response->data($output);
 		}
+	}
+
+	/**
+	 * Enabled applications on mobile
+	 *
+	 * Generates input field and set values on site configuration for list of enabled
+	 * applications on mobile theme.
+	 *
+	 * @return string return DOM string for input field
+	 */
+	static function mobile_app_list()
+	{
+		$value = $GLOBALS['egw_info']['server']['fw_mobile_app_list']? $GLOBALS['egw_info']['server']['fw_mobile_app_list']:
+			'calendar,infolog,timesheet,resources,addressbook,projectmanager,tracker,mail';
+		return '<input size="60" value="'.$value.'" name="newsettings[fw_mobile_app_list]" />';
 	}
 }
