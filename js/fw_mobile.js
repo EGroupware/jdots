@@ -251,6 +251,10 @@
 	 * @type @exp;fw_base@call;extend
 	 */
 	var fw_mobile = fw_base.extend({
+
+		// List of applications available on mobile devices
+		DEFAULT_MOBILE_APP : ['calendar','infolog','timesheet','resources','addressbook','projectmanager','tracker','mail','filemanager'],
+
 		/**
 		 * Mobile framework constructor
 		 *
@@ -298,8 +302,26 @@
 				this.tabsUi = new egw_fw_ui_tabs(this.tabsDiv);
 
 				var egw_script = document.getElementById('egw_script_id');
-				var apps = egw_script ? egw_script.getAttribute('data-navbar-apps') : null;
-				this.loadApplications(JSON.parse(apps));
+				var apps = egw_script ? JSON.parse(egw_script.getAttribute('data-navbar-apps')) : null;
+				var mobile_app_list =  egw.config('fw_mobile_app_list') || this.DEFAULT_MOBILE_APP;
+
+				// Check if the given app is on mobile_app_list
+				var is_default_app = function(_app){
+					for (var j=0;j< mobile_app_list.length;j++ )
+					{
+						if (_app == mobile_app_list[j]) return true;
+					}
+					return false;
+				}
+
+				var default_apps = [];
+				for (var i=0;i <= apps.length;i++)
+				{
+					if (apps[i] && is_default_app(apps[i]['name'])) default_apps.push(apps[i]);
+				}
+
+				apps = default_apps;
+				this.loadApplications(apps);
 			}
 
 			this.sideboxSizeCallback(_sideboxStartSize);
