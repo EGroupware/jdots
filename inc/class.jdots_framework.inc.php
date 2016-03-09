@@ -1101,17 +1101,37 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	}
 
 	/**
+	 * Apps available for mobile, if admin did not configured something else
+	 * (needs to kept in sync with list in phpgwapi/js/framework/fw_mobile.js!)
+	 */
+	const DEFAULT_MOBILE_APPS = 'calendar,infolog,timesheet,resources,addressbook,projectmanager,tracker,mail,filemanager';
+
+	/**
 	 * Enabled applications on mobile
 	 *
 	 * Generates input field and set values on site configuration for list of enabled
 	 * applications on mobile theme.
 	 *
+	 * @param array $config
 	 * @return string return DOM string for input field
 	 */
-	static function mobile_app_list()
+	static function mobile_app_list($config)
 	{
-		$value = $GLOBALS['egw_info']['server']['fw_mobile_app_list']? $GLOBALS['egw_info']['server']['fw_mobile_app_list']:
-			'calendar,infolog,timesheet,resources,addressbook,projectmanager,tracker,mail';
-		return '<input size="60" value="'.$value.'" name="newsettings[fw_mobile_app_list]" />';
+		$value = $config['fw_mobile_app_list'] ? $config['fw_mobile_app_list'] :
+			explode(',', self::DEFAULT_MOBILE_APPS);
+
+		$apps = array();
+		foreach ($GLOBALS['egw_info']['apps'] as $app => $data)
+		{
+			if (!$data['enabled'] || !$data['status'] || $data['status'] == 3)
+			{
+				continue;	// app not enabled (user can not have run rights for these apps)
+			}
+			$apps[$app] = lang($app);
+		}
+		natcasesort($apps);
+
+		return html::select('newsettings[fw_mobile_app_list]', $value,
+			$apps, true, '', 5, true);
 	}
 }
