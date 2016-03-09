@@ -874,19 +874,6 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			unset($apps['sitemgr-link']);
 		}
 
-		// enable only listed apps on site configuration for mobile
-		if (html::$ua_mobile)
-		{
-			$enabled_apps = explode(',', $GLOBALS['egw_info']['server']['fw_mobile_app_list']);
-			foreach($apps as &$app)
-			{
-				if (!in_array($app['name'], $enabled_apps) && $app['name'] != 'logout')
-				{
-					unset($apps[$app['name']]);
-				}
-			}
-		}
-
 		return $apps;
 	}
 
