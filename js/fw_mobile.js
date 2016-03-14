@@ -229,7 +229,6 @@
 			this.$container.detach();
 			//Remove the closed popup from popups array
 			window.framework.popups.splice(_idx,1);
-			jQuery(window.document.getElementsByName('viewport')).attr('content','width=device-width, initial-scale=1, user-scalable=no');
 			history.back();
 		},
 
