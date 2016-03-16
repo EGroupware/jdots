@@ -341,7 +341,7 @@
 			this._super.apply(this,arguments);
 			this.setSidebarState(this.activeApp.preferences.toggleMenu);
 			var $user = jQuery('#egw_fw_userinfo .user');
-			$user.text(egw.user('account_fullname'));
+
 			var $avatar = jQuery('#egw_fw_userinfo .avatar img');
 			$avatar.attr('src', egw.webserverUrl + '/index.php?menuaction=addressbook.addressbook_ui.photo&account_id=' + egw.user('account_id'));
 		},
@@ -884,6 +884,22 @@
 					//Trigger onpopupload event for the current popup
 					window.framework.popups[i].$iFrame.trigger('onpopupload');
 				}
+			}
+		},
+
+		/**
+		 * This function can trigger vibration on compatible browsers and devices
+		 *
+		 * @param {array|int} _duration vibrate duration in milliseconds (ms), 0 means cancel all vibrations
+		 */
+		vibrate: function (_duration)
+		{
+			// enable vibration support
+			navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+			if (navigator.vibrate) {
+				// vibration API supported
+				navigator.vibrate(_duration);
 			}
 		}
 	});
