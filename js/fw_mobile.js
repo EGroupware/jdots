@@ -329,7 +329,7 @@
 			// then prompt user base on the mode, and if the user
 			// discards the message once then do not show it again
 			var fullScreen = this.isNotFullScreen();
-			if (fullScreen) egw.message(fullScreen,'info', true);
+			if (fullScreen && this.getUserAgent() !='iOS') egw.message(fullScreen,'info', true);
 		},
 
 		/**
