@@ -344,6 +344,13 @@
 
 			var $avatar = jQuery('#egw_fw_userinfo .avatar img');
 			$avatar.attr('src', egw.webserverUrl + '/index.php?menuaction=addressbook.addressbook_ui.photo&account_id=' + egw.user('account_id'));
+			// Open edit contact on click
+			$avatar.click(function(){
+				egw.open_link(egw.link('/index.php',{
+					menuaction:'addressbook.addressbook_ui.edit',
+					'account_id':egw.user('account_id')
+				}),'addressbook','popup');
+			});
 		},
 
 		/**
