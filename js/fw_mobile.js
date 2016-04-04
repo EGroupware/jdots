@@ -158,7 +158,6 @@
 			var $closeBtn = $j(document.createElement('span'))
 				.addClass('egw_fw_mobile_popup_close')
 				.click(function (){self.close(framework.popup_idx(self.$iFrame[0].contentWindow));});
-			if (framework.getUserAgent() === 'iOS' && !framework.isNotFullScreen()) $closeBtn.css({top:"15px"});
 			this.$container.prepend($closeBtn);
 			egw.loading_prompt('popup', true,'',this.$iFrame,'horizental');
 			this.windowOpener = _wnd;
