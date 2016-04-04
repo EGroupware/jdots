@@ -659,17 +659,7 @@
 					}
 				}
 			}
-			height +=  jQuery('#egw_fw_sidebar').offset().top;
-
-			// fullScreen iOS need to be set with different height as safari adds an extra bottom border
-			if (this.getUserAgent() === 'iOS' && !this.isNotFullScreen())
-			{
-				height +=5;
-			}
-			else
-			{
-				height +=40;
-			}
+			height +=  jQuery('#egw_fw_sidebar').offset().top + 40;
 
 			if (!this.isLandscape()) return height;
 
@@ -812,7 +802,6 @@
 				case 'iOS':
 					if (navigator.standalone)
 					{
-						$j(this.baseContainer).css({top:20});
 						return false;
 					}
 					else
