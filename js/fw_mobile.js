@@ -310,7 +310,7 @@
 						if (_app == mobile_app_list[j]) return true;
 					}
 					return false;
-				}
+				};
 
 				var default_apps = [];
 				for (var i=0;i <= apps.length;i++)
@@ -414,7 +414,7 @@
 				{
 					jQuery(document.createElement('div'))
 							.addClass('egw_fw_sidebar_dropMask')
-							.click(function(){self.toggleMenu('on')})
+							.click(function(){self.toggleMenu('on');})
 							.css({position:'absolute',top:0,left:0,bottom:0,height:'100%',width:'100%'})
 							.appendTo('#egw_fw_main');
 				}
@@ -580,7 +580,7 @@
 				{
 					data[i]= {
 						appName:tabs[i],
-						active: (active == tabs[i]?1:0),
+						active: (active == tabs[i]?1:0)
 					};
 				}
 			}
