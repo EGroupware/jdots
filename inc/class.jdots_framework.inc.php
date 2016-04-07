@@ -11,10 +11,12 @@
  * @version $Id$
  */
 
+use EGroupware\Api;
+
 /**
 * Stylite jdots template
 */
-class jdots_framework extends egw_framework
+class jdots_framework extends Api\Framework
 {
 	/**
 	 * Appname used to include javascript code
@@ -69,7 +71,7 @@ class jdots_framework extends egw_framework
 	 */
 	public static function is_supported_user_agent()
 	{
-		if (html::$user_agent == 'msie' && html::$ua_version < 7)
+		if (Api\Header\UserAgent::type() == 'msie' && Api\Header\UserAgent::version() < 7)
 		{
 			return false;
 		}
@@ -170,7 +172,7 @@ class jdots_framework extends egw_framework
 	/**
 	 * Overwrite to add our customizable colors
 	 *
-	 * @see egw_framework::_get_css()
+	 * @see Api\Framework::_get_css()
 	 * @return array
 	 */
 	public function _get_css()
@@ -225,7 +227,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	protected function _get_csp_frame_src()
 	{
 		$srcs = array();
-		foreach($GLOBALS['egw']->hooks->process('csp-frame-src') as $src)
+		foreach(Api\Hooks::process('csp-frame-src') as $src)
 		{
 			if ($src) $srcs = array_merge($srcs, $src);
 		}
@@ -236,7 +238,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * Returns the html-header incl. the opening body tag
 	 *
 	 * @param array $extra = array() extra attributes passed as data-attribute to egw.js
-	 * @return string with html
+	 * @return string with Api\Html
 	 */
 	function header(array $extra=array())
 	{
@@ -255,7 +257,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// as the old Template class has problems if restored from the session (php-restore)
 		// todo: check if this is still true
 		$this->tpl = new Template(EGW_SERVER_ROOT.$this->template_dir);
-		if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
+		if (Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 		{
 			$this->tpl->set_file(array('_head' => 'head_mobile.tpl'));
 		}
@@ -281,15 +283,15 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		{
 			//echo __METHOD__.__LINE__.' do framework ...'.'<br>';
 			// framework javascript classes only need for framework
-			if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
+			if (Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 			{
-				self::validate_file('.', 'fw_mobile', self::JS_INCLUDE_APP);
+				self::includeJS('.', 'fw_mobile', self::JS_INCLUDE_APP);
 			}
 			else
 			{
-				self::validate_file('.', 'fw_'.static::APP, static::JS_INCLUDE_APP);
+				self::includeJS('.', 'fw_'.static::APP, static::JS_INCLUDE_APP);
 			}
-			egw_cache::unsetSession(__CLASS__,'sidebox_md5');	// sideboxes need to be send again
+			Api\Cache::unsetSession(__CLASS__,'sidebox_md5');	// sideboxes need to be send again
 
 			$extra['navbar-apps'] = $this->get_navbar_apps($_SERVER['REQUEST_URI']);
 		}
@@ -331,7 +333,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		$this->tpl->set_var('sidebox_width', self::get_global_sidebar_width());
 		$this->tpl->set_var('sidebox_min_width', self::MIN_SIDEBAR_WIDTH);
 
-		if (!(html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'))
+		if (!(Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'))
 		{
 			// logout button
 			$this->tpl->set_var('title_logout', lang("Logout"));
@@ -346,7 +348,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		$content .= self::footer(false);
 
 		echo $content;
-		common::egw_exit();
+		exit();
 	}
 
 	private $topmenu_items;
@@ -385,7 +387,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	* @param string $icon_src src of the icon image. Make sure this nog height then 18pixels
 	* @param string $iconlink where the icon links to
 	* @param booleon $blink set true to make the icon blink
-	* @param mixed $tooltip string containing the tooltip html, or null of no tooltip
+	* @param mixed $tooltip string containing the tooltip Api\Html, or null of no tooltip
 	* @todo implement in a reasonable way for jdots
 	* @return void
 	*/
@@ -409,7 +411,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		switch($app_data['name'])
 		{
 			case 'logout':
-				if (html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
+				if (Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 				{
 
 				}
@@ -432,7 +434,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				}
 		}
 		$id = $app_data['id'] ? $app_data['id'] : ($app_data['name'] ? $app_data['name'] : $app_data['title']);
-		$title = html::$ua_mobile || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'
+		$title = Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'
 			? '' : htmlspecialchars($alt_label ? $alt_label : $app_data['title']);
 		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'" title="'.$app_data['title'].'">'.$title.'</a>';
 	}
@@ -440,7 +442,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Add info items to the topmenu template class to be displayed
 	 *
-	 * @param string $content html of item
+	 * @param string $content Api\Html of item
 	 * @param string $id = null
 	 * @access protected
 	 * @return void
@@ -468,7 +470,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	function ajax_tz_selection($tz)
 	{
-		egw_time::setUserPrefs($tz);	// throws exception, if tz is invalid
+		Api\DateTime::setUserPrefs($tz);	// throws exception, if tz is invalid
 
 		$GLOBALS['egw']->preferences->read_repository();
 		$GLOBALS['egw']->preferences->add('common','tz',$tz);
@@ -483,7 +485,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	protected $sidebox_done = false;
 
 	/**
-	 * Returns the html from the body-tag til the main application area (incl. opening div tag)
+	 * Returns the Api\Html from the body-tag til the main application area (incl. opening div tag)
 	 *
 	 * jDots does NOT use a navbar, but it tells us that application might want a sidebox!
 	 *
@@ -501,14 +503,14 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		if (!$this->sidebox_done && self::$header_done)
 		{
 			$this->do_sidebox();
-			return $header.'<span id="late-sidebox" data-setSidebox="'.htmlspecialchars(json_encode(egw_framework::$extra['setSidebox'])).'"/>';
+			return $header.'<span id="late-sidebox" data-setSidebox="'.htmlspecialchars(json_encode(Api\Framework::$extra['setSidebox'])).'"/>';
 		}
 
 		return $header;
 	}
 
 	/**
-	 * Set sidebox content in egw_framework::$data['setSidebox']
+	 * Set sidebox content in Api\Framework::$data['setSidebox']
 	 *
 	 * We store in the session the md5 of each sidebox menu already send to client.
 	 * If the framework get reloaded, that list gets cleared in header();
@@ -529,7 +531,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			//error_log(__METHOD__."() app=$app, menuaction=$_GET[menuaction], PHP_SELF=$_SERVER[PHP_SELF] --> sidebox request ignored");
 			return;
 		}
-		$md5_session =& egw_cache::getSession(__CLASS__,'sidebox_md5');
+		$md5_session =& Api\Cache::getSession(__CLASS__,'sidebox_md5');
 
 		//Set the sidebox content
 		$sidebox = $this->get_sidebox($app);
@@ -537,9 +539,9 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 
 		if ($md5_session[$app] !== $md5)
 		{
-			//error_log(__METHOD__."() header changed md5_session[$app]!=='$md5' --> setting it on egw_framework::\$extra[setSidebox]");
+			//error_log(__METHOD__."() header changed md5_session[$app]!=='$md5' --> setting it on Api\Framework::\$extra[setSidebox]");
 			$md5_session[$app] = $md5;	// update md5 in session
-			egw_framework::$extra['setSidebox'] = array($app, $sidebox, $md5);
+			Api\Framework::$extra['setSidebox'] = array($app, $sidebox, $md5);
 		}
 		//else error_log(__METHOD__."() md5_session[$app]==='$md5' --> nothing to do");
 	}
@@ -606,7 +608,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 * 		'opened'    => (boolean),	// menu opend or closed
 	 *  	'entries'   => array(
 	 *			array(
-	 *				'lang_item' => translated menu item or html, i item_link === false
+	 *				'lang_item' => translated menu item or Api\Html, i item_link === false
 	 * 				'icon_or_star' => url of bullet images, or false for none
 	 *  			'item_link' => url or false (lang_item contains complete html)
 	 *  			'target' => target attribute fragment, ' target="..."'
@@ -625,15 +627,15 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			self::$link_app = $appname;
 			// allow other apps to hook into sidebox menu of an app, hook-name: sidebox_$appname
 			$this->sidebox_menu_opened = true;
-			$GLOBALS['egw']->hooks->process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
+			Api\Hooks::process('sidebox_'.$appname,array($appname),true);	// true = call independent of app-permissions
 
 			// calling the old hook
 			$this->sidebox_menu_opened = true;
-			$GLOBALS['egw']->hooks->single('sidebox_menu',$appname);
+			Api\Hooks::single('sidebox_menu',$appname);
 			self::$link_app = null;
 
 			// allow other apps to hook into sidebox menu of every app: sidebox_all
-			$GLOBALS['egw']->hooks->process('sidebox_all',array($GLOBALS['egw_info']['flags']['currentapp']),true);
+			Api\Hooks::process('sidebox_all',array($GLOBALS['egw_info']['flags']['currentapp']),true);
 		}
 		//If there still is no sidebox content, return null here
 		if (!isset($this->sideboxes[$appname]))
@@ -645,7 +647,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		foreach($this->sideboxes[$appname] as $menu_name => &$file)
 		{
 			$current_menu = array(
-				'menu_name' => md5($menu_name),	// can contain html tags and javascript!
+				'menu_name' => md5($menu_name),	// can contain Api\Html tags and javascript!
 				'title' => $menu_name,
 				'entries' => array(),
 				'opened' => (boolean)$file['menuOpened'],
@@ -670,13 +672,13 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 					if(isset($item_link['icon']))
 					{
 						$app = isset($item_link['app']) ? $item_link['app'] : $appname;
-						$var['icon_or_star'] = $item_link['icon'] ? common::image($app,$item_link['icon']) : False;
+						$var['icon_or_star'] = $item_link['icon'] ? Api\Image::find($app,$item_link['icon']) : False;
 					}
 					$var['lang_item'] = isset($item_link['no_lang']) && $item_link['no_lang'] ? $item_link['text'] : lang($item_link['text']);
 					$var['item_link'] = $item_link['link'];
 					if ($item_link['target'])
 					{
-						// we only support real targets not html markup with target in it
+						// we only support real targets not Api\Html markup with target in it
 						if (strpos($item_link['target'], 'target=') === false &&
 							strpos($item_link['target'], '"') === false)
 						{
@@ -713,12 +715,12 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		}
 		// send app a notification, that it's tab got closed
 		// used eg. in phpFreeChat to leave the chat
-		if (($old_tabs = egw_cache::getSession(__CLASS__, 'open_tabs')))
+		if (($old_tabs = Api\Cache::getSession(__CLASS__, 'open_tabs')))
 		{
 			foreach(array_diff(explode(',',$old_tabs),$tabs) as $app)
 			{
 				//error_log("Tab '$app' closed, old_tabs=$old_tabs");
-				$GLOBALS['egw']->hooks->single(array(
+				Api\Hooks::single(array(
 					'location' => 'tab_closed',
 					'app' => $app,
 				), $app);
@@ -730,7 +732,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			$active != $GLOBALS['egw_info']['user']['preferences']['common']['active_tab'])
 		{
 			//error_log(__METHOD__.'('.array2string($tablist).") storing common prefs: open_tabs='$tabs', active_tab='$active'");
-			egw_cache::setSession(__CLASS__, 'open_tabs', $open);
+			Api\Cache::setSession(__CLASS__, 'open_tabs', $open);
 			$GLOBALS['egw']->preferences->read_repository();
 			$GLOBALS['egw']->preferences->add('common', 'open_tabs', $open);
 			$GLOBALS['egw']->preferences->add('common', 'active_tab', $active);
@@ -747,7 +749,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	public function ajax_sidebox($appname, $md5)
 	{
-		$response = egw_json_response::get();
+		$response = Api\Json\Response::get();
 		$sidebox = $this->get_sidebox($appname);
 		$encoded = json_encode($sidebox);
 		$new_md5 = md5($encoded);
@@ -781,7 +783,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	}
 
 	/**
-	 * Stores the user defined sorting of the applications inside the preferences
+	 * Stores the user defined sorting of the applications inside the Api\Preferences
 	 *
 	 * @param array $apps
 	 */
@@ -801,7 +803,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			}
 		}
 
-		//Store the order array inside the common user preferences
+		//Store the order array inside the common user Api\Preferences
 		$GLOBALS['egw']->preferences->read_repository();
 		$GLOBALS['egw']->preferences->change('common', 'user_apporder', serialize($order));
 		$GLOBALS['egw']->preferences->save_repository(true);
@@ -851,7 +853,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 */
 	public function navbar_apps()
 	{
-		$apps = parent::_get_navbar_apps(common::svg_usable());	// use svg if usable in browser
+		$apps = parent::_get_navbar_apps(Api\Image::svg_usable());	// use svg if usable in browser
 		//$apps += $this->jdots_remote_apps();	currently not used/usable
 
 		//Add its sidebox width to each app
@@ -912,7 +914,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		}
 
 		// check if user called a specific url --> open it as active tab
-		$last_direct_url =& egw_cache::getSession(__CLASS__, 'last_direct_url');
+		$last_direct_url =& Api\Cache::getSession(__CLASS__, 'last_direct_url');
 		if ($url !== $last_direct_url)
 		{
 			$active_tab = $url_tab = self::app_from_url($url);
@@ -938,7 +940,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 			if (!$active_tab) $active_tab = $default_app;
 		}
 		// if we have the open tabs in the session, use it instead the maybe forced common prefs open_tabs
-		if (!($open_tabs = egw_cache::getSession(__CLASS__, 'open_tabs')))
+		if (!($open_tabs = Api\Cache::getSession(__CLASS__, 'open_tabs')))
 		{
 			$open_tabs = $GLOBALS['egw_info']['user']['preferences']['common']['open_tabs'];
 		}
@@ -980,7 +982,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	static private $footer_done;
 
 	/**
-	 * Returns the html from the closing div of the main application area to the closing html-tag
+	 * Returns the Api\Html from the closing div of the main application area to the closing html-tag
 	 *
 	 * @param boolean $no_framework = true
 	 * @return string
@@ -1020,7 +1022,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	 *
 	 * If set output is requested for an ajax response --> no header, navbar or footer
 	 *
-	 * @var egw_json_response
+	 * @var Api\Json\Response
 	 */
 	public $response;
 
@@ -1043,23 +1045,23 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 
 		if (!isset($_GET['menuaction']))
 		{
-			throw new egw_exception_wrong_parameter(__METHOD__."('$link') no menuaction set!");
+			throw new Api\Exception\WrongParameter(__METHOD__."('$link') no menuaction set!");
 		}
 		list($app,$class,$method) = explode('.',$_GET['menuaction']);
 
 		if (!isset($GLOBALS['egw_info']['user']['apps'][$app]))
 		{
-			throw new egw_exception_no_permission_app($app);
+			throw new Api\Exception\NoPermission\App($app);
 		}
 		$GLOBALS['egw_info']['flags']['currentapp'] = $app;
 
-		$GLOBALS['egw']->framework->response = egw_json_response::get();
+		$GLOBALS['egw']->framework->response = Api\Json\Response::get();
 
 		$GLOBALS[$class] = $obj = CreateObject($app.'.'.$class);
 
 		if(!is_array($obj->public_functions) || !$obj->public_functions[$method])
 		{
-			throw new egw_exception_no_permission("Bad menuaction {$_GET['menuaction']}, not listed in public_functions!");
+			throw new Api\Exception\NoPermission("Bad menuaction {$_GET['menuaction']}, not listed in public_functions!");
 		}
 		// dont send header and footer
 		self::$header_done = self::$footer_done = true;
@@ -1067,7 +1069,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// need to call do_sidebox, as header() with $header_done does NOT!
 		$GLOBALS['egw']->framework->do_sidebox();
 
-		// send preferences, so we dont need to request them in a second ajax request
+		// send Api\Preferences, so we dont need to request them in a second ajax request
 		$GLOBALS['egw']->framework->response->call('egw.set_preferences',
 			(array)$GLOBALS['egw_info']['user']['preferences'][$app], $app);
 
@@ -1118,7 +1120,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		}
 		natcasesort($apps);
 
-		return html::select('newsettings[fw_mobile_app_list]', $value,
+		return Api\Html::select('newsettings[fw_mobile_app_list]', $value,
 			$apps, true, '', 5, true);
 	}
 }
