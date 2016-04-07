@@ -9,8 +9,8 @@
 
 /*egw:uses
 	jquery.jquery;
-	/phpgwapi/js/jquery/TouchSwipe/jquery.touchSwipe.js;
-	/phpgwapi/js/jquery/fastclick/lib/fastclick.js;
+	/api/js/jquery/TouchSwipe/jquery.touchSwipe.js;
+	/api/js/jquery/fastclick/lib/fastclick.js;
 	framework.fw_base;
 	framework.fw_browser;
 	framework.fw_ui;
