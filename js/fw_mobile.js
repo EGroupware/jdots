@@ -198,6 +198,7 @@
 					var popupWindow = this.contentWindow;
 					var $appHeader = $j(popupWindow.document).find('#divAppboxHeader');
 					var $et2_container = $j(popupWindow.document).find('.et2_container');
+					$j(popupWindow.document.body).css({'overflow-y':'auto'});
 					if ($appHeader.length > 0)
 					{
 						// Extend the dialog to 100% width
