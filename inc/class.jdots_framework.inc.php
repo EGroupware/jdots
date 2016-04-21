@@ -256,7 +256,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		// the instanciation of the template has to be here and not in the constructor,
 		// as the old Template class has problems if restored from the session (php-restore)
 		// todo: check if this is still true
-		$this->tpl = new Template(EGW_SERVER_ROOT.$this->template_dir);
+		$this->tpl = new Api\Framework\Template(EGW_SERVER_ROOT.$this->template_dir);
 		if (Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile')
 		{
 			$this->tpl->set_file(array('_head' => 'head_mobile.tpl'));
@@ -1092,35 +1092,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 	/**
 	 * Apps available for mobile, if admin did not configured something else
 	 * (needs to kept in sync with list in phpgwapi/js/framework/fw_mobile.js!)
+	 *
+	 * Constant is read by admin_hooks::config to set default for fw_mobile_app_list.
 	 */
 	const DEFAULT_MOBILE_APPS = 'calendar,infolog,timesheet,resources,addressbook,projectmanager,tracker,mail,filemanager';
-
-	/**
-	 * Enabled applications on mobile
-	 *
-	 * Generates input field and set values on site configuration for list of enabled
-	 * applications on mobile theme.
-	 *
-	 * @param array $config
-	 * @return string return DOM string for input field
-	 */
-	static function mobile_app_list($config)
-	{
-		$value = $config['fw_mobile_app_list'] ? $config['fw_mobile_app_list'] :
-			explode(',', self::DEFAULT_MOBILE_APPS);
-
-		$apps = array();
-		foreach ($GLOBALS['egw_info']['apps'] as $app => $data)
-		{
-			if (!$data['enabled'] || !$data['status'] || $data['status'] == 3)
-			{
-				continue;	// app not enabled (user can not have run rights for these apps)
-			}
-			$apps[$app] = lang($app);
-		}
-		natcasesort($apps);
-
-		return Api\Html::select('newsettings[fw_mobile_app_list]', $value,
-			$apps, true, '', 5, true);
-	}
 }
