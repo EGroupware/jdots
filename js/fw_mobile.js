@@ -436,6 +436,7 @@
 			//Audio effect for toggleMenu
 			var audio = $j('#egw_fw_menuAudioTag');
 			if (egw.preference('audio_effect','common') == '1')	audio[0].play();
+			jQuery('#egw_fw_firstload').remove();
 		},
 
 		/**
@@ -560,7 +561,7 @@
 
 			// Disable loader, if present
 			$j('#egw_fw_loading').hide();
-			jQuery('#egw_fw_firstload').remove();
+
 		},
 
 		/**
