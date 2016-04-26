@@ -17,6 +17,9 @@
 
 @media print {
 
+	@page {
+		margin: 1cm;
+	}
 	html, body {
 		width: auto !important;
 		height: auto !important;
