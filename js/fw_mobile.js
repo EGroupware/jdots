@@ -188,6 +188,15 @@
 				//Remove the loading class
 				egw.loading_prompt('popup', false);
 				self.$iFrame.css({visibility:'visible'});
+
+				// Auto scrollup when select input or select
+				jQuery(popupWindow).on('resize', function(){
+				   if(popupWindow.document.activeElement.tagName == "INPUT" || popupWindow.document.activeElement.tagName == "SELECT"){
+					  popupWindow.setTimeout(function(){
+						 popupWindow.document.activeElement.scrollIntoViewIfNeeded(false);
+					  },0);
+				   }
+				});
 			});
 
 
