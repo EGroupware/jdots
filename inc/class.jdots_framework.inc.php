@@ -434,8 +434,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 				}
 		}
 		$id = $app_data['id'] ? $app_data['id'] : ($app_data['name'] ? $app_data['name'] : $app_data['title']);
-		$title = Api\Header\UserAgent::mobile() || $GLOBALS['egw_info']['user']['preferences']['common']['theme'] == 'mobile'
-			? '' : htmlspecialchars($alt_label ? $alt_label : $app_data['title']);
+		$title =  htmlspecialchars($alt_label ? $alt_label : $app_data['title']);
 		$this->topmenu_items[] = '<a id="topmenu_' . $id . '" href="'.htmlspecialchars($app_data['url']).'" title="'.$app_data['title'].'">'.$title.'</a>';
 	}
 
