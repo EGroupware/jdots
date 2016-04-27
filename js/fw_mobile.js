@@ -197,6 +197,11 @@
 					  },0);
 				   }
 				});
+
+				// An iframe scrolling fix for iOS Safari
+				if (framework.getUserAgent() === 'iOS') {
+					window.setTimeout(function(){jQuery(self.$iFrame).height(popupWindow.document.body.scrollHeight);}, 500);
+				}
 			});
 
 
