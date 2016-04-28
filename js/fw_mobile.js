@@ -243,7 +243,6 @@
 			this.$container.detach();
 			//Remove the closed popup from popups array
 			window.framework.popups.splice(_idx,1);
-			history.back();
 		},
 
 		/**
@@ -754,7 +753,7 @@
 				window.framework.popups.push(popup);
 
 			popup.open(_url,_width,_height,positionLeft,positionTop);
-			history.pushState({current:_url, index:this.popup_idx(popup.$iFrame[0].contentWindow)},"popup", _url);
+			framework.pushState('popup',this.popup_idx(popup.$iFrame[0].contentWindow));
 			var windowID = popup.$iFrame[0].contentWindow;
 
 			// inject framework and egw object, because opener might not yet be loaded and therefore has no egw object!
@@ -923,6 +922,18 @@
 				// vibration API supported
 				navigator.vibrate(_duration);
 			}
+		},
+		/**
+		 * Push state history, set a state as hashed url param
+		 *
+		 * @param {type} _type type of state
+		 * @param {type} _index index of state
+		 */
+		pushState: function (_type, _index)
+		{
+			var index = _index || 1;
+			history.pushState({type:_type, index:_index}, _type, '#'+ egw.app_name()+"."+_type);
+			history.pushState({type:_type, index:_index}, _type, '#'+ egw.app_name()+"."+_type + '#' + index);
 		}
 	});
 
@@ -955,20 +966,29 @@
 			jQuery('#topmenu_logout').click(function(){ window.framework.redirect(this.getAttribute('href')); return false;});
 			jQuery('form[name^="tz_selection"]').children().on('change', function(){framework.tzSelection(this.value);	return false;});
 			window.egw.link_quick_add('quick_add');
-			history.pushState({current:window.location.href,index:-1},"init");
+			history.pushState({type:'main'}, 'main', '#main');
 			jQuery(window).on('popstate', function(e){
-				var index = 0;
-				if (e.originalEvent.state === null || typeof e.originalEvent.state =='undefined')
-				{
-					history.forward();
-					return false;
+				// Check if user wants to logout and ask a confirmation
+				if (e.originalEvent.state == null || typeof e.originalEvent.state == 'undefined') {
+					et2_dialog.show_dialog(function(button){
+						if (button === 3){
+							history.forward();
+							return;
+						}
+						history.back();
+					}, 'Are you sure you want to logout?', 'Logout');
 				}
-				else if (e.originalEvent.state && e.originalEvent.state.index >= 0)
+				// Execute action based on
+				switch (e.originalEvent.state.type)
 				{
-					index = e.originalEvent.state.index+1;
+					case 'popup':
+						window.framework.popups[e.originalEvent.state.index].close(e.originalEvent.state.index);
+						break;
+					case 'view':
+						jQuery('.egw_fw_mobile_popup_close').click();
+						break;
 				}
 
-				window.framework.popups[index].close(index);
 				e.preventDefault();
 			});
 			// allowing javascript urls in topmenu and sidebox only under CSP by binding click handlers to them
