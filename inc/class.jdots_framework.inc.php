@@ -804,7 +804,7 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 
 		//Store the order array inside the common user Api\Preferences
 		$GLOBALS['egw']->preferences->read_repository();
-		$GLOBALS['egw']->preferences->change('common', 'user_apporder', serialize($order));
+		$GLOBALS['egw']->preferences->add('common', 'user_apporder', serialize($order));
 		$GLOBALS['egw']->preferences->save_repository(true);
 	}
 
@@ -952,8 +952,8 @@ div .egw_fw_ui_sidemenu_entry_content > div {
 		if ($store_prefs)
 		{
 			$GLOBALS['egw']->preferences->read_repository();
-			$GLOBALS['egw']->preferences->change('common', 'open_tabs', implode(',',$open_tabs));
-			$GLOBALS['egw']->preferences->change('common', 'active_tab', $active_tab);
+			$GLOBALS['egw']->preferences->add('common', 'open_tabs', implode(',',$open_tabs));
+			$GLOBALS['egw']->preferences->add('common', 'active_tab', $active_tab);
 			$GLOBALS['egw']->preferences->save_repository(true);
 		}
 
