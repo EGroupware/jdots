@@ -10,11 +10,11 @@
  */
 
 /* These imports processed by framework */
-/*@import url("../../phpgwapi/templates/idots/css/traditional.css");*/
+/*@import url("/api/templates/default/default.css");*/
 /*@import url("../egw_fw.css");*/
 
 /**
- * theme changes from idots-traditional follow
+ * theme changes from api/default.css (former idots-traditional) follow
  */
 
 body {
@@ -63,7 +63,7 @@ tr.navbarBackground {
 	background-color:#dddddd;
 }
 
-div.navButton { 
+div.navButton {
 	background-color:#dddddd;
 	float:left;
 	padding: 2px;
@@ -71,7 +71,7 @@ div.navButton {
 	border: solid #dddddd 1px;
 }
 
-div.navButton:hover, div.navButtonHover { 
+div.navButton:hover, div.navButtonHover {
 	background-color:#eeeeee;
 	float:left;
 	padding: 2px;
@@ -82,7 +82,7 @@ div.navButton:hover, div.navButtonHover {
 	position: relative;
 }
 
-div.navButton:active, div.navButtonActive { 
+div.navButton:active, div.navButtonActive {
 	background-color:#dddddd;
 	float:left;
 	padding: 2px;
@@ -93,7 +93,7 @@ div.navButton:active, div.navButtonActive {
 	position: relative;
 }
 
-div.navSeparator { 
+div.navSeparator {
 	background-color:#dddddd;
 	float:left;
 	padding: 0px;
