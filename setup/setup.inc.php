@@ -13,7 +13,7 @@
 
 $GLOBALS['egw_info']['template']['jdots']['name']      = 'jdots';
 $GLOBALS['egw_info']['template']['jdots']['title']     = 'Stylite';
-$GLOBALS['egw_info']['template']['jdots']['version']   = '14.1';
+$GLOBALS['egw_info']['template']['jdots']['version']   = '16.1';
 
 $GLOBALS['egw_info']['template']['jdots']['author'] = array(
 	array('name' => 'Andreas Stoeckel', 'email' => 'as@stylite.de'),
@@ -28,3 +28,9 @@ $GLOBALS['egw_info']['template']['jdots']['maintainer'] = array(
 $GLOBALS['egw_info']['template']['jdots']['description'] = "Stylite is a new jQuery based template set for EGroupware EPL.";
 $GLOBALS['egw_info']['template']['jdots']['windowed'] = true;
 $GLOBALS['egw_info']['template']['jdots']['icon'] = 'jdots/images/epl.png';
+
+// Dependencies for this template to work
+$GLOBALS['egw_info']['template']['pixelegg']['depends'][] = array(
+	'appname' => 'api',
+	'versions' => Array('16.1')
+);
