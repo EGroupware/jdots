@@ -38,6 +38,7 @@
 				</div>
 				<div id="egw_fw_tabs">
 					<div id="egw_fw_logout" title="{title_logout}" data-logout-url="{link_logout}"></div>
+					<div id="egwpopup_fw_notifications" title="">0</div>
 					<div id="egw_fw_print" title="{title_print}"></div>
 				</div>
 			</div>
