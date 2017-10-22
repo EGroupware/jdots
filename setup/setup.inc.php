@@ -8,12 +8,11 @@
  * @author Ralf Becker <rb@egroupware.org>
  * @author Nathan Gray <ng@egroupware.org>
  * @license http://opensource.org/licenses/gpl-license.php GPL - GNU General Public License
- * @version $Id$
  */
 
 $GLOBALS['egw_info']['template']['jdots']['name']      = 'jdots';
 $GLOBALS['egw_info']['template']['jdots']['title']     = 'jDots';
-$GLOBALS['egw_info']['template']['jdots']['version']   = '16.1';
+$GLOBALS['egw_info']['template']['jdots']['version']   = '17.1';
 
 $GLOBALS['egw_info']['template']['jdots']['author'] = array(
 	array('name' => 'Andreas Stoeckel'),
@@ -32,5 +31,5 @@ $GLOBALS['egw_info']['template']['jdots']['icon'] = 'jdots/images/epl.png';
 // Dependencies for this template to work
 $GLOBALS['egw_info']['template']['pixelegg']['depends'][] = array(
 	'appname' => 'api',
-	'versions' => Array('16.1')
+	'versions' => Array('17.1')
 );
