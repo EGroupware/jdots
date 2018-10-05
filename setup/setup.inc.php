@@ -29,7 +29,7 @@ $GLOBALS['egw_info']['template']['jdots']['windowed'] = true;
 $GLOBALS['egw_info']['template']['jdots']['icon'] = 'jdots/images/epl.png';
 
 // Dependencies for this template to work
-$GLOBALS['egw_info']['template']['pixelegg']['depends'][] = array(
+$GLOBALS['egw_info']['template']['jdots']['depends'][] = array(
 	'appname' => 'api',
 	'versions' => Array('17.1')
 );
