@@ -348,7 +348,22 @@ html, body {
 	top: 1px;
 	right: 0px;
 }
-
+.egw_fw_ui_tab_header .notifyTabDiv {
+	position: absolute;
+    background-color: #c14343;
+    bottom: 5px;
+    height: 17px;
+    left: 0%;
+    color: #fff9fb;
+    border: 2px solid #ffffff;
+    text-align: center;
+    border-bottom: 0;
+    border-radius: 50%;
+    white-space: nowrap;
+    line-height: 16px;
+    width: 17px;
+    font-weight: bold;
+}
 .egw_fw_ui_tab_close_button:hover {
 	background-image: url(images/close_button_hover.png);
 }
